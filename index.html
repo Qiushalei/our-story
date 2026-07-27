@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>我们的故事</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- 密码锁屏 -->
+<div id="lockScreen">
+  <div class="lock-bg"></div>
+  <div class="lock-card">
+    <div class="lock-heart">❤</div>
+    <h2>我们的小世界</h2>
+    <p class="lock-hint">请输入访问密码</p>
+    <input type="password" id="pwdInput" placeholder="••••••" maxlength="20" />
+    <button id="pwdBtn" onclick="checkPassword()">进入</button>
+    <p id="pwdError" class="error-msg"></p>
+  </div>
+</div>
+
+<!-- 背景幻灯片 -->
+<div id="slideshow">
+  <div class="slide active" style="background-image:url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1920&q=80')"></div>
+  <div class="slide" style="background-image:url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=1920&q=80')"></div>
+  <div class="slide" style="background-image:url('https://images.unsplash.com/photo-1501854140801-50d01698950b?w=1920&q=80')"></div>
+  <div class="slide" style="background-image:url('https://images.unsplash.com/photo-1439853949212-36089de71f9e?w=1920&q=80')"></div>
+  <div class="slide" style="background-image:url('https://images.unsplash.com/photo-1470770903676-69b98201ea1c?w=1920&q=80')"></div>
+  <div class="slide" style="background-image:url('https://images.unsplash.com/photo-1519681393784-d120267933ba?w=1920&q=80')"></div>
+</div>
+<div class="overlay"></div>
+
+<!-- 背景音乐 -->
+<div id="musicPlayer">
+  <button id="musicBtn" onclick="toggleMusic()" title="背景音乐">♪</button>
+  <audio id="bgMusic" loop>
+    <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg" />
+  </audio>
+</div>
+
+<!-- 主内容 -->
+<div id="mainContent">
+
+  <!-- 顶部标题 -->
+  <header class="site-header">
+    <div class="couple-names" id="coupleNamesDisplay">
+      <span id="name1Display">Ta</span>
+      <span class="heart-icon">❤</span>
+      <span id="name2Display">Ta</span>
+    </div>
+    <button class="edit-btn" onclick="openNameModal()">✏ 编辑名字</button>
+  </header>
+
+  <!-- 导航 -->
+  <nav class="main-nav">
+    <button class="nav-btn active" onclick="showSection('home')">🏠 首页</button>
+    <button class="nav-btn" onclick="showSection('timeline')">📅 大事记</button>
+    <button class="nav-btn" onclick="showSection('anniversary')">💝 纪念日</button>
+    <button class="nav-btn" onclick="showSection('album')">📸 相册</button>
+  </nav>
+
+  <!-- 首页 -->
+  <section id="home" class="section active">
+    <div class="met-card card">
+      <div class="card-icon">🌸</div>
+      <h3>我们相识于</h3>
+      <div id="metDateDisplay" class="date-big">尚未记录</div>
+      <div id="metDaysDisplay" class="days-count"></div>
+      <button class="small-btn" onclick="openMetModal()">设置相识日期</button>
+    </div>
+
+    <div class="next-anniversary card">
+      <div class="card-icon">⏳</div>
+      <h3>最近纪念日</h3>
+      <div id="nextAnniDisplay">暂无纪念日</div>
+    </div>
+
+    <div class="love-quote card">
+      <div class="card-icon">💬</div>
+      <p id="quoteText">每一天醒来，第一件事就是感谢遇见你。</p>
+      <button class="small-btn" onclick="changeQuote()">换一句</button>
+    </div>
+  </section>
+
+  <!-- 大事记 -->
+  <section id="timeline" class="section">
+    <div class="section-header">
+      <h2>我们的大事记</h2>
+      <button class="add-btn" onclick="openEventModal()">+ 添加事件</button>
+    </div>
+    <div id="eventList" class="timeline-list">
+      <p class="empty-hint">还没有大事记，点击上方按钮添加吧 ✨</p>
+    </div>
+  </section>
+
+  <!-- 纪念日 -->
+  <section id="anniversary" class="section">
+    <div class="section-header">
+      <h2>纪念日与倒计时</h2>
+      <button class="add-btn" onclick="openAnniModal()">+ 添加纪念日</button>
+    </div>
+    <div id="anniList" class="anni-list">
+      <p class="empty-hint">还没有纪念日，点击上方按钮添加吧 💝</p>
+    </div>
+  </section>
+
+  <!-- 相册 -->
+  <section id="album" class="section">
+    <div class="section-header">
+      <h2>我们的相册</h2>
+      <label class="add-btn upload-label" for="photoUpload">📷 上传照片</label>
+      <input type="file" id="photoUpload" accept="image/*" multiple onchange="uploadPhotos(event)" style="display:none" />
+    </div>
+    <div id="photoGrid" class="photo-grid">
+      <p class="empty-hint">还没有照片，上传你们的第一张合照吧 📸</p>
+    </div>
+  </section>
+
+</div>
+
+<!-- 弹窗：编辑名字 -->
+<div id="nameModal" class="modal">
+  <div class="modal-card">
+    <h3>编辑情侣名字</h3>
+    <label>TA 的名字</label>
+    <input type="text" id="name1Input" placeholder="输入名字" maxlength="20" />
+    <label>TA 的名字</label>
+    <input type="text" id="name2Input" placeholder="输入名字" maxlength="20" />
+    <div class="modal-btns">
+      <button onclick="saveNames()">保存</button>
+      <button class="cancel" onclick="closeModal('nameModal')">取消</button>
+    </div>
+  </div>
+</div>
+
+<!-- 弹窗：相识日期 -->
+<div id="metModal" class="modal">
+  <div class="modal-card">
+    <h3>我们相识的日期</h3>
+    <input type="date" id="metDateInput" />
+    <div class="modal-btns">
+      <button onclick="saveMetDate()">保存</button>
+      <button class="cancel" onclick="closeModal('metModal')">取消</button>
+    </div>
+  </div>
+</div>
+
+<!-- 弹窗：添加事件 -->
+<div id="eventModal" class="modal">
+  <div class="modal-card">
+    <h3>记录大事件</h3>
+    <label>事件日期</label>
+    <input type="date" id="eventDate" />
+    <label>事件描述</label>
+    <textarea id="eventDesc" placeholder="写下这件难忘的事..." rows="3"></textarea>
+    <label>事件标签</label>
+    <select id="eventTag">
+      <option value="💕">💕 爱情</option>
+      <option value="🎉">🎉 庆祝</option>
+      <option value="✈️">✈️ 旅行</option>
+      <option value="🎂">🎂 生日</option>
+      <option value="💼">💼 工作</option>
+      <option value="🏠">🏠 生活</option>
+      <option value="⭐">⭐ 特别</option>
+    </select>
+    <div class="modal-btns">
+      <button onclick="saveEvent()">保存</button>
+      <button class="cancel" onclick="closeModal('eventModal')">取消</button>
+    </div>
+  </div>
+</div>
+
+<!-- 弹窗：添加纪念日 -->
+<div id="anniModal" class="modal">
+  <div class="modal-card">
+    <h3>设置纪念日</h3>
+    <label>纪念日名称</label>
+    <input type="text" id="anniName" placeholder="如：相识纪念日" maxlength="30" />
+    <label>日期</label>
+    <input type="date" id="anniDate" />
+    <label>类型</label>
+    <select id="anniType">
+      <option value="yearly">每年重复</option>
+      <option value="once">仅一次</option>
+    </select>
+    <div class="modal-btns">
+      <button onclick="saveAnniversary()">保存</button>
+      <button class="cancel" onclick="closeModal('anniModal')">取消</button>
+    </div>
+  </div>
+</div>
+
+<!-- 查看大图 -->
+<div id="photoModal" class="modal photo-viewer">
+  <div class="photo-viewer-inner">
+    <button class="close-photo" onclick="closeModal('photoModal')">✕</button>
+    <img id="photoViewImg" src="" alt="照片" />
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
