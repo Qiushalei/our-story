@@ -1,16 +1,16 @@
 /* ===== 常量与状态 ===== */
 const PASSWORD = '040121';
 const QUOTES = [
-  '每一天醒来，第一件事就是感谢遇见你。',
-  '爱你，是我做过最勇敢的事。',
-  '愿与你共赴每一个日出日落。',
-  '你是我最想分享每件小事的人。',
-  '世界那么大，幸好遇见了你。',
-  '因为有你，所有平凡的日子都闪闪发光。',
-  '在所有相遇里，遇见你是最好的意外。',
-  '你笑起来的样子，是我见过最美的风景。',
-  '愿未来的每一天，都有你在身旁。',
-  '和你在一起，哪里都是家。',
+  'Every morning I wake up grateful for the day I met you.',
+  'Loving you is the bravest thing I have ever done.',
+  'I want to share every sunrise and sunset with you.',
+  'You are the person I want to tell everything to.',
+  'The world is big, and I am so glad I found you.',
+  'Because of you, even the ordinary days shine.',
+  'Meeting you was the best accident of my life.',
+  'Your smile is the most beautiful thing I have ever seen.',
+  'May every day ahead have you in it.',
+  'Wherever we are together, that is home.',
 ];
 
 let currentQuoteIdx = 0;
@@ -24,7 +24,7 @@ function checkPassword() {
     init();
   } else {
     const err = document.getElementById('pwdError');
-    err.textContent = '密码错误，请重试 ✗';
+    err.textContent = 'Wrong password, please try again ✗';
     document.getElementById('pwdInput').value = '';
     setTimeout(() => { err.textContent = ''; }, 2500);
   }
@@ -63,11 +63,11 @@ function toggleMusic() {
   if (audio.paused) {
     audio.play().catch(() => {});
     btn.classList.add('playing');
-    btn.title = '暂停音乐';
+    btn.title = 'Pause Music';
   } else {
     audio.pause();
     btn.classList.remove('playing');
-    btn.title = '播放音乐';
+    btn.title = 'Play Music';
   }
 }
 
@@ -90,8 +90,8 @@ document.querySelectorAll('.modal').forEach(m => {
 
 /* ===== 情侣名字 ===== */
 function loadNames() {
-  const n1 = localStorage.getItem('name1') || 'Ta';
-  const n2 = localStorage.getItem('name2') || 'Ta';
+  const n1 = localStorage.getItem('name1') || 'You';
+  const n2 = localStorage.getItem('name2') || 'Me';
   document.getElementById('name1Display').textContent = n1;
   document.getElementById('name2Display').textContent = n2;
 }
@@ -103,8 +103,8 @@ function openNameModal() {
 }
 
 function saveNames() {
-  const n1 = document.getElementById('name1Input').value.trim() || 'Ta';
-  const n2 = document.getElementById('name2Input').value.trim() || 'Ta';
+  const n1 = document.getElementById('name1Input').value.trim() || 'You';
+  const n2 = document.getElementById('name2Input').value.trim() || 'Me';
   localStorage.setItem('name1', n1);
   localStorage.setItem('name2', n2);
   document.getElementById('name1Display').textContent = n1;
@@ -120,7 +120,7 @@ function loadMetDate() {
   document.getElementById('metDateDisplay').textContent = formatDate(date);
   const days = Math.floor((Date.now() - date.getTime()) / 86400000);
   document.getElementById('metDaysDisplay').textContent =
-    days >= 0 ? `已相识 ${days} 天 🌟` : `还有 ${-days} 天相识`;
+    days >= 0 ? `Together for ${days} days 🌟` : `${-days} days until we meet`;
 }
 
 function openMetModal() {
@@ -175,7 +175,7 @@ function renderEvents() {
   const list = document.getElementById('eventList');
   const evts = getEvents();
   if (!evts.length) {
-    list.innerHTML = '<p class="empty-hint">还没有大事记，点击上方按钮添加吧 ✨</p>';
+    list.innerHTML = '<p class="empty-hint">No memories yet — add your first one ✨</p>';
     return;
   }
   list.innerHTML = evts.map(e => `
@@ -235,7 +235,7 @@ function renderAnniversaries() {
   const list = getAnniversaries();
 
   if (!list.length) {
-    container.innerHTML = '<p class="empty-hint">还没有纪念日，点击上方按钮添加吧 💝</p>';
+    container.innerHTML = '<p class="empty-hint">No anniversaries yet — add one 💝</p>';
     return;
   }
 
@@ -243,7 +243,7 @@ function renderAnniversaries() {
     <div class="anni-item" id="anni-${a.id}">
       <button class="delete-btn" onclick="deleteAnniversary(${a.id})">✕</button>
       <div class="anni-name">💝 ${escHtml(a.name)}</div>
-      <div class="anni-date">${formatDate(new Date(a.date))} · ${a.type === 'yearly' ? '每年重复' : '仅一次'}</div>
+      <div class="anni-date">${formatDate(new Date(a.date))} · ${a.type === 'yearly' ? 'Every Year' : 'Once Only'}</div>
       <div class="countdown-display" id="cd-${a.id}"></div>
     </div>
   `).join('');
@@ -271,12 +271,12 @@ function updateCountdown(anni) {
   const diff = target.getTime() - now.getTime();
 
   if (diff < 0 && anni.type === 'once') {
-    el.innerHTML = `<span class="cd-passed">已经过去 ${Math.abs(Math.floor(diff / 86400000))} 天</span>`;
+    el.innerHTML = `<span class="cd-passed">${Math.abs(Math.floor(diff / 86400000))} days ago</span>`;
     return;
   }
 
   if (diff === 0 || (diff > -1000 && diff < 1000)) {
-    el.innerHTML = '<span class="cd-passed">🎉 就是今天！</span>';
+    el.innerHTML = '<span class="cd-passed">🎉 Today is the day!</span>';
     return;
   }
 
@@ -287,17 +287,17 @@ function updateCountdown(anni) {
   const s  = totalSec % 60;
 
   el.innerHTML = `
-    <div class="cd-unit"><div class="cd-num">${d}</div><div class="cd-label">天</div></div>
-    <div class="cd-unit"><div class="cd-num">${pad(h)}</div><div class="cd-label">时</div></div>
-    <div class="cd-unit"><div class="cd-num">${pad(m)}</div><div class="cd-label">分</div></div>
-    <div class="cd-unit"><div class="cd-num">${pad(s)}</div><div class="cd-label">秒</div></div>
+    <div class="cd-unit"><div class="cd-num">${d}</div><div class="cd-label">days</div></div>
+    <div class="cd-unit"><div class="cd-num">${pad(h)}</div><div class="cd-label">hrs</div></div>
+    <div class="cd-unit"><div class="cd-num">${pad(m)}</div><div class="cd-label">min</div></div>
+    <div class="cd-unit"><div class="cd-num">${pad(s)}</div><div class="cd-label">sec</div></div>
   `;
 }
 
 function updateNextAnniversary() {
   const el = document.getElementById('nextAnniDisplay');
   const list = getAnniversaries();
-  if (!list.length) { el.textContent = '暂无纪念日'; return; }
+  if (!list.length) { el.textContent = 'No anniversaries yet'; return; }
 
   const now = new Date();
   let nearest = null;
@@ -316,11 +316,11 @@ function updateNextAnniversary() {
     }
   });
 
-  if (!nearest) { el.textContent = '暂无即将到来的纪念日'; return; }
+  if (!nearest) { el.textContent = 'No upcoming anniversaries'; return; }
   const days = Math.ceil(nearestDiff / 86400000);
   el.innerHTML = `<strong>${escHtml(nearest.name)}</strong><br/>
     ${formatDate(nearest.targetDate)}<br/>
-    还有 <strong style="color:var(--primary);font-size:1.2em">${days}</strong> 天 🎉`;
+    In <strong style="color:var(--primary);font-size:1.2em">${days}</strong> days 🎉`;
 }
 
 /* ===== 相册 ===== */
@@ -345,7 +345,7 @@ function uploadPhotos(event) {
       photos.unshift({
         id: Date.now() + Math.random(),
         src: e.target.result,
-        date: new Date().toLocaleDateString('zh-CN'),
+        date: new Date().toLocaleDateString('en-US'),
         name: file.name,
       });
       processed++;
@@ -378,13 +378,13 @@ function renderPhotos() {
   const photos = getPhotos();
 
   if (!photos.length) {
-    grid.innerHTML = '<p class="empty-hint">还没有照片，上传你们的第一张合照吧 📸</p>';
+    grid.innerHTML = '<p class="empty-hint">No photos yet — upload your first one together 📸</p>';
     return;
   }
 
   grid.innerHTML = photos.map(p => `
     <div class="photo-item" onclick="viewPhoto('${p.src.replace(/'/g,"\\'")}')">
-      <img src="${p.src}" alt="${escHtml(p.name || '照片')}" loading="lazy" />
+      <img src="${p.src}" alt="${escHtml(p.name || 'Photo')}" loading="lazy" />
       <button class="photo-delete" onclick="event.stopPropagation(); deletePhoto(${p.id})">✕</button>
       <div class="photo-date">${p.date}</div>
     </div>
@@ -401,7 +401,7 @@ function changeQuote() {
 function pad(n) { return String(n).padStart(2, '0'); }
 
 function formatDate(d) {
-  return `${d.getFullYear()} 年 ${d.getMonth() + 1} 月 ${d.getDate()} 日`;
+  return d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
 }
 
 function escHtml(str) {
