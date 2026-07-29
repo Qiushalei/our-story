@@ -21,12 +21,32 @@ html, body {
   overflow-x: hidden;
 }
 
-/* ===== 背景幻灯片 ===== */
+/* ===== Visually hidden (accessible hide for file inputs) ===== */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ===== Background Slideshow ===== */
 #slideshow {
   position: fixed;
   inset: 0;
   z-index: 0;
 }
+
+.slide-1 { background-image: url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1920&q=80'); }
+.slide-2 { background-image: url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=1920&q=80'); }
+.slide-3 { background-image: url('https://images.unsplash.com/photo-1501854140801-50d01698950b?w=1920&q=80'); }
+.slide-4 { background-image: url('https://images.unsplash.com/photo-1439853949212-36089de71f9e?w=1920&q=80'); }
+.slide-5 { background-image: url('https://images.unsplash.com/photo-1470770903676-69b98201ea1c?w=1920&q=80'); }
+.slide-6 { background-image: url('https://images.unsplash.com/photo-1519681393784-d120267933ba?w=1920&q=80'); }
 
 .slide {
   position: absolute;
@@ -653,6 +673,26 @@ html, body {
   align-items: center;
   justify-content: center;
   z-index: 1;
+}
+
+/* ===== Backup section ===== */
+.backup-card { text-align: left; }
+
+.backup-desc {
+  opacity: 0.8;
+  line-height: 1.8;
+  margin-bottom: 20px;
+}
+
+.backup-btns {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.import-label {
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.3);
 }
 
 /* ===== 空状态提示 ===== */

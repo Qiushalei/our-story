@@ -1,4 +1,4 @@
-/* ===== 常量与状态 ===== */
+/* ===== Constants ===== */
 const PASSWORD = '040121';
 const QUOTES = [
   'Every morning I wake up grateful for the day I met you.',
@@ -16,7 +16,49 @@ const QUOTES = [
 let currentQuoteIdx = 0;
 let countdownTimers = [];
 
-/* ===== 密码验证 ===== */
+/* ===== Safe localStorage helpers ===== */
+function lsGet(key, fallback) {
+  try {
+    const v = localStorage.getItem(key);
+    return v === null ? fallback : v;
+  } catch (e) {
+    return fallback;
+  }
+}
+
+function lsSet(key, value) {
+  try {
+    localStorage.setItem(key, value);
+    return true;
+  } catch (e) {
+    // Storage full — try to free space from photos then retry
+    if (key !== 'photos') {
+      try {
+        const photos = JSON.parse(lsGet('photos', '[]'));
+        if (photos.length > 0) {
+          photos.splice(Math.floor(photos.length / 2)); // drop half
+          localStorage.setItem('photos', JSON.stringify(photos));
+          localStorage.setItem(key, value);
+          alert('Storage was almost full. Some older photos were removed to save your data.');
+          renderPhotos();
+          return true;
+        }
+      } catch (e2) {}
+    }
+    alert('Storage is full. Please export a backup and clear some photos.');
+    return false;
+  }
+}
+
+function lsGetJSON(key, fallback) {
+  try {
+    return JSON.parse(lsGet(key, null)) ?? fallback;
+  } catch (e) {
+    return fallback;
+  }
+}
+
+/* ===== Password ===== */
 function checkPassword() {
   const val = document.getElementById('pwdInput').value.trim();
   if (val === PASSWORD) {
@@ -34,7 +76,7 @@ document.getElementById('pwdInput').addEventListener('keydown', e => {
   if (e.key === 'Enter') checkPassword();
 });
 
-/* ===== 初始化 ===== */
+/* ===== Init ===== */
 function init() {
   loadNames();
   loadMetDate();
@@ -45,7 +87,7 @@ function init() {
   updateNextAnniversary();
 }
 
-/* ===== 背景幻灯片 ===== */
+/* ===== Slideshow ===== */
 function startSlideshow() {
   const slides = document.querySelectorAll('.slide');
   let current = 0;
@@ -56,7 +98,7 @@ function startSlideshow() {
   }, 6000);
 }
 
-/* ===== 音乐 ===== */
+/* ===== Music ===== */
 function toggleMusic() {
   const audio = document.getElementById('bgMusic');
   const btn = document.getElementById('musicBtn');
@@ -71,16 +113,16 @@ function toggleMusic() {
   }
 }
 
-/* ===== 导航切换 ===== */
+/* ===== Navigation ===== */
 function showSection(id) {
   document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
   document.getElementById(id).classList.add('active');
-  const idx = ['home','timeline','anniversary','album'].indexOf(id);
+  const idx = ['home', 'timeline', 'anniversary', 'album', 'backup'].indexOf(id);
   document.querySelectorAll('.nav-btn')[idx].classList.add('active');
 }
 
-/* ===== 弹窗 ===== */
+/* ===== Modals ===== */
 function openModal(id) { document.getElementById(id).classList.add('open'); }
 function closeModal(id) { document.getElementById(id).classList.remove('open'); }
 
@@ -88,43 +130,47 @@ document.querySelectorAll('.modal').forEach(m => {
   m.addEventListener('click', e => { if (e.target === m) closeModal(m.id); });
 });
 
-/* ===== 情侣名字 ===== */
+/* ===== Names ===== */
 function loadNames() {
-  const n1 = localStorage.getItem('name1') || 'You';
-  const n2 = localStorage.getItem('name2') || 'Me';
+  const n1 = lsGet('name1', 'You');
+  const n2 = lsGet('name2', 'Me');
   document.getElementById('name1Display').textContent = n1;
   document.getElementById('name2Display').textContent = n2;
 }
 
 function openNameModal() {
-  document.getElementById('name1Input').value = localStorage.getItem('name1') || '';
-  document.getElementById('name2Input').value = localStorage.getItem('name2') || '';
+  document.getElementById('name1Input').value = lsGet('name1', '');
+  document.getElementById('name2Input').value = lsGet('name2', '');
   openModal('nameModal');
 }
 
 function saveNames() {
   const n1 = document.getElementById('name1Input').value.trim() || 'You';
   const n2 = document.getElementById('name2Input').value.trim() || 'Me';
-  localStorage.setItem('name1', n1);
-  localStorage.setItem('name2', n2);
+  lsSet('name1', n1);
+  lsSet('name2', n2);
   document.getElementById('name1Display').textContent = n1;
   document.getElementById('name2Display').textContent = n2;
   closeModal('nameModal');
 }
 
-/* ===== 相识日期 ===== */
+/* ===== Met Date ===== */
 function loadMetDate() {
-  const d = localStorage.getItem('metDate');
+  const d = lsGet('metDate', null);
   if (!d) return;
-  const date = new Date(d);
+  // Parse as local date to avoid timezone shifting
+  const [year, month, day] = d.split('-').map(Number);
+  const date = new Date(year, month - 1, day);
   document.getElementById('metDateDisplay').textContent = formatDate(date);
-  const days = Math.floor((Date.now() - date.getTime()) / 86400000);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const days = Math.floor((today - date) / 86400000);
   document.getElementById('metDaysDisplay').textContent =
     days >= 0 ? `Together for ${days} days 🌟` : `${-days} days until we meet`;
 }
 
 function openMetModal() {
-  const d = localStorage.getItem('metDate');
+  const d = lsGet('metDate', null);
   if (d) document.getElementById('metDateInput').value = d;
   openModal('metModal');
 }
@@ -132,19 +178,14 @@ function openMetModal() {
 function saveMetDate() {
   const d = document.getElementById('metDateInput').value;
   if (!d) return;
-  localStorage.setItem('metDate', d);
+  lsSet('metDate', d);
   loadMetDate();
   closeModal('metModal');
 }
 
-/* ===== 大事记 ===== */
-function getEvents() {
-  return JSON.parse(localStorage.getItem('events') || '[]');
-}
-
-function saveEvents(evts) {
-  localStorage.setItem('events', JSON.stringify(evts));
-}
+/* ===== Events / Memories ===== */
+function getEvents() { return lsGetJSON('events', []); }
+function saveEvents(evts) { lsSet('events', JSON.stringify(evts)); }
 
 function openEventModal() {
   document.getElementById('eventDate').value = '';
@@ -166,8 +207,7 @@ function saveEvent() {
 }
 
 function deleteEvent(id) {
-  const evts = getEvents().filter(e => e.id !== id);
-  saveEvents(evts);
+  saveEvents(getEvents().filter(e => e.id !== id));
   renderEvents();
 }
 
@@ -178,26 +218,23 @@ function renderEvents() {
     list.innerHTML = '<p class="empty-hint">No memories yet — add your first one ✨</p>';
     return;
   }
-  list.innerHTML = evts.map(e => `
+  list.innerHTML = evts.map(e => {
+    const [y, m, d] = e.date.split('-').map(Number);
+    return `
     <div class="event-item">
       <div class="event-tag">${e.tag}</div>
       <div class="event-info">
-        <div class="event-date">${formatDate(new Date(e.date))}</div>
+        <div class="event-date">${formatDate(new Date(y, m - 1, d))}</div>
         <div class="event-desc">${escHtml(e.desc)}</div>
       </div>
       <button class="delete-btn" onclick="deleteEvent(${e.id})">✕</button>
-    </div>
-  `).join('');
+    </div>`;
+  }).join('');
 }
 
-/* ===== 纪念日 ===== */
-function getAnniversaries() {
-  return JSON.parse(localStorage.getItem('anniversaries') || '[]');
-}
-
-function saveAnniversaries(list) {
-  localStorage.setItem('anniversaries', JSON.stringify(list));
-}
+/* ===== Anniversaries ===== */
+function getAnniversaries() { return lsGetJSON('anniversaries', []); }
+function saveAnniversaries(list) { lsSet('anniversaries', JSON.stringify(list)); }
 
 function openAnniModal() {
   document.getElementById('anniName').value = '';
@@ -219,8 +256,7 @@ function saveAnniversary() {
 }
 
 function deleteAnniversary(id) {
-  const list = getAnniversaries().filter(a => a.id !== id);
-  saveAnniversaries(list);
+  saveAnniversaries(getAnniversaries().filter(a => a.id !== id));
   countdownTimers.forEach(clearInterval);
   countdownTimers = [];
   renderAnniversaries();
@@ -239,14 +275,16 @@ function renderAnniversaries() {
     return;
   }
 
-  container.innerHTML = list.map(a => `
+  container.innerHTML = list.map(a => {
+    const [y, m, d] = a.date.split('-').map(Number);
+    return `
     <div class="anni-item" id="anni-${a.id}">
       <button class="delete-btn" onclick="deleteAnniversary(${a.id})">✕</button>
       <div class="anni-name">💝 ${escHtml(a.name)}</div>
-      <div class="anni-date">${formatDate(new Date(a.date))} · ${a.type === 'yearly' ? 'Every Year' : 'Once Only'}</div>
+      <div class="anni-date">${formatDate(new Date(y, m - 1, d))} · ${a.type === 'yearly' ? 'Every Year' : 'Once Only'}</div>
       <div class="countdown-display" id="cd-${a.id}"></div>
-    </div>
-  `).join('');
+    </div>`;
+  }).join('');
 
   list.forEach(a => {
     updateCountdown(a);
@@ -260,10 +298,10 @@ function updateCountdown(anni) {
   if (!el) return;
 
   const now = new Date();
-  let target = new Date(anni.date);
+  const [y, m, d] = anni.date.split('-').map(Number);
+  let target = new Date(y, m - 1, d);
 
   if (anni.type === 'yearly') {
-    // 找下一次发生的年份
     target.setFullYear(now.getFullYear());
     if (target <= now) target.setFullYear(now.getFullYear() + 1);
   }
@@ -275,22 +313,22 @@ function updateCountdown(anni) {
     return;
   }
 
-  if (diff === 0 || (diff > -1000 && diff < 1000)) {
+  if (Math.abs(diff) < 1000) {
     el.innerHTML = '<span class="cd-passed">🎉 Today is the day!</span>';
     return;
   }
 
   const totalSec = Math.floor(diff / 1000);
-  const d  = Math.floor(totalSec / 86400);
-  const h  = Math.floor((totalSec % 86400) / 3600);
-  const m  = Math.floor((totalSec % 3600) / 60);
-  const s  = totalSec % 60;
+  const days = Math.floor(totalSec / 86400);
+  const hrs  = Math.floor((totalSec % 86400) / 3600);
+  const min  = Math.floor((totalSec % 3600) / 60);
+  const sec  = totalSec % 60;
 
   el.innerHTML = `
-    <div class="cd-unit"><div class="cd-num">${d}</div><div class="cd-label">days</div></div>
-    <div class="cd-unit"><div class="cd-num">${pad(h)}</div><div class="cd-label">hrs</div></div>
-    <div class="cd-unit"><div class="cd-num">${pad(m)}</div><div class="cd-label">min</div></div>
-    <div class="cd-unit"><div class="cd-num">${pad(s)}</div><div class="cd-label">sec</div></div>
+    <div class="cd-unit"><div class="cd-num">${days}</div><div class="cd-label">days</div></div>
+    <div class="cd-unit"><div class="cd-num">${pad(hrs)}</div><div class="cd-label">hrs</div></div>
+    <div class="cd-unit"><div class="cd-num">${pad(min)}</div><div class="cd-label">min</div></div>
+    <div class="cd-unit"><div class="cd-num">${pad(sec)}</div><div class="cd-label">sec</div></div>
   `;
 }
 
@@ -304,7 +342,8 @@ function updateNextAnniversary() {
   let nearestDiff = Infinity;
 
   list.forEach(a => {
-    let target = new Date(a.date);
+    const [y, m, d] = a.date.split('-').map(Number);
+    let target = new Date(y, m - 1, d);
     if (a.type === 'yearly') {
       target.setFullYear(now.getFullYear());
       if (target <= now) target.setFullYear(now.getFullYear() + 1);
@@ -323,13 +362,13 @@ function updateNextAnniversary() {
     In <strong style="color:var(--primary);font-size:1.2em">${days}</strong> days 🎉`;
 }
 
-/* ===== 相册 ===== */
-function getPhotos() {
-  return JSON.parse(localStorage.getItem('photos') || '[]');
-}
+/* ===== Photos ===== */
+function getPhotos() { return lsGetJSON('photos', []); }
 
 function savePhotos(photos) {
-  localStorage.setItem('photos', JSON.stringify(photos));
+  // Compress: keep max 100 photos to stay within localStorage limits
+  const capped = photos.slice(0, 100);
+  return lsSet('photos', JSON.stringify(capped));
 }
 
 function uploadPhotos(event) {
@@ -340,21 +379,22 @@ function uploadPhotos(event) {
   const photos = getPhotos();
 
   files.forEach(file => {
+    // Resize large images before storing to reduce size
     const reader = new FileReader();
     reader.onload = e => {
-      photos.unshift({
-        id: Date.now() + Math.random(),
-        src: e.target.result,
-        date: new Date().toLocaleDateString('en-US'),
-        name: file.name,
+      resizeImage(e.target.result, 1200, result => {
+        photos.unshift({
+          id: Date.now() + Math.random(),
+          src: result,
+          date: new Date().toLocaleDateString('en-US'),
+          name: file.name,
+        });
+        processed++;
+        if (processed === files.length) {
+          const ok = savePhotos(photos);
+          if (ok) renderPhotos();
+        }
       });
-      processed++;
-      if (processed === files.length) {
-        // 限制最多 200 张以防 localStorage 溢出
-        if (photos.length > 200) photos.splice(200);
-        savePhotos(photos);
-        renderPhotos();
-      }
     };
     reader.readAsDataURL(file);
   });
@@ -362,9 +402,21 @@ function uploadPhotos(event) {
   event.target.value = '';
 }
 
+function resizeImage(dataUrl, maxWidth, callback) {
+  const img = new Image();
+  img.onload = () => {
+    let w = img.width, h = img.height;
+    if (w > maxWidth) { h = Math.round(h * maxWidth / w); w = maxWidth; }
+    const canvas = document.createElement('canvas');
+    canvas.width = w; canvas.height = h;
+    canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+    callback(canvas.toDataURL('image/jpeg', 0.75));
+  };
+  img.src = dataUrl;
+}
+
 function deletePhoto(id) {
-  const photos = getPhotos().filter(p => p.id !== id);
-  savePhotos(photos);
+  savePhotos(getPhotos().filter(p => p.id !== id));
   renderPhotos();
 }
 
@@ -383,7 +435,7 @@ function renderPhotos() {
   }
 
   grid.innerHTML = photos.map(p => `
-    <div class="photo-item" onclick="viewPhoto('${p.src.replace(/'/g,"\\'")}')">
+    <div class="photo-item" onclick="viewPhoto('${p.src.replace(/'/g, "\\'")}')">
       <img src="${p.src}" alt="${escHtml(p.name || 'Photo')}" loading="lazy" />
       <button class="photo-delete" onclick="event.stopPropagation(); deletePhoto(${p.id})">✕</button>
       <div class="photo-date">${p.date}</div>
@@ -391,13 +443,57 @@ function renderPhotos() {
   `).join('');
 }
 
-/* ===== 名言 ===== */
+/* ===== Backup: Export & Import ===== */
+function exportData() {
+  const data = {
+    version: 1,
+    name1: lsGet('name1', ''),
+    name2: lsGet('name2', ''),
+    metDate: lsGet('metDate', ''),
+    events: getEvents(),
+    anniversaries: getAnniversaries(),
+    photos: getPhotos(),
+  };
+  const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `our-story-backup-${new Date().toISOString().slice(0, 10)}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function importData(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const data = JSON.parse(e.target.result);
+      if (!data.version) throw new Error('Invalid backup file');
+      if (data.name1) lsSet('name1', data.name1);
+      if (data.name2) lsSet('name2', data.name2);
+      if (data.metDate) lsSet('metDate', data.metDate);
+      if (data.events) lsSet('events', JSON.stringify(data.events));
+      if (data.anniversaries) lsSet('anniversaries', JSON.stringify(data.anniversaries));
+      if (data.photos) savePhotos(data.photos);
+      init();
+      alert('✅ Data restored successfully!');
+    } catch (err) {
+      alert('❌ Failed to restore: invalid backup file.');
+    }
+  };
+  reader.readAsText(file);
+  event.target.value = '';
+}
+
+/* ===== Quotes ===== */
 function changeQuote() {
   currentQuoteIdx = (currentQuoteIdx + 1) % QUOTES.length;
   document.getElementById('quoteText').textContent = QUOTES[currentQuoteIdx];
 }
 
-/* ===== 工具函数 ===== */
+/* ===== Helpers ===== */
 function pad(n) { return String(n).padStart(2, '0'); }
 
 function formatDate(d) {
@@ -413,6 +509,5 @@ function escHtml(str) {
     .replace(/'/g, '&#39;');
 }
 
-/* ===== 每分钟更新相识天数 ===== */
 setInterval(loadMetDate, 60000);
 setInterval(updateNextAnniversary, 60000);

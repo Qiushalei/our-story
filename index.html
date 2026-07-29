@@ -15,26 +15,26 @@
     <div class="lock-heart">❤</div>
     <h2>Our Little World</h2>
     <p class="lock-hint">Enter the password to continue</p>
-    <input type="password" id="pwdInput" placeholder="••••••" maxlength="20" />
-    <button id="pwdBtn" onclick="checkPassword()">Enter</button>
+    <input type="password" id="pwdInput" placeholder="••••••" maxlength="20" aria-label="Password" />
+    <button type="button" id="pwdBtn" onclick="checkPassword()">Enter</button>
     <p id="pwdError" class="error-msg"></p>
   </div>
 </div>
 
 <!-- Background Slideshow -->
 <div id="slideshow">
-  <div class="slide active" style="background-image:url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1920&q=80')"></div>
-  <div class="slide" style="background-image:url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=1920&q=80')"></div>
-  <div class="slide" style="background-image:url('https://images.unsplash.com/photo-1501854140801-50d01698950b?w=1920&q=80')"></div>
-  <div class="slide" style="background-image:url('https://images.unsplash.com/photo-1439853949212-36089de71f9e?w=1920&q=80')"></div>
-  <div class="slide" style="background-image:url('https://images.unsplash.com/photo-1470770903676-69b98201ea1c?w=1920&q=80')"></div>
-  <div class="slide" style="background-image:url('https://images.unsplash.com/photo-1519681393784-d120267933ba?w=1920&q=80')"></div>
+  <div class="slide slide-1 active"></div>
+  <div class="slide slide-2"></div>
+  <div class="slide slide-3"></div>
+  <div class="slide slide-4"></div>
+  <div class="slide slide-5"></div>
+  <div class="slide slide-6"></div>
 </div>
 <div class="overlay"></div>
 
 <!-- Music Player -->
 <div id="musicPlayer">
-  <button id="musicBtn" onclick="toggleMusic()" title="Background Music">♪</button>
+  <button type="button" id="musicBtn" onclick="toggleMusic()" title="Background Music">♪</button>
   <audio id="bgMusic" loop>
     <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg" />
   </audio>
@@ -50,15 +50,16 @@
       <span class="heart-icon">❤</span>
       <span id="name2Display">Me</span>
     </div>
-    <button class="edit-btn" onclick="openNameModal()">✏ Edit Names</button>
+    <button type="button" class="edit-btn" onclick="openNameModal()">✏ Edit Names</button>
   </header>
 
   <!-- Navigation -->
   <nav class="main-nav">
-    <button class="nav-btn active" onclick="showSection('home')">🏠 Home</button>
-    <button class="nav-btn" onclick="showSection('timeline')">📅 Memories</button>
-    <button class="nav-btn" onclick="showSection('anniversary')">💝 Anniversaries</button>
-    <button class="nav-btn" onclick="showSection('album')">📸 Album</button>
+    <button type="button" class="nav-btn active" onclick="showSection('home')">🏠 Home</button>
+    <button type="button" class="nav-btn" onclick="showSection('timeline')">📅 Memories</button>
+    <button type="button" class="nav-btn" onclick="showSection('anniversary')">💝 Anniversaries</button>
+    <button type="button" class="nav-btn" onclick="showSection('album')">📸 Album</button>
+    <button type="button" class="nav-btn" onclick="showSection('backup')">💾 Backup</button>
   </nav>
 
   <!-- Home -->
@@ -68,7 +69,7 @@
       <h3>We First Met On</h3>
       <div id="metDateDisplay" class="date-big">Not recorded yet</div>
       <div id="metDaysDisplay" class="days-count"></div>
-      <button class="small-btn" onclick="openMetModal()">Set the Date We Met</button>
+      <button type="button" class="small-btn" onclick="openMetModal()">Set the Date We Met</button>
     </div>
 
     <div class="next-anniversary card">
@@ -80,7 +81,7 @@
     <div class="love-quote card">
       <div class="card-icon">💬</div>
       <p id="quoteText">Every morning I wake up grateful for the day I met you.</p>
-      <button class="small-btn" onclick="changeQuote()">Next Quote</button>
+      <button type="button" class="small-btn" onclick="changeQuote()">Next Quote</button>
     </div>
   </section>
 
@@ -88,7 +89,7 @@
   <section id="timeline" class="section">
     <div class="section-header">
       <h2>Our Memories</h2>
-      <button class="add-btn" onclick="openEventModal()">+ Add Memory</button>
+      <button type="button" class="add-btn" onclick="openEventModal()">+ Add Memory</button>
     </div>
     <div id="eventList" class="timeline-list">
       <p class="empty-hint">No memories yet — add your first one ✨</p>
@@ -99,7 +100,7 @@
   <section id="anniversary" class="section">
     <div class="section-header">
       <h2>Anniversaries & Countdowns</h2>
-      <button class="add-btn" onclick="openAnniModal()">+ Add Anniversary</button>
+      <button type="button" class="add-btn" onclick="openAnniModal()">+ Add Anniversary</button>
     </div>
     <div id="anniList" class="anni-list">
       <p class="empty-hint">No anniversaries yet — add one 💝</p>
@@ -111,10 +112,29 @@
     <div class="section-header">
       <h2>Our Photo Album</h2>
       <label class="add-btn upload-label" for="photoUpload">📷 Upload Photos</label>
-      <input type="file" id="photoUpload" accept="image/*" multiple onchange="uploadPhotos(event)" style="display:none" />
+      <input type="file" id="photoUpload" accept="image/*" multiple onchange="uploadPhotos(event)" class="visually-hidden" />
     </div>
     <div id="photoGrid" class="photo-grid">
       <p class="empty-hint">No photos yet — upload your first one together 📸</p>
+    </div>
+  </section>
+
+  <!-- Backup -->
+  <section id="backup" class="section">
+    <div class="section-header">
+      <h2>Backup & Restore</h2>
+    </div>
+    <div class="card backup-card">
+      <p class="backup-desc">
+        All data is saved in your browser's local storage.<br/>
+        <strong>Export a backup</strong> to keep your data safe or transfer it to another device.<br/>
+        <strong>Import a backup</strong> to restore your data on a new device or browser.
+      </p>
+      <div class="backup-btns">
+        <button type="button" class="add-btn" onclick="exportData()">⬇ Export Backup</button>
+        <label class="add-btn upload-label import-label" for="importFile">⬆ Import Backup</label>
+        <input type="file" id="importFile" accept=".json" onchange="importData(event)" class="visually-hidden" />
+      </div>
     </div>
   </section>
 
@@ -124,13 +144,13 @@
 <div id="nameModal" class="modal">
   <div class="modal-card">
     <h3>Edit Names</h3>
-    <label>Their Name</label>
+    <label for="name1Input">Their Name</label>
     <input type="text" id="name1Input" placeholder="Enter name" maxlength="20" />
-    <label>Your Name</label>
+    <label for="name2Input">Your Name</label>
     <input type="text" id="name2Input" placeholder="Enter name" maxlength="20" />
     <div class="modal-btns">
-      <button onclick="saveNames()">Save</button>
-      <button class="cancel" onclick="closeModal('nameModal')">Cancel</button>
+      <button type="button" onclick="saveNames()">Save</button>
+      <button type="button" class="cancel" onclick="closeModal('nameModal')">Cancel</button>
     </div>
   </div>
 </div>
@@ -139,10 +159,11 @@
 <div id="metModal" class="modal">
   <div class="modal-card">
     <h3>The Day We First Met</h3>
-    <input type="date" id="metDateInput" />
+    <label for="metDateInput">Date</label>
+    <input type="date" id="metDateInput" title="Date we first met" placeholder="Select a date" />
     <div class="modal-btns">
-      <button onclick="saveMetDate()">Save</button>
-      <button class="cancel" onclick="closeModal('metModal')">Cancel</button>
+      <button type="button" onclick="saveMetDate()">Save</button>
+      <button type="button" class="cancel" onclick="closeModal('metModal')">Cancel</button>
     </div>
   </div>
 </div>
@@ -151,12 +172,12 @@
 <div id="eventModal" class="modal">
   <div class="modal-card">
     <h3>Add a Memory</h3>
-    <label>Date</label>
-    <input type="date" id="eventDate" />
-    <label>Description</label>
+    <label for="eventDate">Date</label>
+    <input type="date" id="eventDate" title="Memory date" placeholder="Select a date" />
+    <label for="eventDesc">Description</label>
     <textarea id="eventDesc" placeholder="Write about this special moment..." rows="3"></textarea>
-    <label>Category</label>
-    <select id="eventTag">
+    <label for="eventTag">Category</label>
+    <select id="eventTag" title="Memory category">
       <option value="💕">💕 Love</option>
       <option value="🎉">🎉 Celebration</option>
       <option value="✈️">✈️ Travel</option>
@@ -166,8 +187,8 @@
       <option value="⭐">⭐ Special</option>
     </select>
     <div class="modal-btns">
-      <button onclick="saveEvent()">Save</button>
-      <button class="cancel" onclick="closeModal('eventModal')">Cancel</button>
+      <button type="button" onclick="saveEvent()">Save</button>
+      <button type="button" class="cancel" onclick="closeModal('eventModal')">Cancel</button>
     </div>
   </div>
 </div>
@@ -176,18 +197,18 @@
 <div id="anniModal" class="modal">
   <div class="modal-card">
     <h3>Set an Anniversary</h3>
-    <label>Name</label>
+    <label for="anniName">Name</label>
     <input type="text" id="anniName" placeholder="e.g. First Date Anniversary" maxlength="30" />
-    <label>Date</label>
-    <input type="date" id="anniDate" />
-    <label>Repeat</label>
-    <select id="anniType">
+    <label for="anniDate">Date</label>
+    <input type="date" id="anniDate" title="Anniversary date" placeholder="Select a date" />
+    <label for="anniType">Repeat</label>
+    <select id="anniType" title="Repeat type">
       <option value="yearly">Every Year</option>
       <option value="once">Once Only</option>
     </select>
     <div class="modal-btns">
-      <button onclick="saveAnniversary()">Save</button>
-      <button class="cancel" onclick="closeModal('anniModal')">Cancel</button>
+      <button type="button" onclick="saveAnniversary()">Save</button>
+      <button type="button" class="cancel" onclick="closeModal('anniModal')">Cancel</button>
     </div>
   </div>
 </div>
@@ -195,7 +216,7 @@
 <!-- Photo Viewer -->
 <div id="photoModal" class="modal photo-viewer">
   <div class="photo-viewer-inner">
-    <button class="close-photo" onclick="closeModal('photoModal')">✕</button>
+    <button type="button" class="close-photo" onclick="closeModal('photoModal')">✕</button>
     <img id="photoViewImg" src="" alt="Photo" />
   </div>
 </div>
