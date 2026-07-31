@@ -585,6 +585,85 @@ function openDogChat() {
   document.getElementById('dogBot').appendChild(panel);
 }
 
+const DOG_SMART_REPLIES = [
+  // 关键词 → 回复列表
+  { keys: ['love', 'miss', 'heart', 'adore'], replies: [
+    '🐾 *wags tail furiously* Love is the best thing in the world! And yours is extra special~',
+    '💕 Aww, I can feel the love from here! *spins in circles*',
+    '🐶 Love makes every day feel like a walk in the park! Woof!',
+  ]},
+  { keys: ['sad', 'miss', 'lonely', 'apart', 'away'], replies: [
+    '🐾 *nuzzles you gently* Distance only makes the heart grow fonder! They\'re thinking of you too~',
+    '💕 Even the moon misses the sun sometimes. But they always find each other again! Woof~',
+    '🐶 *licks your hand* It\'s okay to miss someone you love. That means they matter! 🌙',
+  ]},
+  { keys: ['anniversary', 'date', 'special', 'celebrate'], replies: [
+    '🎉 *does happy zoomies* Celebrations!! Every day with the right person is worth celebrating!',
+    '💝 Woof woof! Mark it on the calendar — special days deserve special moments~',
+    '🐾 anniversaries are like dog treats — the more the merrier! *tail wagging intensifies*',
+  ]},
+  { keys: ['photo', 'picture', 'memory', 'memories'], replies: [
+    '📸 *tilts head adorably* Photos freeze the best moments forever! Upload more~',
+    '🐾 Every picture tells a love story! I love looking at your photos together~',
+    '💕 Memories are the best treasure. Keep collecting them! Woof!',
+  ]},
+  { keys: ['fight', 'argue', 'angry', 'upset', 'sorry'], replies: [
+    '🐾 *sits beside you* Every couple has cloudy days. The sunshine always comes back~',
+    '💕 A hug fixes more than you think. *offers paw* It\'ll be okay, I promise!',
+    '🐶 Woof... even the best of friends have bumpy days. What matters is you always choose each other 💝',
+  ]},
+  { keys: ['cute', 'beautiful', 'handsome', 'pretty', 'gorgeous'], replies: [
+    '🐾 They ARE cute! Almost as cute as me! ...almost. *wags tail*',
+    '💕 Beauty is everywhere when you\'re in love! Woof woof~',
+    '🐶 *tilts head* You both glow when you talk about each other! So sweet~',
+  ]},
+  { keys: ['hello', 'hi', 'hey', 'woof', 'bark'], replies: [
+    '🐶 WOOF WOOF! Hi hi hi!! *jumps excitedly* So happy you came to talk to me!',
+    '🐾 Hello hello! *spins around* You made my tail go crazy! What\'s up?',
+    '💕 Hey there! *licks your face* I\'ve been waiting for you~',
+  ]},
+  { keys: ['future', 'dream', 'plan', 'together', 'forever'], replies: [
+    '🌟 *gazes into the distance* A future built with love is the most beautiful kind~',
+    '🐾 Woof! Dreams are sweeter when you share them with someone special!',
+    '💕 Together is my favourite place to be! And I bet it\'s yours too~ *wags tail*',
+  ]},
+  { keys: ['happy', 'joy', 'smile', 'laugh', 'fun'], replies: [
+    '🐶 *does full zoomies* HAPPINESS!! That\'s my favourite thing! Yours and mine both!',
+    '🐾 Your smile is literally the best thing. Keep it up! Woof woof~',
+    '💕 Joy shared is joy doubled! *bounces around excitedly*',
+  ]},
+  { keys: ['advice', 'help', 'tips', 'how', 'what should'], replies: [
+    '🐾 *tilts head wisely* My best advice: be kind, be present, and give lots of cuddles~',
+    '🐶 Woof! Love tip from Biscuit: say "I love you" one more time than you think you need to!',
+    '💝 The secret to love? Show up. Every. Single. Day. *thumps tail on floor*',
+  ]},
+];
+
+const DOG_FALLBACK_REPLIES = [
+  '🐾 *wags tail* Woof! That\'s so interesting! Tell me more~',
+  '🐶 *tilts head curiously* I may be a dog but I feel every word! Woof woof~',
+  '💕 You two are honestly the cutest. Just saying! *happy tail wag*',
+  '🐾 *spins in a circle* I love this conversation! You\'re my favourite humans!',
+  '🐶 Woof woof! Whatever you\'re thinking, I bet it\'s lovely~',
+  '💝 *nuzzles screen* Keep loving each other fiercely, okay? Promise me! Woof!',
+  '🐾 I may not have all the answers but I have all the love! *licks your hand*',
+  '🌸 Every day you choose each other is a good day. Woof~',
+];
+
+let fallbackIdx = 0;
+
+function getDogReply(text) {
+  const lower = text.toLowerCase();
+  for (const group of DOG_SMART_REPLIES) {
+    if (group.keys.some(k => lower.includes(k))) {
+      return group.replies[Math.floor(Math.random() * group.replies.length)];
+    }
+  }
+  const reply = DOG_FALLBACK_REPLIES[fallbackIdx % DOG_FALLBACK_REPLIES.length];
+  fallbackIdx++;
+  return reply;
+}
+
 async function sendDogMessage() {
   const input = document.getElementById('dogChatInput');
   const messages = document.getElementById('dogChatMessages');
@@ -592,20 +671,21 @@ async function sendDogMessage() {
   if (!text) return;
   input.value = '';
 
-  // 显示用户消息
+  // 用户消息
   const userDiv = document.createElement('div');
   userDiv.className = 'user-msg';
   userDiv.textContent = text;
   messages.appendChild(userDiv);
 
-  // 显示打字中
+  // 打字中动画
   const thinkDiv = document.createElement('div');
   thinkDiv.className = 'dog-msg typing';
   thinkDiv.innerHTML = '<span class="dot"></span><span class="dot"></span><span class="dot"></span>';
   messages.appendChild(thinkDiv);
   messages.scrollTop = messages.scrollHeight;
 
-  // 调用 Supabase Edge Function（中转 AI 请求）
+  // 先尝试 AI，失败则用本地智能回复
+  let reply = null;
   try {
     const res = await fetch(`${SUPABASE_URL}/functions/v1/dog-chat`, {
       method: 'POST',
@@ -614,27 +694,33 @@ async function sendDogMessage() {
         'Authorization': `Bearer ${SUPABASE_KEY}`,
       },
       body: JSON.stringify({ message: text, system: DOG_AI_SYSTEM }),
+      signal: AbortSignal.timeout(8000),
     });
-    const data = await res.json();
-    const reply = data.reply || data.error || '🐾 Woof... I got a little confused, try again?';
-    thinkDiv.classList.remove('typing');
-    thinkDiv.innerHTML = '';
-    // 打字机效果显示回复
-    let i = 0;
-    function typeReply() {
-      if (i < reply.length) {
-        thinkDiv.textContent += reply[i++];
-        messages.scrollTop = messages.scrollHeight;
-        setTimeout(typeReply, 22);
-      }
+    if (res.ok) {
+      const data = await res.json();
+      if (data.reply && !data.error) reply = data.reply;
     }
-    typeReply();
-  } catch (e) {
-    thinkDiv.classList.remove('typing');
-    thinkDiv.textContent = '🐾 Woof! My nose is a bit stuffy today... try again?';
-  }
+  } catch (e) {}
 
-  messages.scrollTop = messages.scrollHeight;
+  // 降级到本地回复
+  if (!reply) reply = getDogReply(text);
+
+  // 模拟思考延迟（200-600ms）让体验更自然
+  await new Promise(r => setTimeout(r, 200 + Math.random() * 400));
+
+  thinkDiv.classList.remove('typing');
+  thinkDiv.innerHTML = '';
+
+  // 打字机效果
+  let i = 0;
+  function typeReply() {
+    if (i < reply.length) {
+      thinkDiv.textContent += reply[i++];
+      messages.scrollTop = messages.scrollHeight;
+      setTimeout(typeReply, 20);
+    }
+  }
+  typeReply();
 }
 
 /* ----- 自动移动 ----- */
