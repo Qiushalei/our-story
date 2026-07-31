@@ -4,7 +4,13 @@ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 let db = null;
 
 function getDb() {
-  if (!db) db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  if (!db) {
+    if (typeof supabase === 'undefined') {
+      console.error('Supabase SDK not loaded');
+      return null;
+    }
+    db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  }
   return db;
 }
 
