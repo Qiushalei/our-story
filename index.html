@@ -34,10 +34,11 @@
 
 <!-- Music Player -->
 <div id="musicPlayer">
-  <button type="button" id="musicBtn" onclick="toggleMusic()" title="Background Music">♪</button>
-  <audio id="bgMusic" loop>
-    <source src="https://www.bensound.com/bensound-music/bensound-romantic.mp3" type="audio/mpeg" />
-    <source src="https://www.bensound.com/bensound-music/bensound-cute.mp3" type="audio/mpeg" />
+  <button type="button" id="musicBtn" onclick="toggleMusic()" title="Play Music">♪</button>
+  <span id="musicHint">tap for music</span>
+  <audio id="bgMusic" loop crossorigin="anonymous">
+    <source src="https://cdn.pixabay.com/audio/2022/08/04/audio_2dde668d05.mp3" type="audio/mpeg" />
+    <source src="https://cdn.pixabay.com/audio/2021/11/10/audio_914e4f788d.mp3" type="audio/mpeg" />
   </audio>
 </div>
 

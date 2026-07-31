@@ -183,26 +183,49 @@ html, body {
   bottom: 24px;
   right: 24px;
   z-index: 100;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
 }
 
 #musicBtn {
-  width: 48px;
-  height: 48px;
+  width: 52px;
+  height: 52px;
   border-radius: 50%;
-  border: 2px solid rgba(255,255,255,0.5);
-  background: rgba(255,255,255,0.15);
+  border: 2px solid rgba(255,255,255,0.6);
+  background: rgba(232,164,184,0.35);
   backdrop-filter: blur(10px);
   color: #fff;
-  font-size: 20px;
+  font-size: 22px;
   cursor: pointer;
   transition: all 0.3s;
   display: flex;
   align-items: center;
   justify-content: center;
+  box-shadow: 0 0 0 0 rgba(232,164,184,0.6);
+  animation: musicPulse 2s ease-in-out infinite;
 }
 
-#musicBtn:hover { background: rgba(255,255,255,0.25); transform: scale(1.1); }
-#musicBtn.playing { animation: spin 4s linear infinite; }
+#musicBtn:hover { background: rgba(232,164,184,0.55); transform: scale(1.1); }
+#musicBtn.playing { animation: spin 4s linear infinite; box-shadow: none; }
+
+#musicHint {
+  font-size: 0.68rem;
+  color: rgba(255,255,255,0.75);
+  background: rgba(0,0,0,0.3);
+  padding: 2px 8px;
+  border-radius: 10px;
+  white-space: nowrap;
+  backdrop-filter: blur(6px);
+}
+
+#musicBtn.playing ~ #musicHint { display: none; }
+
+@keyframes musicPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(232,164,184,0.5); }
+  50%       { box-shadow: 0 0 0 10px rgba(232,164,184,0); }
+}
 
 @keyframes spin {
   from { transform: rotate(0deg); }
