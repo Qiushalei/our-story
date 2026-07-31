@@ -730,3 +730,78 @@ html, body {
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 3px; }
+
+/* ===== 小狗机器人 ===== */
+#dogBot {
+  position: fixed;
+  z-index: 200;
+  cursor: pointer;
+  user-select: none;
+  bottom: 80px;
+  left: 40px;
+}
+
+#dogBody {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  filter: drop-shadow(0 4px 12px rgba(0,0,0,0.4));
+  transition: transform 0.1s;
+}
+
+#dogBody:hover { transform: scale(1.1); }
+
+#dogSvg {
+  display: block;
+  animation: dogBob 2s ease-in-out infinite;
+}
+
+@keyframes dogBob {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  25%       { transform: translateY(-4px) rotate(-3deg); }
+  75%       { transform: translateY(-2px) rotate(3deg); }
+}
+
+#dogTail {
+  transform-origin: 62px 52px;
+  animation: tailWag 0.5s ease-in-out infinite alternate;
+}
+
+@keyframes tailWag {
+  from { transform: rotate(-15deg); }
+  to   { transform: rotate(20deg); }
+}
+
+.dog-bubble {
+  position: absolute;
+  bottom: 90px;
+  left: -10px;
+  background: rgba(255,255,255,0.95);
+  color: #3a2a35;
+  border-radius: 16px 16px 16px 4px;
+  padding: 10px 14px;
+  font-size: 0.82rem;
+  line-height: 1.5;
+  max-width: 200px;
+  min-width: 120px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+  animation: bubblePop 0.3s cubic-bezier(0.34,1.56,0.64,1);
+  word-break: break-word;
+}
+
+.dog-bubble::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 18px;
+  border: 8px solid transparent;
+  border-top-color: rgba(255,255,255,0.95);
+  border-bottom: none;
+}
+
+.dog-bubble.hidden { display: none; }
+
+@keyframes bubblePop {
+  from { transform: scale(0.5); opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
+}

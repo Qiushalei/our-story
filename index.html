@@ -36,7 +36,8 @@
 <div id="musicPlayer">
   <button type="button" id="musicBtn" onclick="toggleMusic()" title="Background Music">♪</button>
   <audio id="bgMusic" loop>
-    <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg" />
+    <source src="https://www.bensound.com/bensound-music/bensound-romantic.mp3" type="audio/mpeg" />
+    <source src="https://www.bensound.com/bensound-music/bensound-cute.mp3" type="audio/mpeg" />
   </audio>
 </div>
 
@@ -218,6 +219,56 @@
   <div class="photo-viewer-inner">
     <button type="button" class="close-photo" onclick="closeModal('photoModal')">✕</button>
     <img id="photoViewImg" src="" alt="Photo" />
+  </div>
+</div>
+
+<!-- 小狗机器人 -->
+<div id="dogBot">
+  <div id="dogBubble" class="dog-bubble hidden"></div>
+  <div id="dogBody" onclick="dogTalk()">
+    <svg id="dogSvg" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg" width="80" height="80">
+      <!-- 尾巴 -->
+      <path id="dogTail" d="M62 52 Q78 42 74 30" stroke="#7a4a2a" stroke-width="5" fill="none" stroke-linecap="round"/>
+      <!-- 身体 -->
+      <ellipse cx="40" cy="54" rx="22" ry="16" fill="#a0622a"/>
+      <!-- 卷毛纹理（身体） -->
+      <circle cx="28" cy="50" r="5" fill="#8a5220" opacity="0.5"/>
+      <circle cx="38" cy="46" r="5" fill="#8a5220" opacity="0.5"/>
+      <circle cx="50" cy="50" r="5" fill="#8a5220" opacity="0.5"/>
+      <circle cx="34" cy="58" r="5" fill="#8a5220" opacity="0.5"/>
+      <circle cx="46" cy="57" r="5" fill="#8a5220" opacity="0.5"/>
+      <!-- 头 -->
+      <circle cx="38" cy="32" r="18" fill="#a0622a"/>
+      <!-- 卷毛纹理（头部） -->
+      <circle cx="28" cy="26" r="6" fill="#b87a3a" opacity="0.6"/>
+      <circle cx="38" cy="22" r="6" fill="#b87a3a" opacity="0.6"/>
+      <circle cx="48" cy="26" r="6" fill="#b87a3a" opacity="0.6"/>
+      <circle cx="24" cy="34" r="5" fill="#b87a3a" opacity="0.5"/>
+      <circle cx="52" cy="34" r="5" fill="#b87a3a" opacity="0.5"/>
+      <!-- 左耳 -->
+      <ellipse cx="22" cy="24" rx="8" ry="12" fill="#7a4a1a" transform="rotate(-15 22 24)"/>
+      <circle cx="20" cy="22" r="4" fill="#8a5220" opacity="0.6"/>
+      <circle cx="23" cy="28" r="4" fill="#8a5220" opacity="0.6"/>
+      <!-- 右耳 -->
+      <ellipse cx="54" cy="24" rx="8" ry="12" fill="#7a4a1a" transform="rotate(15 54 24)"/>
+      <circle cx="56" cy="22" r="4" fill="#8a5220" opacity="0.6"/>
+      <circle cx="53" cy="28" r="4" fill="#8a5220" opacity="0.6"/>
+      <!-- 眼睛 -->
+      <circle cx="31" cy="31" r="4.5" fill="#1a0a00"/>
+      <circle cx="45" cy="31" r="4.5" fill="#1a0a00"/>
+      <circle cx="32.5" cy="29.5" r="1.5" fill="white"/>
+      <circle cx="46.5" cy="29.5" r="1.5" fill="white"/>
+      <!-- 鼻子 -->
+      <ellipse cx="38" cy="38" rx="4" ry="3" fill="#2a1000"/>
+      <!-- 嘴 -->
+      <path d="M34 41 Q38 45 42 41" stroke="#2a1000" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+      <!-- 前腿 -->
+      <rect x="26" y="66" width="8" height="12" rx="4" fill="#a0622a"/>
+      <rect x="46" y="66" width="8" height="12" rx="4" fill="#a0622a"/>
+      <!-- 爪子 -->
+      <ellipse cx="30" cy="78" rx="5" ry="3" fill="#8a5220"/>
+      <ellipse cx="50" cy="78" rx="5" ry="3" fill="#8a5220"/>
+    </svg>
   </div>
 </div>
 

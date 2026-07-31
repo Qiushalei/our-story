@@ -483,3 +483,97 @@ function escHtml(str) {
 /* ===== 定时刷新 ===== */
 setInterval(loadMetDate, 60000);
 setInterval(updateNextAnniversary, 60000);
+
+/* ===== 小狗机器人 ===== */
+const DOG_PHRASES = [
+  '🐾 Woof! You two are so cute together!',
+  '🐶 *wags tail* Have you told them you love them today?',
+  '💕 Being loved by you must feel like sunshine!',
+  '🐾 Every day with you is my favourite day!',
+  '🌸 You make each other\'s world brighter~',
+  '🐶 *runs in circles* Love is in the air!!',
+  '💝 Don\'t forget your anniversary! I\'ll remind you~',
+  '🐾 Wanna upload a new photo together?',
+  '🌟 You two are my favourite humans!',
+  '🐶 *licks screen* So much love here!',
+  '💕 Happiness looks good on both of you!',
+  '🐾 *tilts head* What\'s your favourite memory together?',
+  '🌸 I heard someone is extra cute today... it\'s you!',
+  '🐶 Arf arf! Come back and visit me soon~',
+  '💝 Every moment with the right person is precious!',
+];
+
+let dogPhraseIdx = Math.floor(Math.random() * DOG_PHRASES.length);
+let dogMoveTimer = null;
+let dogBubbleTimer = null;
+let dogFlipped = false;
+
+function initDog() {
+  const dog = document.getElementById('dogBot');
+  if (!dog) return;
+  // 随机初始位置
+  moveDogTo(
+    Math.random() * (window.innerWidth - 120) + 20,
+    Math.random() * (window.innerHeight * 0.4) + window.innerHeight * 0.4
+  );
+  scheduleDogMove();
+  // 3秒后自动打招呼
+  setTimeout(() => dogTalk(), 3000);
+}
+
+function moveDogTo(x, y) {
+  const dog = document.getElementById('dogBot');
+  const svgEl = document.getElementById('dogSvg');
+  if (!dog) return;
+  const targetX = Math.max(10, Math.min(x, window.innerWidth - 100));
+  const targetY = Math.max(10, Math.min(y, window.innerHeight - 110));
+
+  // 判断移动方向，翻转小狗朝向
+  const currentLeft = parseInt(dog.style.left) || 0;
+  if (targetX < currentLeft && !dogFlipped) {
+    svgEl.style.transform = 'scaleX(-1)';
+    dogFlipped = true;
+  } else if (targetX > currentLeft && dogFlipped) {
+    svgEl.style.transform = 'scaleX(1)';
+    dogFlipped = false;
+  }
+
+  dog.style.transition = 'left 2.5s cubic-bezier(0.45,0,0.55,1), bottom 2.5s cubic-bezier(0.45,0,0.55,1)';
+  dog.style.left = targetX + 'px';
+  dog.style.bottom = (window.innerHeight - targetY - 80) + 'px';
+}
+
+function scheduleDogMove() {
+  const delay = 4000 + Math.random() * 5000;
+  dogMoveTimer = setTimeout(() => {
+    const x = Math.random() * (window.innerWidth - 120) + 20;
+    const y = Math.random() * (window.innerHeight * 0.5) + window.innerHeight * 0.3;
+    moveDogTo(x, y);
+    scheduleDogMove();
+  }, delay);
+}
+
+function dogTalk() {
+  const bubble = document.getElementById('dogBubble');
+  if (!bubble) return;
+
+  // 清除旧气泡计时器
+  if (dogBubbleTimer) clearTimeout(dogBubbleTimer);
+
+  dogPhraseIdx = (dogPhraseIdx + 1) % DOG_PHRASES.length;
+  bubble.textContent = DOG_PHRASES[dogPhraseIdx];
+  bubble.classList.remove('hidden');
+
+  // 根据文字长度决定显示时长
+  const duration = 2500 + DOG_PHRASES[dogPhraseIdx].length * 40;
+  dogBubbleTimer = setTimeout(() => {
+    bubble.classList.add('hidden');
+  }, duration);
+}
+
+// 密码验证通过后初始化小狗
+const _origInit = init;
+init = async function() {
+  await _origInit();
+  initDog();
+};

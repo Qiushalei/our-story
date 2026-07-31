@@ -1,0 +1,18 @@
+name: Keep Supabase Alive
+
+on:
+  schedule:
+    - cron: '0 10 */3 * *'  # 每3天执行一次
+  workflow_dispatch:         # 允许手动触发
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Supabase
+        run: |
+          curl -s \
+            -H "apikey: ${{ secrets.SUPABASE_KEY }}" \
+            -H "Authorization: Bearer ${{ secrets.SUPABASE_KEY }}" \
+            "https://tsppopxdtcqlzbjqsofx.supabase.co/rest/v1/settings?select=key&limit=1" \
+            && echo "Supabase is alive ✓"
