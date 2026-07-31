@@ -52,6 +52,7 @@ async function init() {
   updateNextAnniversary();
   startSlideshow();
   showLoading(false);
+  initDog();
 }
 
 function showLoading(on) {
@@ -773,9 +774,3 @@ function scheduleDogMove() {
   }, delay);
 }
 
-// 密码验证通过后初始化小狗
-const _origInit = init;
-init = async function() {
-  await _origInit();
-  initDog();
-};
