@@ -637,8 +637,6 @@ const DOG_SMART_REPLIES = [
     '🐶 Woof! Love tip from XiaoXiong: say "I love you" one more time than you think you need to!',
     '💝 The secret to love? Show up. Every. Single. Day. *XiaoXiong thumps tail on floor*',
   ]},
-];
-
   { keys: ['your name', 'who are you', 'introduce', 'xiaoXiong', 'xiaoxiong', '小熊', 'what are you'], replies: [
     '🐶 Woof! I\'m XiaoXiong — a fluffy curly brown terrier boy! I live here to cheer you two on~ *spins proudly* 🐾',
     '💕 My name is XiaoXiong, your adorable little bear boy! I love cuddles, love stories, and YOU! Woof woof~',
