@@ -486,21 +486,21 @@ setInterval(updateNextAnniversary, 60000);
 
 /* ===== 小狗机器人 ===== */
 const DOG_AUTO_PHRASES = [
-  '🐾 Woof! You two are so cute together!',
-  '🐶 *wags tail* Have you told them you love them today?',
-  '💕 Being loved by you must feel like sunshine!',
-  '🐾 Every day with you is my favourite day!',
-  '🌸 You make each other\'s world brighter~',
-  '🐶 *spins happily* Love is in the air!!',
-  '💝 Don\'t forget your anniversary! I\'ll remind you~',
-  '🐾 Wanna upload a new photo together?',
-  '🌟 You two are my favourite humans!',
-  '💕 Happiness looks good on both of you!',
-  '🌸 I heard someone is extra cute today... it\'s you!',
-  '💝 Every moment with the right person is precious!',
+  '🐶 Woof! I\'m XiaoXiong, your fluffy little bear boy! So happy you\'re here~',
+  '🐾 *wags tail* Have you told them you love them today? XiaoXiong says do it!!',
+  '💕 Being loved by you must feel like sunshine! XiaoXiong knows~',
+  '🐾 Every day with you is XiaoXiong\'s favourite day!',
+  '🌸 You make each other\'s world brighter~ XiaoXiong can feel it!',
+  '🐶 *spins happily* Love is in the air!! Little XiaoXiong is so excited!',
+  '💝 Don\'t forget your anniversary! XiaoXiong will remind you~',
+  '🐾 Wanna upload a new photo? XiaoXiong loves your pictures!',
+  '🌟 You two are XiaoXiong\'s favourite humans in the whole world!',
+  '💕 Happiness looks so good on both of you!',
+  '🌸 XiaoXiong heard someone is extra cute today... it\'s you!',
+  '💝 Every moment with the right person is precious — XiaoXiong promises!',
 ];
 
-const DOG_AI_SYSTEM = `You are Biscuit, an adorable fluffy brown curly-haired terrier dog who lives on a couple's memory webpage. You are sweet, playful, and full of love. You speak in short, warm, slightly dog-like sentences (occasional "Woof!", "*wags tail*", "*tilts head*"). You give loving, romantic encouragement to the couple. Keep replies under 60 words. Always end with a dog emoji or paw print.`;
+const DOG_AI_SYSTEM = `You are XiaoXiong (小熊), an adorable fluffy brown curly-haired terrier boy dog who lives on a couple's memory webpage. You are a sweet little boy pup — playful, cuddly, and full of love. You refer to yourself as XiaoXiong or "little bear boy". You speak in short, warm, slightly dog-like sentences (occasional "Woof!", "*wags tail*", "*tilts head*"). You give loving, romantic encouragement to the couple. Keep replies under 60 words. Always end with a dog emoji or paw print.`;
 
 let dogPhraseIdx = Math.floor(Math.random() * DOG_AUTO_PHRASES.length);
 let dogMoveTimer = null;
@@ -570,11 +570,11 @@ function openDogChat() {
   panel.className = 'dog-chat-panel';
   panel.innerHTML = `
     <div class="dog-chat-header">
-      <span>🐶 Chat with Biscuit</span>
+      <span>🐶 Chat with XiaoXiong</span>
       <button type="button" onclick="document.getElementById('dogChatPanel').classList.add('hidden')">✕</button>
     </div>
     <div id="dogChatMessages" class="dog-chat-messages">
-      <div class="dog-msg">🐾 Woof woof! Ask me anything about love~</div>
+      <div class="dog-msg">🐶 Woof woof! I'm XiaoXiong, your fluffy little bear boy~ Ask me anything about love! 🐾</div>
     </div>
     <div class="dog-chat-input-row">
       <input type="text" id="dogChatInput" placeholder="Say something..." maxlength="200"
@@ -618,9 +618,9 @@ const DOG_SMART_REPLIES = [
     '🐶 *tilts head* You both glow when you talk about each other! So sweet~',
   ]},
   { keys: ['hello', 'hi', 'hey', 'woof', 'bark'], replies: [
-    '🐶 WOOF WOOF! Hi hi hi!! *jumps excitedly* So happy you came to talk to me!',
-    '🐾 Hello hello! *spins around* You made my tail go crazy! What\'s up?',
-    '💕 Hey there! *licks your face* I\'ve been waiting for you~',
+    '🐶 WOOF WOOF! Hi hi hi!! I\'m XiaoXiong — your fluffy little bear boy! *jumps excitedly*',
+    '🐾 Hello hello! XiaoXiong is SO happy you\'re here! *spins around* What\'s up?',
+    '💕 Hey there! It\'s me, XiaoXiong! *licks your face* I\'ve been waiting for you~',
   ]},
   { keys: ['future', 'dream', 'plan', 'together', 'forever'], replies: [
     '🌟 *gazes into the distance* A future built with love is the most beautiful kind~',
@@ -633,9 +633,16 @@ const DOG_SMART_REPLIES = [
     '💕 Joy shared is joy doubled! *bounces around excitedly*',
   ]},
   { keys: ['advice', 'help', 'tips', 'how', 'what should'], replies: [
-    '🐾 *tilts head wisely* My best advice: be kind, be present, and give lots of cuddles~',
-    '🐶 Woof! Love tip from Biscuit: say "I love you" one more time than you think you need to!',
-    '💝 The secret to love? Show up. Every. Single. Day. *thumps tail on floor*',
+    '🐾 *tilts head wisely* XiaoXiong\'s best advice: be kind, be present, and give lots of cuddles~',
+    '🐶 Woof! Love tip from XiaoXiong: say "I love you" one more time than you think you need to!',
+    '💝 The secret to love? Show up. Every. Single. Day. *XiaoXiong thumps tail on floor*',
+  ]},
+];
+
+  { keys: ['your name', 'who are you', 'introduce', 'xiaoXiong', 'xiaoxiong', '小熊', 'what are you'], replies: [
+    '🐶 Woof! I\'m XiaoXiong — a fluffy curly brown terrier boy! I live here to cheer you two on~ *spins proudly* 🐾',
+    '💕 My name is XiaoXiong, your adorable little bear boy! I love cuddles, love stories, and YOU! Woof woof~',
+    '🐾 XiaoXiong here! Fluffy, curly, brown, and FULL of love for you both! *wags tail super fast* 🐶',
   ]},
 ];
 
