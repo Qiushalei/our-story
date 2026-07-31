@@ -37,7 +37,7 @@ html, body {
 /* ===== Background Slideshow ===== */
 #slideshow {
   position: fixed;
-  inset: 0;
+  top: 0; left: 0; right: 0; bottom: 0;
   z-index: 0;
 }
 
@@ -50,7 +50,7 @@ html, body {
 
 .slide {
   position: absolute;
-  inset: 0;
+  top: 0; left: 0; right: 0; bottom: 0;
   background-size: cover;
   background-position: center;
   opacity: 0;
@@ -70,7 +70,7 @@ html, body {
 
 .overlay {
   position: fixed;
-  inset: 0;
+  top: 0; left: 0; right: 0; bottom: 0;
   z-index: 1;
   background: linear-gradient(
     180deg,
@@ -83,16 +83,19 @@ html, body {
 /* ===== 密码锁屏 ===== */
 #lockScreen {
   position: fixed;
-  inset: 0;
+  top: 0; left: 0; right: 0; bottom: 0;
   z-index: 9999;
+  display: -webkit-flex;
   display: flex;
+  -webkit-align-items: center;
   align-items: center;
+  -webkit-justify-content: center;
   justify-content: center;
 }
 
 .lock-bg {
   position: absolute;
-  inset: 0;
+  top: 0; left: 0; right: 0; bottom: 0;
   background: url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1920&q=80')
     center/cover no-repeat;
   filter: blur(4px) brightness(0.45);
@@ -101,12 +104,14 @@ html, body {
 .lock-card {
   position: relative;
   background: rgba(255,255,255,0.12);
+  -webkit-backdrop-filter: blur(20px);
   backdrop-filter: blur(20px);
   border: 1px solid rgba(255,255,255,0.3);
   border-radius: 24px;
   padding: 48px 40px;
   text-align: center;
-  width: min(360px, 90vw);
+  width: 90vw;
+  max-width: 360px;
   box-shadow: var(--shadow);
 }
 
@@ -149,6 +154,8 @@ html, body {
   margin-bottom: 16px;
   outline: none;
   transition: border-color 0.2s;
+  -webkit-appearance: none;
+  appearance: none;
 }
 
 .lock-card input:focus { border-color: var(--primary); }
@@ -165,6 +172,8 @@ html, body {
   cursor: pointer;
   letter-spacing: 2px;
   transition: opacity 0.2s, transform 0.1s;
+  -webkit-appearance: none;
+  appearance: none;
 }
 
 .lock-card button:hover { opacity: 0.9; transform: translateY(-1px); }
@@ -182,10 +191,14 @@ html, body {
   position: fixed;
   bottom: 16px;
   left: 50%;
+  -webkit-transform: translateX(-50%);
   transform: translateX(-50%);
   z-index: 100;
+  display: -webkit-flex;
   display: flex;
+  -webkit-flex-direction: column;
   flex-direction: column;
+  -webkit-align-items: center;
   align-items: center;
   gap: 5px;
 }
@@ -196,11 +209,16 @@ html, body {
   border-radius: 12px;
   border: none;
   background: rgba(255,255,255,0.12);
+  -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
   cursor: pointer;
   transition: transform 0.2s, background 0.2s;
+  -webkit-transition: transform 0.2s, background 0.2s;
+  display: -webkit-flex;
   display: flex;
+  -webkit-align-items: center;
   align-items: center;
+  -webkit-justify-content: center;
   justify-content: center;
   padding: 6px;
   box-shadow: 0 4px 16px rgba(0,0,0,0.3), 0 0 0 0 rgba(232,164,184,0.5);
@@ -222,6 +240,7 @@ html, body {
   padding: 2px 8px;
   border-radius: 10px;
   white-space: nowrap;
+  -webkit-backdrop-filter: blur(6px);
   backdrop-filter: blur(6px);
   pointer-events: none;
 }
@@ -269,6 +288,7 @@ html, body {
 }
 
 .couple-names {
+  font-size: 2.2rem;
   font-size: clamp(1.8rem, 6vw, 2.8rem);
   font-weight: 700;
   letter-spacing: 4px;
@@ -291,6 +311,7 @@ html, body {
   border-radius: 20px;
   font-size: 0.85rem;
   cursor: pointer;
+  -webkit-backdrop-filter: blur(8px);
   backdrop-filter: blur(8px);
   transition: all 0.2s;
 }
@@ -299,11 +320,20 @@ html, body {
 
 /* ===== 导航 ===== */
 .main-nav {
+  display: -webkit-flex;
   display: flex;
   gap: 8px;
+  -webkit-justify-content: center;
   justify-content: center;
+  -webkit-flex-wrap: wrap;
   flex-wrap: wrap;
   margin: 20px 0;
+}
+
+/* Safari 14以下 flex gap polyfill */
+@supports not (gap: 8px) {
+  .main-nav > * { margin: 4px; }
+  .main-nav { margin-left: -4px; margin-right: -4px; }
 }
 
 .nav-btn {
@@ -314,6 +344,7 @@ html, body {
   color: rgba(255,255,255,0.8);
   font-size: 0.9rem;
   cursor: pointer;
+  -webkit-backdrop-filter: blur(8px);
   backdrop-filter: blur(8px);
   transition: all 0.2s;
 }
@@ -331,6 +362,7 @@ html, body {
 /* ===== 通用卡片 ===== */
 .card {
   background: var(--card-bg);
+  -webkit-backdrop-filter: blur(16px);
   backdrop-filter: blur(16px);
   border: 1px solid var(--card-border);
   border-radius: var(--radius);
@@ -389,10 +421,14 @@ html, body {
 
 /* ===== 大事记 ===== */
 .section-header {
+  display: -webkit-flex;
   display: flex;
+  -webkit-align-items: center;
   align-items: center;
+  -webkit-justify-content: space-between;
   justify-content: space-between;
   margin-bottom: 20px;
+  -webkit-flex-wrap: wrap;
   flex-wrap: wrap;
   gap: 10px;
 }
@@ -421,15 +457,24 @@ html, body {
 .add-btn:hover { opacity: 0.88; transform: translateY(-1px); }
 .upload-label { cursor: pointer; }
 
-.timeline-list { display: flex; flex-direction: column; gap: 14px; }
+.timeline-list {
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-direction: column;
+  flex-direction: column;
+  gap: 14px;
+}
 
 .event-item {
   background: var(--card-bg);
+  -webkit-backdrop-filter: blur(16px);
   backdrop-filter: blur(16px);
   border: 1px solid var(--card-border);
   border-radius: var(--radius-sm);
   padding: 18px 20px;
+  display: -webkit-flex;
   display: flex;
+  -webkit-align-items: flex-start;
   align-items: flex-start;
   gap: 14px;
   position: relative;
@@ -437,10 +482,11 @@ html, body {
 
 .event-tag {
   font-size: 1.6rem;
+  -webkit-flex-shrink: 0;
   flex-shrink: 0;
 }
 
-.event-info { flex: 1; }
+.event-info { -webkit-flex: 1; flex: 1; }
 
 .event-date {
   font-size: 0.8rem;
@@ -464,10 +510,17 @@ html, body {
 .delete-btn:hover { color: #ff6b6b; }
 
 /* ===== 纪念日 ===== */
-.anni-list { display: flex; flex-direction: column; gap: 16px; }
+.anni-list {
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-direction: column;
+  flex-direction: column;
+  gap: 16px;
+}
 
 .anni-item {
   background: var(--card-bg);
+  -webkit-backdrop-filter: blur(16px);
   backdrop-filter: blur(16px);
   border: 1px solid var(--card-border);
   border-radius: var(--radius);
@@ -497,8 +550,10 @@ html, body {
 }
 
 .countdown-display {
+  display: -webkit-flex;
   display: flex;
   gap: 12px;
+  -webkit-flex-wrap: wrap;
   flex-wrap: wrap;
 }
 
@@ -537,23 +592,44 @@ html, body {
 }
 
 .photo-item {
-  aspect-ratio: 1;
+  /* aspect-ratio 不支持 Safari 14 及以下，用 padding-top hack 代替 */
+  position: relative;
   border-radius: var(--radius-sm);
   overflow: hidden;
-  position: relative;
   cursor: pointer;
   border: 1px solid var(--card-border);
   box-shadow: 0 4px 16px rgba(0,0,0,0.3);
   transition: transform 0.2s;
 }
 
+/* aspect-ratio 1:1 fallback — padding-top 100% on a pseudo wrapper */
+.photo-item::before {
+  content: '';
+  display: block;
+  padding-top: 100%;
+}
+
+@supports (aspect-ratio: 1) {
+  .photo-item { aspect-ratio: 1; }
+  .photo-item::before { display: none; }
+}
+
 .photo-item:hover { transform: scale(1.04); }
 
 .photo-item img {
+  position: absolute;
+  top: 0; left: 0;
   width: 100%;
   height: 100%;
+  -o-object-fit: cover;
   object-fit: cover;
   display: block;
+}
+
+@supports (aspect-ratio: 1) {
+  .photo-item img {
+    position: static;
+  }
 }
 
 .photo-delete {
@@ -568,8 +644,11 @@ html, body {
   height: 26px;
   font-size: 0.75rem;
   cursor: pointer;
+  display: -webkit-flex;
   display: flex;
+  -webkit-align-items: center;
   align-items: center;
+  -webkit-justify-content: center;
   justify-content: center;
   opacity: 0;
   transition: opacity 0.2s;
@@ -593,24 +672,29 @@ html, body {
 .modal {
   display: none;
   position: fixed;
-  inset: 0;
+  top: 0; left: 0; right: 0; bottom: 0;
   z-index: 500;
   background: rgba(0,0,0,0.6);
+  -webkit-backdrop-filter: blur(6px);
   backdrop-filter: blur(6px);
+  -webkit-align-items: center;
   align-items: center;
+  -webkit-justify-content: center;
   justify-content: center;
 }
 
-.modal.open { display: flex; }
+.modal.open { display: -webkit-flex; display: flex; }
 
 .modal-card {
   background: rgba(30,15,40,0.92);
   border: 1px solid rgba(255,255,255,0.2);
   border-radius: 20px;
   padding: 32px 28px;
-  width: min(420px, 92vw);
+  width: 92vw;
+  max-width: 420px;
   max-height: 90vh;
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .modal-card h3 {
@@ -642,6 +726,8 @@ html, body {
   outline: none;
   transition: border-color 0.2s;
   font-family: inherit;
+  -webkit-appearance: none;
+  appearance: none;
 }
 
 .modal-card input:focus,
@@ -652,12 +738,14 @@ html, body {
 .modal-card textarea { resize: vertical; }
 
 .modal-btns {
+  display: -webkit-flex;
   display: flex;
   gap: 12px;
   margin-top: 24px;
 }
 
 .modal-btns button {
+  -webkit-flex: 1;
   flex: 1;
   padding: 12px;
   border: none;
@@ -666,6 +754,8 @@ html, body {
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
+  -webkit-appearance: none;
+  appearance: none;
 }
 
 .modal-btns button:first-child {
@@ -712,8 +802,11 @@ html, body {
   height: 32px;
   font-size: 0.9rem;
   cursor: pointer;
+  display: -webkit-flex;
   display: flex;
+  -webkit-align-items: center;
   align-items: center;
+  -webkit-justify-content: center;
   justify-content: center;
   z-index: 1;
 }
@@ -728,8 +821,10 @@ html, body {
 }
 
 .backup-btns {
+  display: -webkit-flex;
   display: flex;
   gap: 12px;
+  -webkit-flex-wrap: wrap;
   flex-wrap: wrap;
 }
 
@@ -829,6 +924,7 @@ html, body {
   max-width: 200px;
   min-width: 120px;
   box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+  -webkit-animation: bubblePop 0.3s cubic-bezier(0.34,1.56,0.64,1);
   animation: bubblePop 0.3s cubic-bezier(0.34,1.56,0.64,1);
   word-break: break-word;
 }
@@ -857,11 +953,14 @@ html, body {
   left: -10px;
   width: 260px;
   background: rgba(20, 10, 30, 0.92);
+  -webkit-backdrop-filter: blur(16px);
   backdrop-filter: blur(16px);
   border: 1px solid rgba(255,255,255,0.2);
   border-radius: 16px;
   box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  display: -webkit-flex;
   display: flex;
+  -webkit-flex-direction: column;
   flex-direction: column;
   overflow: hidden;
   z-index: 201;
@@ -870,8 +969,11 @@ html, body {
 .dog-chat-panel.hidden { display: none; }
 
 .dog-chat-header {
+  display: -webkit-flex;
   display: flex;
+  -webkit-align-items: center;
   align-items: center;
+  -webkit-justify-content: space-between;
   justify-content: space-between;
   padding: 10px 14px;
   background: rgba(232,164,184,0.2);
@@ -894,18 +996,21 @@ html, body {
 .dog-chat-header button:hover { color: #fff; }
 
 .dog-chat-messages {
+  -webkit-flex: 1;
   flex: 1;
   max-height: 200px;
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
   padding: 10px 12px;
+  display: -webkit-flex;
   display: flex;
+  -webkit-flex-direction: column;
   flex-direction: column;
   gap: 8px;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(255,255,255,0.15) transparent;
 }
 
 .dog-msg {
+  -webkit-align-self: flex-start;
   align-self: flex-start;
   background: rgba(255,255,255,0.12);
   border-radius: 12px 12px 12px 3px;
@@ -918,6 +1023,7 @@ html, body {
 }
 
 .user-msg {
+  -webkit-align-self: flex-end;
   align-self: flex-end;
   background: rgba(232,164,184,0.35);
   border-radius: 12px 12px 3px 12px;
@@ -931,7 +1037,9 @@ html, body {
 
 /* 打字中动画 */
 .dog-msg.typing {
+  display: -webkit-flex;
   display: flex;
+  -webkit-align-items: center;
   align-items: center;
   gap: 4px;
   padding: 10px 14px;
@@ -954,6 +1062,7 @@ html, body {
 }
 
 .dog-chat-input-row {
+  display: -webkit-flex;
   display: flex;
   border-top: 1px solid rgba(255,255,255,0.1);
   padding: 8px 10px;
@@ -961,6 +1070,7 @@ html, body {
 }
 
 .dog-chat-input-row input {
+  -webkit-flex: 1;
   flex: 1;
   background: rgba(255,255,255,0.08);
   border: 1px solid rgba(255,255,255,0.2);
@@ -970,12 +1080,15 @@ html, body {
   padding: 7px 12px;
   outline: none;
   font-family: inherit;
+  -webkit-appearance: none;
+  appearance: none;
 }
 
 .dog-chat-input-row input:focus {
   border-color: var(--primary);
 }
 
+.dog-chat-input-row input::-webkit-input-placeholder { color: rgba(255,255,255,0.35); }
 .dog-chat-input-row input::placeholder { color: rgba(255,255,255,0.35); }
 
 .dog-chat-input-row button {
@@ -988,6 +1101,8 @@ html, body {
   padding: 7px 12px;
   cursor: pointer;
   white-space: nowrap;
+  -webkit-appearance: none;
+  appearance: none;
 }
 
 .dog-chat-input-row button:hover { opacity: 0.88; }
@@ -1020,8 +1135,11 @@ html, body {
 .dog-interact-panel.hidden { display: none; }
 
 .interact-header {
+  display: -webkit-flex;
   display: flex;
+  -webkit-align-items: center;
   align-items: center;
+  -webkit-justify-content: space-between;
   justify-content: space-between;
   padding: 10px 12px 8px;
   background: rgba(232,164,184,0.25);
@@ -1058,6 +1176,8 @@ html, body {
   transition: background 0.2s, transform 0.15s;
   text-align: center;
   line-height: 1.4;
+  -webkit-appearance: none;
+  appearance: none;
 }
 
 .interact-btn:hover {
@@ -1090,14 +1210,17 @@ html, body {
   cursor: pointer;
   transition: background 0.2s;
   text-align: center;
+  -webkit-appearance: none;
+  appearance: none;
 }
 
 .interact-chat-btn:hover { background: rgba(232,164,184,0.4); }
 
 /* ===== 小熊动画扩展 ===== */
 
-/* 奔跑：左右轻微抖动+压缩 */
+/* 奔跑 */
 #dogSvg.dogRun {
+  -webkit-animation: dogRunAnim 0.25s ease-in-out infinite alternate !important;
   animation: dogRunAnim 0.25s ease-in-out infinite alternate !important;
 }
 
@@ -1106,9 +1229,11 @@ html, body {
   to   { transform: scaleY(1.05) translateY(-3px); }
 }
 
-/* 打滚：整体旋转 */
+/* 打滚 */
 #dogSvg.dogRoll {
+  -webkit-animation: dogRollAnim 0.7s ease-in-out infinite !important;
   animation: dogRollAnim 0.7s ease-in-out infinite !important;
+  -webkit-transform-origin: center bottom;
   transform-origin: center bottom;
 }
 
@@ -1120,14 +1245,21 @@ html, body {
   100% { transform: rotate(0deg) scale(1); }
 }
 
-/* 抖水：左右大幅摇摆 */
+/* 抖水 */
 #dogSvg.dogShake {
+  -webkit-animation: dogShakeAnim 0.35s ease-in-out infinite alternate !important;
   animation: dogShakeAnim 0.35s ease-in-out infinite alternate !important;
 }
 
 @keyframes dogShakeAnim {
   from { transform: rotate(-20deg) scale(1.04); }
   to   { transform: rotate(20deg)  scale(1.04); }
+}
+
+/* 跳舞 */
+#dogSvg.dancing {
+  -webkit-animation: dogDance 0.5s ease-in-out infinite alternate !important;
+  animation: dogDance 0.5s ease-in-out infinite alternate !important;
 }
 
 @media (max-width: 480px) {
@@ -1144,12 +1276,12 @@ html, body {
   pointer-events: none;
   font-size: 2.2rem;
   line-height: 1;
-  will-change: transform, opacity;
   filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
 }
 
 /* 飞盘：抛物线飞行 */
 .prop-frisbee {
+  -webkit-animation: propFrisbee 1.4s cubic-bezier(0.2, 0, 0.6, 1) forwards;
   animation: propFrisbee 1.4s cubic-bezier(0.2, 0, 0.6, 1) forwards;
 }
 @keyframes propFrisbee {
@@ -1161,6 +1293,7 @@ html, body {
 
 /* 骨头：从上掉落并弹跳 */
 .prop-bone {
+  -webkit-animation: propBone 1.2s cubic-bezier(0.2, 0.8, 0.6, 1) forwards;
   animation: propBone 1.2s cubic-bezier(0.2, 0.8, 0.6, 1) forwards;
 }
 @keyframes propBone {
@@ -1172,8 +1305,9 @@ html, body {
   100% { transform: translateY(0px)   rotate(0deg)   scale(0.85);opacity: 0; }
 }
 
-/* 水碗：放下 + 水波纹 */
+/* 水碗 */
 .prop-water {
+  -webkit-animation: propWater 1.4s ease forwards;
   animation: propWater 1.4s ease forwards;
 }
 @keyframes propWater {
@@ -1186,6 +1320,7 @@ html, body {
 
 /* 小手：从上伸下来抚摸 */
 .prop-pet {
+  -webkit-animation: propPet 1.6s ease-in-out forwards;
   animation: propPet 1.6s ease-in-out forwards;
 }
 @keyframes propPet {
@@ -1198,22 +1333,28 @@ html, body {
 }
 
 /* ===== 小狗头顶表情包 ===== */
+/*
+  Safari 对同一 keyframe 里混用 translateX 和 translateY 有解析 bug。
+  改为：外层 div 做水平居中定位，内层只做垂直 + scale + opacity 动画。
+*/
 .dog-emoji-reaction {
   position: absolute;
   top: -48px;
   left: 50%;
-  transform: translateX(-50%) scale(0);
+  /* 水平居中用 margin-left 而不是 transform，避免与动画的 transform 冲突 */
+  margin-left: -1em;
   font-size: 2rem;
   pointer-events: none;
   z-index: 210;
-  animation: emojiPop 2.8s cubic-bezier(0.34,1.56,0.64,1) forwards;
+  -webkit-animation: emojiPop 2.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  animation: emojiPop 2.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
   filter: drop-shadow(0 2px 6px rgba(0,0,0,0.3));
 }
 
 @keyframes emojiPop {
-  0%   { transform: translateX(-50%) scale(0) translateY(0);    opacity: 0; }
-  15%  { transform: translateX(-50%) scale(1.3) translateY(-6px); opacity: 1; }
-  30%  { transform: translateX(-50%) scale(1)   translateY(-10px);opacity: 1; }
-  70%  { transform: translateX(-50%) scale(1)   translateY(-14px);opacity: 1; }
-  100% { transform: translateX(-50%) scale(0.6) translateY(-24px);opacity: 0; }
+  0%   { transform: scale(0)   translateY(0);    opacity: 0; }
+  15%  { transform: scale(1.3) translateY(-6px); opacity: 1; }
+  30%  { transform: scale(1)   translateY(-10px);opacity: 1; }
+  70%  { transform: scale(1)   translateY(-14px);opacity: 1; }
+  100% { transform: scale(0.6) translateY(-24px);opacity: 0; }
 }

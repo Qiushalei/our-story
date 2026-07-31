@@ -752,7 +752,7 @@ async function sendDogMessage() {
         'Authorization': `Bearer ${SUPABASE_KEY}`,
       },
       body: JSON.stringify({ message: text, system: DOG_AI_SYSTEM }),
-      signal: AbortSignal.timeout(8000),
+      signal: (typeof AbortSignal.timeout === 'function') ? AbortSignal.timeout(8000) : undefined,
     });
     if (res.ok) {
       const data = await res.json();
