@@ -1,7 +1,12 @@
 /* ===== Supabase 初始化 ===== */
 const SUPABASE_URL = 'https://tsppopxdtcqlzbjqsofx.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRzcHBvcHhkdGNxbHpianFzb2Z4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUzMTI4NjcsImV4cCI6MjEwMDg4ODg2N30.GNduXMm3pXAr-c-OhZN6aHxbwlmdEwX2n2XV7wGHX8Q';
-const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+let db = null;
+
+function getDb() {
+  if (!db) db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  return db;
+}
 
 /* ===== 常量 ===== */
 const PASSWORD = '040121';
@@ -111,12 +116,12 @@ document.querySelectorAll('.modal').forEach(m => {
 
 /* ===== 设置（名字、相识日期）通用读写 ===== */
 async function getSetting(key) {
-  const { data } = await db.from('settings').select('value').eq('key', key).single();
+  const { data } = await getDb().from('settings').select('value').eq('key', key).single();
   return data ? data.value : null;
 }
 
 async function setSetting(key, value) {
-  await db.from('settings').upsert({ key, value }, { onConflict: 'key' });
+  await getDb().from('settings').upsert({ key, value }, { onConflict: 'key' });
 }
 
 /* ===== 名字 ===== */
@@ -173,7 +178,7 @@ async function saveMetDate() {
 async function renderEvents() {
   const list = document.getElementById('eventList');
   list.innerHTML = '<p class="empty-hint">Loading...</p>';
-  const { data: evts, error } = await db.from('events').select('*').order('date', { ascending: false });
+  const { data: evts, error } = await getDb().from('events').select('*').order('date', { ascending: false });
   if (error || !evts || !evts.length) {
     list.innerHTML = '<p class="empty-hint">No memories yet — add your first one ✨</p>';
     return;
@@ -203,14 +208,14 @@ async function saveEvent() {
   const description = document.getElementById('eventDesc').value.trim();
   const tag = document.getElementById('eventTag').value;
   if (!date || !description) return;
-  const { error } = await db.from('events').insert({ id: Date.now(), date, description, tag });
+  const { error } = await getDb().from('events').insert({ id: Date.now(), date, description, tag });
   if (error) { alert('Failed to save. Please try again.'); return; }
   await renderEvents();
   closeModal('eventModal');
 }
 
 async function deleteEvent(id) {
-  await db.from('events').delete().eq('id', id);
+  await getDb().from('events').delete().eq('id', id);
   await renderEvents();
 }
 
@@ -222,7 +227,7 @@ async function renderAnniversaries() {
   const container = document.getElementById('anniList');
   container.innerHTML = '<p class="empty-hint">Loading...</p>';
 
-  const { data: list, error } = await db.from('anniversaries').select('*').order('date');
+  const { data: list, error } = await getDb().from('anniversaries').select('*').order('date');
   if (error || !list || !list.length) {
     container.innerHTML = '<p class="empty-hint">No anniversaries yet — add one 💝</p>';
     return;
@@ -259,14 +264,14 @@ async function saveAnniversary() {
   const date = document.getElementById('anniDate').value;
   const type = document.getElementById('anniType').value;
   if (!name || !date) return;
-  const { error } = await db.from('anniversaries').insert({ id: Date.now(), name, date, type });
+  const { error } = await getDb().from('anniversaries').insert({ id: Date.now(), name, date, type });
   if (error) { alert('Failed to save. Please try again.'); return; }
   await renderAnniversaries();
   closeModal('anniModal');
 }
 
 async function deleteAnniversary(id) {
-  await db.from('anniversaries').delete().eq('id', id);
+  await getDb().from('anniversaries').delete().eq('id', id);
   await renderAnniversaries();
 }
 
@@ -302,7 +307,7 @@ function updateCountdown(anni) {
 }
 
 async function updateNextAnniversary() {
-  const { data: list } = await db.from('anniversaries').select('*');
+  const { data: list } = await getDb().from('anniversaries').select('*');
   updateNextAnniversaryFromList(list || []);
 }
 
@@ -332,7 +337,7 @@ function updateNextAnniversaryFromList(list) {
 async function renderPhotos() {
   const grid = document.getElementById('photoGrid');
   grid.innerHTML = '<p class="empty-hint">Loading...</p>';
-  const { data: photos, error } = await db.from('photos').select('*').order('uploaded_at', { ascending: false });
+  const { data: photos, error } = await getDb().from('photos').select('*').order('uploaded_at', { ascending: false });
   if (error || !photos || !photos.length) {
     grid.innerHTML = '<p class="empty-hint">No photos yet — upload your first one together 📸</p>';
     return;
@@ -355,16 +360,16 @@ async function uploadPhotos(event) {
     const blob = await fetch(resized).then(r => r.blob());
     const filename = `${Date.now()}_${file.name.replace(/[^a-zA-Z0-9._-]/g, '_')}`;
 
-    const { data: uploaded, error: uploadErr } = await db.storage
+    const { data: uploaded, error: uploadErr } = await getDb().storage
       .from('photos')
       .upload(filename, blob, { contentType: 'image/jpeg', upsert: false });
 
     if (uploadErr) { alert(`Failed to upload ${file.name}`); continue; }
 
-    const { data: urlData } = db.storage.from('photos').getPublicUrl(filename);
+    const { data: urlData } = getDb().storage.from('photos').getPublicUrl(filename);
     const url = urlData.publicUrl;
 
-    await db.from('photos').insert({
+    await getDb().from('photos').insert({
       id: Date.now() + Math.random(),
       url,
       name: file.name,
@@ -398,8 +403,8 @@ function resizeImage(file, maxWidth) {
 
 async function deletePhoto(id, url) {
   const filename = url.split('/').pop();
-  await db.storage.from('photos').remove([filename]);
-  await db.from('photos').delete().eq('id', id);
+  await getDb().storage.from('photos').remove([filename]);
+  await getDb().from('photos').delete().eq('id', id);
   await renderPhotos();
 }
 
@@ -417,10 +422,10 @@ async function exportData() {
     { data: anniversaries },
     { data: photos },
   ] = await Promise.all([
-    db.from('settings').select('*'),
-    db.from('events').select('*'),
-    db.from('anniversaries').select('*'),
-    db.from('photos').select('*'),
+    getDb().from('settings').select('*'),
+    getDb().from('events').select('*'),
+    getDb().from('anniversaries').select('*'),
+    getDb().from('photos').select('*'),
   ]);
   const backup = { version: 2, settings, events, anniversaries, photos };
   const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
@@ -442,13 +447,13 @@ async function importData(event) {
     if (!data.version) throw new Error('Invalid');
     showLoading(true);
     if (data.settings?.length) {
-      await db.from('settings').upsert(data.settings, { onConflict: 'key' });
+      await getDb().from('settings').upsert(data.settings, { onConflict: 'key' });
     }
     if (data.events?.length) {
-      await db.from('events').upsert(data.events, { onConflict: 'id' });
+      await getDb().from('events').upsert(data.events, { onConflict: 'id' });
     }
     if (data.anniversaries?.length) {
-      await db.from('anniversaries').upsert(data.anniversaries, { onConflict: 'id' });
+      await getDb().from('anniversaries').upsert(data.anniversaries, { onConflict: 'id' });
     }
     await init();
     showLoading(false);
