@@ -96,11 +96,51 @@ function toggleMusic() {
     audio.play().catch(() => {});
     btn.classList.add('playing');
     btn.title = 'Pause Music';
+    dogGoHome();
   } else {
     audio.pause();
     btn.classList.remove('playing');
     btn.title = 'Play Music';
+    dogResumeRoam();
   }
+}
+
+function dogGoHome() {
+  if (dogMoveTimer) { clearTimeout(dogMoveTimer); dogMoveTimer = null; }
+  const btn = document.getElementById('musicBtn');
+  const svgEl = document.getElementById('dogSvg');
+  const dog = document.getElementById('dogBot');
+  if (!btn || !dog) return;
+
+  const rect = btn.getBoundingClientRect();
+  const targetX = rect.left - 60;
+  const targetY = window.innerHeight - rect.bottom - 10;
+
+  dog.classList.add('at-kennel');
+  dog.style.transition = 'left 1.8s cubic-bezier(0.45,0,0.55,1), bottom 1.8s cubic-bezier(0.45,0,0.55,1)';
+  dog.style.left = Math.max(10, targetX) + 'px';
+  dog.style.bottom = Math.max(10, targetY) + 'px';
+
+  if (svgEl) {
+    svgEl.style.transform = 'scaleX(-1)';
+    dogFlipped = true;
+  }
+
+  setTimeout(() => {
+    if (svgEl) svgEl.classList.add('dancing');
+    showBubbleText('🎵 *wags tail* XiaoXiong loves this song! Woof woof~', false);
+  }, 1900);
+}
+
+function dogResumeRoam() {
+  const svgEl = document.getElementById('dogSvg');
+  const dog = document.getElementById('dogBot');
+  if (svgEl) svgEl.classList.remove('dancing');
+  if (dog) dog.classList.remove('at-kennel');
+  const bubble = document.getElementById('dogBubble');
+  if (bubble) bubble.classList.add('hidden');
+  showBubbleText('🐾 Music stopped... XiaoXiong goes exploring again!');
+  scheduleDogMove();
 }
 
 /* ===== 导航 ===== */
@@ -567,10 +607,10 @@ function showBubbleText(text, autoDismiss = true) {
   typeNext();
 }
 
-/* ----- 点击小狗：叫声 + AI 对话框 ----- */
+/* ----- 点击小狗：叫声 + 互动面板 ----- */
 function dogClick() {
   playWoof();
-  openDogChat();
+  openInteractionPanel();
 }
 
 function openDogChat() {
@@ -778,10 +818,151 @@ function moveDogTo(x, y) {
 function scheduleDogMove() {
   const delay = 5000 + Math.random() * 6000;
   dogMoveTimer = setTimeout(() => {
-    const x = Math.random() * (window.innerWidth - 130) + 20;
-    const y = Math.random() * (window.innerHeight * 0.45) + window.innerHeight * 0.35;
-    moveDogTo(x, y);
-    scheduleDogMove();
+    const audio = document.getElementById('bgMusic');
+    if (!audio || audio.paused) {
+      const x = Math.random() * (window.innerWidth - 130) + 20;
+      const y = Math.random() * (window.innerHeight * 0.45) + window.innerHeight * 0.35;
+      moveDogTo(x, y);
+      scheduleDogMove();
+    }
   }, delay);
+}
+
+/* ===== 互动游戏面板 ===== */
+let interactionLocked = false;
+
+function openInteractionPanel() {
+  let panel = document.getElementById('dogInteractPanel');
+  if (panel) { panel.classList.toggle('hidden'); return; }
+
+  panel = document.createElement('div');
+  panel.id = 'dogInteractPanel';
+  panel.className = 'dog-interact-panel';
+  panel.innerHTML = `
+    <div class="interact-header">
+      <span>🐾 Play with XiaoXiong!</span>
+      <button type="button" onclick="document.getElementById('dogInteractPanel').classList.add('hidden')">✕</button>
+    </div>
+    <div class="interact-buttons">
+      <button type="button" class="interact-btn" onclick="dogInteract('frisbee')">🥏 Throw Frisbee</button>
+      <button type="button" class="interact-btn" onclick="dogInteract('bone')">🦴 Give Bone</button>
+      <button type="button" class="interact-btn" onclick="dogInteract('water')">💧 Give Water</button>
+      <button type="button" class="interact-btn" onclick="dogInteract('pet')">🤚 Pet XiaoXiong</button>
+    </div>
+    <div id="interactStatus" class="interact-status"></div>
+    <button type="button" class="interact-chat-btn" onclick="document.getElementById('dogInteractPanel').classList.add('hidden'); openDogChat()">💬 Chat with XiaoXiong</button>
+  `;
+  document.getElementById('dogBot').appendChild(panel);
+}
+
+const INTERACT_RESPONSES = {
+  frisbee: {
+    messages: [
+      '🥏 *zooms across screen* WOOF WOOF!! I got it!! Wanna throw again?!',
+      '🥏 *runs at full speed* XiaoXiong is SUPER fast! Did you see that?! *tail spinning*',
+      '🥏 *leaps dramatically* CAUGHT IT! *skids to a stop* Again! Again! Please!!',
+    ],
+    animation: 'dogRun',
+    duration: 3000,
+  },
+  bone: {
+    messages: [
+      '🦴 *eyes light up* A BONE!! XiaoXiong\'s favourite!! *happy chomping sounds*',
+      '🦴 *buries it carefully* This is precious. I\'ll save it for later~ *pats the spot*',
+      '🦴 NOM NOM NOM... *looks up with crumbs on nose* This is the BEST bone ever!',
+    ],
+    animation: 'dogRoll',
+    duration: 2500,
+  },
+  water: {
+    messages: [
+      '💧 *laps water enthusiastically* SPLASH SPLASH! XiaoXiong was SO thirsty! Thank you~',
+      '💧 *drinks politely then gets excited* Refreshed!! Now I have ENERGY!! *zoomies*',
+      '💧 Mmm water~ *shakes head and splashes everywhere* Oops! Sorry! Woof!',
+    ],
+    animation: 'dogShake',
+    duration: 2000,
+  },
+  pet: {
+    messages: [
+      '🐾 *melts into a puddle of happiness* Ohhh... right there... XiaoXiong is in heaven~ 💕',
+      '🐾 *thumps hind leg on floor* YES YES YES that\'s the spot!! *eyes glazing with joy*',
+      '🤚 *leans into your hand* You give the BEST pets. I love you so much! *happy sigh*',
+    ],
+    animation: 'dogRoll',
+    duration: 3500,
+  },
+};
+
+function dogInteract(type) {
+  if (interactionLocked) return;
+  interactionLocked = true;
+
+  const config = INTERACT_RESPONSES[type];
+  const msg = config.messages[Math.floor(Math.random() * config.messages.length)];
+  const svgEl = document.getElementById('dogSvg');
+  const dog = document.getElementById('dogBot');
+  const status = document.getElementById('interactStatus');
+
+  playWoof();
+
+  if (status) {
+    status.textContent = msg;
+    status.style.opacity = '1';
+  }
+
+  showBubbleText(msg, false);
+
+  if (svgEl) svgEl.classList.add(config.animation);
+
+  if (config.animation === 'dogRun') {
+    runAcrossScreen();
+  }
+
+  const panel = document.getElementById('dogInteractPanel');
+  if (panel) panel.classList.add('hidden');
+
+  setTimeout(() => {
+    if (svgEl) svgEl.classList.remove(config.animation);
+    const bubble = document.getElementById('dogBubble');
+    if (bubble) bubble.classList.add('hidden');
+    if (status) { status.style.opacity = '0'; }
+    interactionLocked = false;
+  }, config.duration + 500);
+}
+
+function runAcrossScreen() {
+  const dog = document.getElementById('dogBot');
+  const svgEl = document.getElementById('dogSvg');
+  if (!dog) return;
+
+  if (dogMoveTimer) { clearTimeout(dogMoveTimer); dogMoveTimer = null; }
+
+  const startX = parseInt(dog.style.left) || 100;
+  const y = parseInt(dog.style.bottom) || 100;
+  const goRight = startX < window.innerWidth / 2;
+  const endX = goRight ? window.innerWidth - 120 : 20;
+
+  if (svgEl) {
+    svgEl.style.transform = goRight ? 'scaleX(1)' : 'scaleX(-1)';
+    dogFlipped = !goRight;
+  }
+
+  dog.style.transition = 'left 1.2s linear, bottom 0.3s ease';
+  dog.style.left = endX + 'px';
+
+  setTimeout(() => {
+    const returnX = goRight ? 20 : window.innerWidth - 120;
+    if (svgEl) {
+      svgEl.style.transform = goRight ? 'scaleX(-1)' : 'scaleX(1)';
+      dogFlipped = goRight;
+    }
+    dog.style.left = returnX + 'px';
+
+    setTimeout(() => {
+      const audio = document.getElementById('bgMusic');
+      if (!audio || audio.paused) scheduleDogMove();
+    }, 1300);
+  }, 1250);
 }
 

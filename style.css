@@ -177,54 +177,73 @@ html, body {
   min-height: 20px;
 }
 
-/* ===== 音乐播放器 ===== */
+/* ===== 音乐播放器（狗窝） ===== */
 #musicPlayer {
   position: fixed;
-  bottom: 24px;
-  right: 24px;
+  bottom: 20px;
+  right: 20px;
   z-index: 100;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
 }
 
 #musicBtn {
-  width: 52px;
-  height: 52px;
-  border-radius: 50%;
-  border: 2px solid rgba(255,255,255,0.6);
-  background: rgba(232,164,184,0.35);
+  width: 64px;
+  height: 56px;
+  border-radius: 12px;
+  border: none;
+  background: rgba(255,255,255,0.12);
   backdrop-filter: blur(10px);
-  color: #fff;
-  font-size: 22px;
   cursor: pointer;
-  transition: all 0.3s;
+  transition: transform 0.2s, background 0.2s;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 0 0 0 rgba(232,164,184,0.6);
-  animation: musicPulse 2s ease-in-out infinite;
+  padding: 6px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.3), 0 0 0 0 rgba(232,164,184,0.5);
+  animation: kennel-pulse 2.5s ease-in-out infinite;
 }
 
-#musicBtn:hover { background: rgba(232,164,184,0.55); transform: scale(1.1); }
-#musicBtn.playing { animation: spin 4s linear infinite; box-shadow: none; }
+#musicBtn:hover { transform: scale(1.08); background: rgba(255,255,255,0.2); }
+#musicBtn.playing { animation: none; box-shadow: 0 4px 20px rgba(232,164,184,0.5); }
+
+#musicBtn svg { display: block; filter: drop-shadow(0 1px 3px rgba(0,0,0,0.3)); }
+
+/* 播放时音符隐藏 */
+#musicBtn.playing #musicNote { display: none; }
 
 #musicHint {
   font-size: 0.68rem;
-  color: rgba(255,255,255,0.75);
-  background: rgba(0,0,0,0.3);
+  color: rgba(255,255,255,0.8);
+  background: rgba(0,0,0,0.35);
   padding: 2px 8px;
   border-radius: 10px;
   white-space: nowrap;
   backdrop-filter: blur(6px);
+  pointer-events: none;
 }
 
 #musicBtn.playing ~ #musicHint { display: none; }
 
-@keyframes musicPulse {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(232,164,184,0.5); }
-  50%       { box-shadow: 0 0 0 10px rgba(232,164,184,0); }
+@keyframes kennel-pulse {
+  0%, 100% { box-shadow: 0 4px 16px rgba(0,0,0,0.3), 0 0 0 0 rgba(232,164,184,0.5); }
+  50%       { box-shadow: 0 4px 16px rgba(0,0,0,0.3), 0 0 0 10px rgba(232,164,184,0); }
+}
+
+/* ===== 小熊跳舞状态 ===== */
+#dogSvg.dancing {
+  animation: dogDance 0.5s ease-in-out infinite alternate !important;
+}
+
+@keyframes dogDance {
+  from { transform: rotate(-12deg) translateY(0px) scale(1.05); }
+  to   { transform: rotate(12deg)  translateY(-6px) scale(1.05); }
+}
+
+#dogBot.at-kennel #dogBody {
+  filter: drop-shadow(0 6px 20px rgba(232,164,184,0.6));
 }
 
 @keyframes spin {
@@ -977,5 +996,142 @@ html, body {
   .dog-chat-panel {
     left: 0;
     width: 230px;
+  }
+}
+
+/* ===== 互动游戏面板 ===== */
+.dog-interact-panel {
+  position: absolute;
+  bottom: 105px;
+  left: -10px;
+  width: 220px;
+  background: rgba(20,10,30,0.82);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  border-radius: 16px;
+  border: 1px solid rgba(255,255,255,0.18);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  padding: 0;
+  overflow: hidden;
+  z-index: 201;
+}
+
+.dog-interact-panel.hidden { display: none; }
+
+.interact-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px 8px;
+  background: rgba(232,164,184,0.25);
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #f5d0a8;
+}
+
+.interact-header button {
+  background: none;
+  border: none;
+  color: rgba(255,255,255,0.6);
+  cursor: pointer;
+  font-size: 0.9rem;
+  line-height: 1;
+  padding: 0 2px;
+}
+
+.interact-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  padding: 10px;
+}
+
+.interact-btn {
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.18);
+  border-radius: 10px;
+  color: #fff;
+  font-size: 0.78rem;
+  padding: 8px 4px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.15s;
+  text-align: center;
+  line-height: 1.4;
+}
+
+.interact-btn:hover {
+  background: rgba(232,164,184,0.3);
+  transform: scale(1.05);
+}
+
+.interact-btn:active { transform: scale(0.97); }
+
+.interact-status {
+  font-size: 0.72rem;
+  color: rgba(255,255,255,0.7);
+  padding: 0 10px 6px;
+  min-height: 16px;
+  line-height: 1.3;
+  transition: opacity 0.4s;
+  opacity: 0;
+}
+
+.interact-chat-btn {
+  display: block;
+  width: calc(100% - 20px);
+  margin: 0 10px 10px;
+  padding: 7px;
+  background: rgba(232,164,184,0.25);
+  border: 1px solid rgba(232,164,184,0.35);
+  border-radius: 10px;
+  color: #f5d0a8;
+  font-size: 0.78rem;
+  cursor: pointer;
+  transition: background 0.2s;
+  text-align: center;
+}
+
+.interact-chat-btn:hover { background: rgba(232,164,184,0.4); }
+
+/* ===== 小熊动画扩展 ===== */
+
+/* 奔跑：左右轻微抖动+压缩 */
+#dogSvg.dogRun {
+  animation: dogRunAnim 0.25s ease-in-out infinite alternate !important;
+}
+
+@keyframes dogRunAnim {
+  from { transform: scaleY(0.92) translateY(3px); }
+  to   { transform: scaleY(1.05) translateY(-3px); }
+}
+
+/* 打滚：整体旋转 */
+#dogSvg.dogRoll {
+  animation: dogRollAnim 0.7s ease-in-out infinite !important;
+  transform-origin: center bottom;
+}
+
+@keyframes dogRollAnim {
+  0%   { transform: rotate(0deg) scale(1); }
+  25%  { transform: rotate(-18deg) scale(1.08); }
+  50%  { transform: rotate(18deg) scale(0.95); }
+  75%  { transform: rotate(-10deg) scale(1.05); }
+  100% { transform: rotate(0deg) scale(1); }
+}
+
+/* 抖水：左右大幅摇摆 */
+#dogSvg.dogShake {
+  animation: dogShakeAnim 0.35s ease-in-out infinite alternate !important;
+}
+
+@keyframes dogShakeAnim {
+  from { transform: rotate(-20deg) scale(1.04); }
+  to   { transform: rotate(20deg)  scale(1.04); }
+}
+
+@media (max-width: 480px) {
+  .dog-interact-panel {
+    left: 0;
+    width: 200px;
   }
 }

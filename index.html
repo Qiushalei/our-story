@@ -34,7 +34,29 @@
 
 <!-- Music Player -->
 <div id="musicPlayer">
-  <button type="button" id="musicBtn" onclick="toggleMusic()" title="Play Music">♪</button>
+  <button type="button" id="musicBtn" onclick="toggleMusic()" title="Play Music">
+    <svg viewBox="0 0 40 32" width="40" height="32" xmlns="http://www.w3.org/2000/svg">
+      <!-- 狗窝屋顶 -->
+      <polygon points="4,16 20,2 36,16" fill="#c8a46e" stroke="#a07840" stroke-width="1.5"/>
+      <!-- 屋顶瓦片纹理 -->
+      <line x1="4" y1="16" x2="20" y2="2" stroke="#a07840" stroke-width="0.8" opacity="0.5"/>
+      <line x1="20" y1="2" x2="36" y2="16" stroke="#a07840" stroke-width="0.8" opacity="0.5"/>
+      <!-- 狗窝主体 -->
+      <rect x="6" y="15" width="28" height="15" rx="2" fill="#e8c88a" stroke="#a07840" stroke-width="1.5"/>
+      <!-- 入口圆洞 -->
+      <ellipse cx="20" cy="26" rx="7" ry="6" fill="#5a3a1a"/>
+      <!-- 入口高光 -->
+      <ellipse cx="18" cy="24" rx="2" ry="1.5" fill="rgba(255,255,255,0.12)"/>
+      <!-- 音符（未播放时显示） -->
+      <text id="musicNote" x="20" y="23" text-anchor="middle" font-size="8" fill="rgba(255,255,255,0.7)">♪</text>
+      <!-- 木板纹理 -->
+      <line x1="6" y1="21" x2="34" y2="21" stroke="#a07840" stroke-width="0.8" opacity="0.4"/>
+      <line x1="6" y1="26" x2="13" y2="26" stroke="#a07840" stroke-width="0.8" opacity="0.4"/>
+      <line x1="27" y1="26" x2="34" y2="26" stroke="#a07840" stroke-width="0.8" opacity="0.4"/>
+      <!-- XIAOxiong 文字 -->
+      <text x="20" y="19" text-anchor="middle" font-size="4.5" fill="#a07840" font-weight="bold">XiaoXiong</text>
+    </svg>
+  </button>
   <span id="musicHint">tap for music</span>
   <audio id="bgMusic" loop crossorigin="anonymous">
     <source src="https://cdn.pixabay.com/audio/2022/08/04/audio_2dde668d05.mp3" type="audio/mpeg" />
