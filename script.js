@@ -107,19 +107,20 @@ function toggleMusic() {
 
 function dogGoHome() {
   if (dogMoveTimer) { clearTimeout(dogMoveTimer); dogMoveTimer = null; }
-  const btn = document.getElementById('musicBtn');
+  const player = document.getElementById('musicPlayer');
   const svgEl = document.getElementById('dogSvg');
   const dog = document.getElementById('dogBot');
-  if (!btn || !dog) return;
+  if (!player || !dog) return;
 
-  const rect = btn.getBoundingClientRect();
-  const targetX = rect.left - 60;
-  const targetY = window.innerHeight - rect.bottom - 10;
+  const rect = player.getBoundingClientRect();
+  // 站在狗窝左侧
+  const targetX = Math.max(10, rect.left - 100);
+  const targetY = Math.max(10, window.innerHeight - rect.bottom + 10);
 
   dog.classList.add('at-kennel');
   dog.style.transition = 'left 1.8s cubic-bezier(0.45,0,0.55,1), bottom 1.8s cubic-bezier(0.45,0,0.55,1)';
-  dog.style.left = Math.max(10, targetX) + 'px';
-  dog.style.bottom = Math.max(10, targetY) + 'px';
+  dog.style.left = targetX + 'px';
+  dog.style.bottom = targetY + 'px';
 
   if (svgEl) {
     svgEl.style.transform = 'scaleX(-1)';
@@ -858,41 +859,96 @@ function openInteractionPanel() {
 const INTERACT_RESPONSES = {
   frisbee: {
     messages: [
-      '🥏 *zooms across screen* WOOF WOOF!! I got it!! Wanna throw again?!',
-      '🥏 *runs at full speed* XiaoXiong is SUPER fast! Did you see that?! *tail spinning*',
-      '🥏 *leaps dramatically* CAUGHT IT! *skids to a stop* Again! Again! Please!!',
+      '🥏 WOOF WOOF!! I got it!! Wanna throw again?!',
+      '🥏 XiaoXiong is SUPER fast! Did you see that?! *tail spinning*',
+      '🥏 *leaps dramatically* CAUGHT IT! Again! Again! Please!!',
     ],
-    animation: 'dogRun',
-    duration: 3000,
+    dogAnim: 'dogRun',
+    duration: 3200,
+    emoji: '😆',
+    prop: 'frisbee',
   },
   bone: {
     messages: [
-      '🦴 *eyes light up* A BONE!! XiaoXiong\'s favourite!! *happy chomping sounds*',
-      '🦴 *buries it carefully* This is precious. I\'ll save it for later~ *pats the spot*',
-      '🦴 NOM NOM NOM... *looks up with crumbs on nose* This is the BEST bone ever!',
+      '🦴 A BONE!! XiaoXiong\'s favourite!! *happy chomping sounds*',
+      '🦴 NOM NOM NOM... This is the BEST bone ever!',
+      '🦴 *buries it carefully* This is precious. I\'ll save it for later~',
     ],
-    animation: 'dogRoll',
-    duration: 2500,
+    dogAnim: 'dogRoll',
+    duration: 2800,
+    emoji: '😊',
+    prop: 'bone',
   },
   water: {
     messages: [
-      '💧 *laps water enthusiastically* SPLASH SPLASH! XiaoXiong was SO thirsty! Thank you~',
-      '💧 *drinks politely then gets excited* Refreshed!! Now I have ENERGY!! *zoomies*',
-      '💧 Mmm water~ *shakes head and splashes everywhere* Oops! Sorry! Woof!',
+      '💧 SPLASH SPLASH! XiaoXiong was SO thirsty! Thank you~',
+      '💧 Refreshed!! Now I have ENERGY!! *zoomies*',
+      '💧 Mmm water~ *shakes head and splashes everywhere* Oops! Woof!',
     ],
-    animation: 'dogShake',
-    duration: 2000,
+    dogAnim: 'dogShake',
+    duration: 2400,
+    emoji: '😌',
+    prop: 'water',
   },
   pet: {
     messages: [
-      '🐾 *melts into a puddle of happiness* Ohhh... right there... XiaoXiong is in heaven~ 💕',
-      '🐾 *thumps hind leg on floor* YES YES YES that\'s the spot!! *eyes glazing with joy*',
-      '🤚 *leans into your hand* You give the BEST pets. I love you so much! *happy sigh*',
+      '🐾 Ohhh... right there... XiaoXiong is in heaven~ 💕',
+      '🐾 YES YES YES that\'s the spot!! *eyes glazing with joy*',
+      '🤚 You give the BEST pets. I love you so much!',
     ],
-    animation: 'dogRoll',
-    duration: 3500,
+    dogAnim: 'dogRoll',
+    duration: 3200,
+    emoji: '❤️',
+    prop: 'pet',
   },
 };
+
+const PROP_ICONS = { frisbee: '🥏', bone: '🦴', water: '🫙', pet: '🤚' };
+
+function spawnProp(type, dog) {
+  const rect = dog.getBoundingClientRect();
+  const dogCX = rect.left + rect.width / 2;
+  const dogCY = rect.top + rect.height / 2;
+
+  const el = document.createElement('div');
+  el.className = `prop-anim prop-${type}`;
+  el.textContent = PROP_ICONS[type];
+  document.body.appendChild(el);
+
+  if (type === 'frisbee') {
+    const startX = window.innerWidth * 0.15;
+    const startY = window.innerHeight * 0.5;
+    el.style.left = startX + 'px';
+    el.style.top  = startY + 'px';
+    const txMid = (dogCX - startX) * 0.5;
+    const txEnd = dogCX - startX - 20;
+    el.style.setProperty('--tx-mid', txMid + 'px');
+    el.style.setProperty('--tx-end', txEnd + 'px');
+  } else if (type === 'bone') {
+    el.style.left = (dogCX - 20) + 'px';
+    el.style.top  = (dogCY - 80) + 'px';
+  } else if (type === 'water') {
+    el.style.left = (dogCX - 20) + 'px';
+    el.style.top  = (dogCY + 30) + 'px';
+    el.style.fontSize = '2.8rem';
+  } else if (type === 'pet') {
+    el.style.left = (dogCX - 18) + 'px';
+    el.style.top  = (rect.top - 20) + 'px';
+  }
+
+  setTimeout(() => el.remove(), 2000);
+}
+
+function showDogEmoji(emoji) {
+  const body = document.getElementById('dogBody');
+  if (!body) return;
+  document.querySelectorAll('.dog-emoji-reaction').forEach(e => e.remove());
+  const el = document.createElement('div');
+  el.className = 'dog-emoji-reaction';
+  el.textContent = emoji;
+  body.appendChild(el);
+  setTimeout(() => el.remove(), 3000);
+}
 
 function dogInteract(type) {
   if (interactionLocked) return;
@@ -902,33 +958,30 @@ function dogInteract(type) {
   const msg = config.messages[Math.floor(Math.random() * config.messages.length)];
   const svgEl = document.getElementById('dogSvg');
   const dog = document.getElementById('dogBot');
-  const status = document.getElementById('interactStatus');
-
-  playWoof();
-
-  if (status) {
-    status.textContent = msg;
-    status.style.opacity = '1';
-  }
-
-  showBubbleText(msg, false);
-
-  if (svgEl) svgEl.classList.add(config.animation);
-
-  if (config.animation === 'dogRun') {
-    runAcrossScreen();
-  }
 
   const panel = document.getElementById('dogInteractPanel');
   if (panel) panel.classList.add('hidden');
 
+  playWoof();
+  showBubbleText(msg, false);
+
+  // 1. 先显示道具动画
+  spawnProp(config.prop, dog);
+
+  // 2. 短延迟后触发小狗身体反应
   setTimeout(() => {
-    if (svgEl) svgEl.classList.remove(config.animation);
+    if (svgEl) svgEl.classList.add(config.dogAnim);
+    if (config.dogAnim === 'dogRun') runAcrossScreen();
+  }, 400);
+
+  // 3. 互动结束后弹出表情包
+  setTimeout(() => {
+    if (svgEl) svgEl.classList.remove(config.dogAnim);
+    showDogEmoji(config.emoji);
     const bubble = document.getElementById('dogBubble');
     if (bubble) bubble.classList.add('hidden');
-    if (status) { status.style.opacity = '0'; }
     interactionLocked = false;
-  }, config.duration + 500);
+  }, config.duration);
 }
 
 function runAcrossScreen() {
@@ -939,30 +992,22 @@ function runAcrossScreen() {
   if (dogMoveTimer) { clearTimeout(dogMoveTimer); dogMoveTimer = null; }
 
   const startX = parseInt(dog.style.left) || 100;
-  const y = parseInt(dog.style.bottom) || 100;
   const goRight = startX < window.innerWidth / 2;
-  const endX = goRight ? window.innerWidth - 120 : 20;
+  const endX = goRight ? window.innerWidth - 130 : 20;
 
-  if (svgEl) {
-    svgEl.style.transform = goRight ? 'scaleX(1)' : 'scaleX(-1)';
-    dogFlipped = !goRight;
-  }
-
-  dog.style.transition = 'left 1.2s linear, bottom 0.3s ease';
+  dog.style.transition = 'left 1.1s linear';
+  if (svgEl) { svgEl.style.transform = goRight ? 'scaleX(1)' : 'scaleX(-1)'; dogFlipped = !goRight; }
   dog.style.left = endX + 'px';
 
   setTimeout(() => {
-    const returnX = goRight ? 20 : window.innerWidth - 120;
-    if (svgEl) {
-      svgEl.style.transform = goRight ? 'scaleX(-1)' : 'scaleX(1)';
-      dogFlipped = goRight;
-    }
+    const returnX = goRight ? 20 : window.innerWidth - 130;
+    dog.style.transition = 'left 1.1s linear';
+    if (svgEl) { svgEl.style.transform = goRight ? 'scaleX(-1)' : 'scaleX(1)'; dogFlipped = goRight; }
     dog.style.left = returnX + 'px';
-
     setTimeout(() => {
       const audio = document.getElementById('bgMusic');
       if (!audio || audio.paused) scheduleDogMove();
-    }, 1300);
-  }, 1250);
+    }, 1200);
+  }, 1150);
 }
 
