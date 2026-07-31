@@ -151,7 +151,7 @@ async function loadMetDate() {
   const today = new Date(); today.setHours(0, 0, 0, 0);
   const days = Math.floor((today - date) / 86400000);
   document.getElementById('metDaysDisplay').textContent =
-    days >= 0 ? `Together for ${days} days 🌟` : `${-days} days until we meet`;
+    days >= 0 ? `It has been ${days} glorious days since we found each other 🌟` : `${-days} days until we meet`;
 }
 
 async function openMetModal() {
@@ -485,50 +485,180 @@ setInterval(loadMetDate, 60000);
 setInterval(updateNextAnniversary, 60000);
 
 /* ===== 小狗机器人 ===== */
-const DOG_PHRASES = [
+const DOG_AUTO_PHRASES = [
   '🐾 Woof! You two are so cute together!',
   '🐶 *wags tail* Have you told them you love them today?',
   '💕 Being loved by you must feel like sunshine!',
   '🐾 Every day with you is my favourite day!',
   '🌸 You make each other\'s world brighter~',
-  '🐶 *runs in circles* Love is in the air!!',
+  '🐶 *spins happily* Love is in the air!!',
   '💝 Don\'t forget your anniversary! I\'ll remind you~',
   '🐾 Wanna upload a new photo together?',
   '🌟 You two are my favourite humans!',
-  '🐶 *licks screen* So much love here!',
   '💕 Happiness looks good on both of you!',
-  '🐾 *tilts head* What\'s your favourite memory together?',
   '🌸 I heard someone is extra cute today... it\'s you!',
-  '🐶 Arf arf! Come back and visit me soon~',
   '💝 Every moment with the right person is precious!',
 ];
 
-let dogPhraseIdx = Math.floor(Math.random() * DOG_PHRASES.length);
+const DOG_AI_SYSTEM = `You are Biscuit, an adorable fluffy brown curly-haired terrier dog who lives on a couple's memory webpage. You are sweet, playful, and full of love. You speak in short, warm, slightly dog-like sentences (occasional "Woof!", "*wags tail*", "*tilts head*"). You give loving, romantic encouragement to the couple. Keep replies under 60 words. Always end with a dog emoji or paw print.`;
+
+let dogPhraseIdx = Math.floor(Math.random() * DOG_AUTO_PHRASES.length);
 let dogMoveTimer = null;
 let dogBubbleTimer = null;
 let dogFlipped = false;
+let dogChatOpen = false;
 
+/* ----- 汪汪叫声（Web Audio API 合成） ----- */
+function playWoof() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const woofs = [
+      { freq: 420, dur: 0.12, delay: 0 },
+      { freq: 380, dur: 0.10, delay: 0.15 },
+      { freq: 400, dur: 0.14, delay: 0.28 },
+    ];
+    woofs.forEach(({ freq, dur, delay }) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(freq, ctx.currentTime + delay);
+      osc.frequency.exponentialRampToValueAtTime(freq * 0.55, ctx.currentTime + delay + dur);
+      gain.gain.setValueAtTime(0.35, ctx.currentTime + delay);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + delay + dur);
+      osc.start(ctx.currentTime + delay);
+      osc.stop(ctx.currentTime + delay + dur + 0.02);
+    });
+  } catch (e) {}
+}
+
+/* ----- 显示气泡（打字机效果） ----- */
+function showBubbleText(text, autoDismiss = true) {
+  const bubble = document.getElementById('dogBubble');
+  if (!bubble) return;
+  if (dogBubbleTimer) clearTimeout(dogBubbleTimer);
+  bubble.innerHTML = '';
+  bubble.classList.remove('hidden');
+
+  let i = 0;
+  const speed = 28;
+  function typeNext() {
+    if (i < text.length) {
+      bubble.textContent += text[i++];
+      setTimeout(typeNext, speed);
+    } else if (autoDismiss) {
+      const duration = 3000 + text.length * 35;
+      dogBubbleTimer = setTimeout(() => bubble.classList.add('hidden'), duration);
+    }
+  }
+  typeNext();
+}
+
+/* ----- 点击小狗：叫声 + AI 对话框 ----- */
+function dogClick() {
+  playWoof();
+  openDogChat();
+}
+
+function openDogChat() {
+  let panel = document.getElementById('dogChatPanel');
+  if (panel) { panel.classList.toggle('hidden'); return; }
+
+  panel = document.createElement('div');
+  panel.id = 'dogChatPanel';
+  panel.className = 'dog-chat-panel';
+  panel.innerHTML = `
+    <div class="dog-chat-header">
+      <span>🐶 Chat with Biscuit</span>
+      <button type="button" onclick="document.getElementById('dogChatPanel').classList.add('hidden')">✕</button>
+    </div>
+    <div id="dogChatMessages" class="dog-chat-messages">
+      <div class="dog-msg">🐾 Woof woof! Ask me anything about love~</div>
+    </div>
+    <div class="dog-chat-input-row">
+      <input type="text" id="dogChatInput" placeholder="Say something..." maxlength="200"
+        onkeydown="if(event.key==='Enter') sendDogMessage()" />
+      <button type="button" onclick="sendDogMessage()">Send</button>
+    </div>
+  `;
+  document.getElementById('dogBot').appendChild(panel);
+}
+
+async function sendDogMessage() {
+  const input = document.getElementById('dogChatInput');
+  const messages = document.getElementById('dogChatMessages');
+  const text = input.value.trim();
+  if (!text) return;
+  input.value = '';
+
+  // 显示用户消息
+  const userDiv = document.createElement('div');
+  userDiv.className = 'user-msg';
+  userDiv.textContent = text;
+  messages.appendChild(userDiv);
+
+  // 显示打字中
+  const thinkDiv = document.createElement('div');
+  thinkDiv.className = 'dog-msg typing';
+  thinkDiv.innerHTML = '<span class="dot"></span><span class="dot"></span><span class="dot"></span>';
+  messages.appendChild(thinkDiv);
+  messages.scrollTop = messages.scrollHeight;
+
+  // 调用 Supabase Edge Function（中转 AI 请求）
+  try {
+    const res = await fetch(`${SUPABASE_URL}/functions/v1/dog-chat`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${SUPABASE_KEY}`,
+      },
+      body: JSON.stringify({ message: text, system: DOG_AI_SYSTEM }),
+    });
+    const data = await res.json();
+    const reply = data.reply || data.error || '🐾 Woof... I got a little confused, try again?';
+    thinkDiv.classList.remove('typing');
+    thinkDiv.innerHTML = '';
+    // 打字机效果显示回复
+    let i = 0;
+    function typeReply() {
+      if (i < reply.length) {
+        thinkDiv.textContent += reply[i++];
+        messages.scrollTop = messages.scrollHeight;
+        setTimeout(typeReply, 22);
+      }
+    }
+    typeReply();
+  } catch (e) {
+    thinkDiv.classList.remove('typing');
+    thinkDiv.textContent = '🐾 Woof! My nose is a bit stuffy today... try again?';
+  }
+
+  messages.scrollTop = messages.scrollHeight;
+}
+
+/* ----- 自动移动 ----- */
 function initDog() {
   const dog = document.getElementById('dogBot');
   if (!dog) return;
-  // 随机初始位置
   moveDogTo(
-    Math.random() * (window.innerWidth - 120) + 20,
-    Math.random() * (window.innerHeight * 0.4) + window.innerHeight * 0.4
+    Math.random() * (window.innerWidth - 130) + 20,
+    window.innerHeight * 0.6
   );
   scheduleDogMove();
-  // 3秒后自动打招呼
-  setTimeout(() => dogTalk(), 3000);
+  setTimeout(() => showBubbleText(DOG_AUTO_PHRASES[dogPhraseIdx]), 3000);
+  setInterval(() => {
+    dogPhraseIdx = (dogPhraseIdx + 1) % DOG_AUTO_PHRASES.length;
+    showBubbleText(DOG_AUTO_PHRASES[dogPhraseIdx]);
+  }, 18000);
 }
 
 function moveDogTo(x, y) {
   const dog = document.getElementById('dogBot');
   const svgEl = document.getElementById('dogSvg');
   if (!dog) return;
-  const targetX = Math.max(10, Math.min(x, window.innerWidth - 100));
-  const targetY = Math.max(10, Math.min(y, window.innerHeight - 110));
-
-  // 判断移动方向，翻转小狗朝向
+  const targetX = Math.max(10, Math.min(x, window.innerWidth - 110));
+  const targetY = Math.max(10, Math.min(y, window.innerHeight - 120));
   const currentLeft = parseInt(dog.style.left) || 0;
   if (targetX < currentLeft && !dogFlipped) {
     svgEl.style.transform = 'scaleX(-1)';
@@ -537,38 +667,19 @@ function moveDogTo(x, y) {
     svgEl.style.transform = 'scaleX(1)';
     dogFlipped = false;
   }
-
-  dog.style.transition = 'left 2.5s cubic-bezier(0.45,0,0.55,1), bottom 2.5s cubic-bezier(0.45,0,0.55,1)';
+  dog.style.transition = 'left 2.8s cubic-bezier(0.45,0,0.55,1), bottom 2.8s cubic-bezier(0.45,0,0.55,1)';
   dog.style.left = targetX + 'px';
-  dog.style.bottom = (window.innerHeight - targetY - 80) + 'px';
+  dog.style.bottom = (window.innerHeight - targetY - 95) + 'px';
 }
 
 function scheduleDogMove() {
-  const delay = 4000 + Math.random() * 5000;
+  const delay = 5000 + Math.random() * 6000;
   dogMoveTimer = setTimeout(() => {
-    const x = Math.random() * (window.innerWidth - 120) + 20;
-    const y = Math.random() * (window.innerHeight * 0.5) + window.innerHeight * 0.3;
+    const x = Math.random() * (window.innerWidth - 130) + 20;
+    const y = Math.random() * (window.innerHeight * 0.45) + window.innerHeight * 0.35;
     moveDogTo(x, y);
     scheduleDogMove();
   }, delay);
-}
-
-function dogTalk() {
-  const bubble = document.getElementById('dogBubble');
-  if (!bubble) return;
-
-  // 清除旧气泡计时器
-  if (dogBubbleTimer) clearTimeout(dogBubbleTimer);
-
-  dogPhraseIdx = (dogPhraseIdx + 1) % DOG_PHRASES.length;
-  bubble.textContent = DOG_PHRASES[dogPhraseIdx];
-  bubble.classList.remove('hidden');
-
-  // 根据文字长度决定显示时长
-  const duration = 2500 + DOG_PHRASES[dogPhraseIdx].length * 40;
-  dogBubbleTimer = setTimeout(() => {
-    bubble.classList.add('hidden');
-  }, duration);
 }
 
 // 密码验证通过后初始化小狗

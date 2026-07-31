@@ -225,49 +225,93 @@
 <!-- 小狗机器人 -->
 <div id="dogBot">
   <div id="dogBubble" class="dog-bubble hidden"></div>
-  <div id="dogBody" onclick="dogTalk()">
-    <svg id="dogSvg" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg" width="80" height="80">
+  <div id="dogBody" onclick="dogClick()">
+    <svg id="dogSvg" viewBox="0 0 90 95" xmlns="http://www.w3.org/2000/svg" width="90" height="95">
       <!-- 尾巴 -->
-      <path id="dogTail" d="M62 52 Q78 42 74 30" stroke="#7a4a2a" stroke-width="5" fill="none" stroke-linecap="round"/>
-      <!-- 身体 -->
-      <ellipse cx="40" cy="54" rx="22" ry="16" fill="#a0622a"/>
-      <!-- 卷毛纹理（身体） -->
-      <circle cx="28" cy="50" r="5" fill="#8a5220" opacity="0.5"/>
-      <circle cx="38" cy="46" r="5" fill="#8a5220" opacity="0.5"/>
-      <circle cx="50" cy="50" r="5" fill="#8a5220" opacity="0.5"/>
-      <circle cx="34" cy="58" r="5" fill="#8a5220" opacity="0.5"/>
-      <circle cx="46" cy="57" r="5" fill="#8a5220" opacity="0.5"/>
-      <!-- 头 -->
-      <circle cx="38" cy="32" r="18" fill="#a0622a"/>
-      <!-- 卷毛纹理（头部） -->
-      <circle cx="28" cy="26" r="6" fill="#b87a3a" opacity="0.6"/>
-      <circle cx="38" cy="22" r="6" fill="#b87a3a" opacity="0.6"/>
-      <circle cx="48" cy="26" r="6" fill="#b87a3a" opacity="0.6"/>
-      <circle cx="24" cy="34" r="5" fill="#b87a3a" opacity="0.5"/>
-      <circle cx="52" cy="34" r="5" fill="#b87a3a" opacity="0.5"/>
-      <!-- 左耳 -->
-      <ellipse cx="22" cy="24" rx="8" ry="12" fill="#7a4a1a" transform="rotate(-15 22 24)"/>
-      <circle cx="20" cy="22" r="4" fill="#8a5220" opacity="0.6"/>
-      <circle cx="23" cy="28" r="4" fill="#8a5220" opacity="0.6"/>
-      <!-- 右耳 -->
-      <ellipse cx="54" cy="24" rx="8" ry="12" fill="#7a4a1a" transform="rotate(15 54 24)"/>
-      <circle cx="56" cy="22" r="4" fill="#8a5220" opacity="0.6"/>
-      <circle cx="53" cy="28" r="4" fill="#8a5220" opacity="0.6"/>
+      <path id="dogTail" d="M68 56 Q86 44 80 28" stroke="#d4956a" stroke-width="6" fill="none" stroke-linecap="round"/>
+
+      <!-- 身体底色 -->
+      <ellipse cx="42" cy="62" rx="24" ry="18" fill="#e8b48a"/>
+      <!-- 身体卷毛：密集小球堆出蓬松感 -->
+      <circle cx="22" cy="62" r="8" fill="#f0c8a0"/>
+      <circle cx="30" cy="55" r="8" fill="#f0c8a0"/>
+      <circle cx="40" cy="52" r="8" fill="#f0c8a0"/>
+      <circle cx="50" cy="54" r="8" fill="#f0c8a0"/>
+      <circle cx="60" cy="59" r="8" fill="#f0c8a0"/>
+      <circle cx="24" cy="70" r="8" fill="#e8b48a"/>
+      <circle cx="35" cy="68" r="8" fill="#edc090"/>
+      <circle cx="46" cy="66" r="8" fill="#edc090"/>
+      <circle cx="57" cy="67" r="8" fill="#e8b48a"/>
+      <!-- 身体阴影层：让球感更立体 -->
+      <circle cx="22" cy="62" r="8" fill="#d4956a" opacity="0.25"/>
+      <circle cx="60" cy="59" r="8" fill="#d4956a" opacity="0.25"/>
+      <circle cx="30" cy="55" r="7" fill="#fff" opacity="0.12"/>
+      <circle cx="50" cy="54" r="7" fill="#fff" opacity="0.12"/>
+      <circle cx="40" cy="52" r="7" fill="#fff" opacity="0.15"/>
+
+      <!-- 头底色 -->
+      <circle cx="42" cy="36" r="22" fill="#e8b48a"/>
+      <!-- 头部卷毛：密集小球 -->
+      <circle cx="22" cy="30" r="9" fill="#f5d0a8"/>
+      <circle cx="30" cy="20" r="9" fill="#f5d0a8"/>
+      <circle cx="42" cy="17" r="9" fill="#f5d0a8"/>
+      <circle cx="54" cy="20" r="9" fill="#f5d0a8"/>
+      <circle cx="62" cy="30" r="9" fill="#f5d0a8"/>
+      <circle cx="20" cy="40" r="8" fill="#f0c8a0"/>
+      <circle cx="64" cy="40" r="8" fill="#f0c8a0"/>
+      <circle cx="26" cy="48" r="7" fill="#edc090"/>
+      <circle cx="58" cy="48" r="7" fill="#edc090"/>
+      <!-- 头部高光让卷毛更蓬松 -->
+      <circle cx="30" cy="20" r="5" fill="#fff" opacity="0.18"/>
+      <circle cx="42" cy="17" r="5" fill="#fff" opacity="0.2"/>
+      <circle cx="54" cy="20" r="5" fill="#fff" opacity="0.18"/>
+      <circle cx="22" cy="30" r="4" fill="#fff" opacity="0.14"/>
+      <circle cx="62" cy="30" r="4" fill="#fff" opacity="0.14"/>
+      <!-- 阴影层 -->
+      <circle cx="20" cy="40" r="8" fill="#c8804a" opacity="0.2"/>
+      <circle cx="64" cy="40" r="8" fill="#c8804a" opacity="0.2"/>
+
+      <!-- 左耳（卷毛堆叠） -->
+      <circle cx="16" cy="26" r="9" fill="#d4956a"/>
+      <circle cx="13" cy="20" r="7" fill="#e0a87a"/>
+      <circle cx="19" cy="18" r="7" fill="#e0a87a"/>
+      <circle cx="12" cy="28" r="6" fill="#e0a87a"/>
+      <circle cx="13" cy="20" r="4" fill="#fff" opacity="0.15"/>
+      <circle cx="19" cy="18" r="4" fill="#fff" opacity="0.12"/>
+
+      <!-- 右耳（卷毛堆叠） -->
+      <circle cx="68" cy="26" r="9" fill="#d4956a"/>
+      <circle cx="65" cy="18" r="7" fill="#e0a87a"/>
+      <circle cx="71" cy="20" r="7" fill="#e0a87a"/>
+      <circle cx="72" cy="28" r="6" fill="#e0a87a"/>
+      <circle cx="71" cy="20" r="4" fill="#fff" opacity="0.15"/>
+      <circle cx="65" cy="18" r="4" fill="#fff" opacity="0.12"/>
+
       <!-- 眼睛 -->
-      <circle cx="31" cy="31" r="4.5" fill="#1a0a00"/>
-      <circle cx="45" cy="31" r="4.5" fill="#1a0a00"/>
-      <circle cx="32.5" cy="29.5" r="1.5" fill="white"/>
-      <circle cx="46.5" cy="29.5" r="1.5" fill="white"/>
+      <circle cx="33" cy="37" r="5" fill="#1a0800"/>
+      <circle cx="51" cy="37" r="5" fill="#1a0800"/>
+      <circle cx="34.5" cy="35" r="2" fill="white"/>
+      <circle cx="52.5" cy="35" r="2" fill="white"/>
+      <!-- 眼睛光泽 -->
+      <circle cx="35.5" cy="38" r="1" fill="white" opacity="0.5"/>
+      <circle cx="53.5" cy="38" r="1" fill="white" opacity="0.5"/>
+
       <!-- 鼻子 -->
-      <ellipse cx="38" cy="38" rx="4" ry="3" fill="#2a1000"/>
+      <ellipse cx="42" cy="44" rx="5" ry="4" fill="#2a1000"/>
+      <ellipse cx="41" cy="43" rx="2" ry="1.5" fill="white" opacity="0.3"/>
+
       <!-- 嘴 -->
-      <path d="M34 41 Q38 45 42 41" stroke="#2a1000" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-      <!-- 前腿 -->
-      <rect x="26" y="66" width="8" height="12" rx="4" fill="#a0622a"/>
-      <rect x="46" y="66" width="8" height="12" rx="4" fill="#a0622a"/>
+      <path d="M37 48 Q42 53 47 48" stroke="#2a1000" stroke-width="2" fill="none" stroke-linecap="round"/>
+
+      <!-- 腿 -->
+      <rect x="28" y="76" width="10" height="14" rx="5" fill="#e0a87a"/>
+      <rect x="52" y="76" width="10" height="14" rx="5" fill="#e0a87a"/>
+      <!-- 腿上卷毛感 -->
+      <circle cx="33" cy="77" r="5" fill="#f0c8a0"/>
+      <circle cx="57" cy="77" r="5" fill="#f0c8a0"/>
       <!-- 爪子 -->
-      <ellipse cx="30" cy="78" rx="5" ry="3" fill="#8a5220"/>
-      <ellipse cx="50" cy="78" rx="5" ry="3" fill="#8a5220"/>
+      <ellipse cx="33" cy="90" rx="7" ry="4" fill="#d4956a"/>
+      <ellipse cx="57" cy="90" rx="7" ry="4" fill="#d4956a"/>
     </svg>
   </div>
 </div>

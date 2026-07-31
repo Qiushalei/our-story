@@ -736,6 +736,7 @@ html, body {
   position: fixed;
   z-index: 200;
   cursor: pointer;
+  -webkit-user-select: none;
   user-select: none;
   bottom: 80px;
   left: 40px;
@@ -743,13 +744,13 @@ html, body {
 
 #dogBody {
   position: relative;
-  width: 80px;
-  height: 80px;
-  filter: drop-shadow(0 4px 12px rgba(0,0,0,0.4));
-  transition: transform 0.1s;
+  width: 90px;
+  height: 95px;
+  filter: drop-shadow(0 4px 16px rgba(0,0,0,0.35));
+  transition: transform 0.15s;
 }
 
-#dogBody:hover { transform: scale(1.1); }
+#dogBody:hover { transform: scale(1.08); }
 
 #dogSvg {
   display: block;
@@ -803,5 +804,155 @@ html, body {
 
 @keyframes bubblePop {
   from { transform: scale(0.5); opacity: 0; }
-  to   { transform: scale(1); opacity: 1; }
+  to   { transform: scale(1);   opacity: 1; }
+}
+
+/* ===== 小狗聊天面板 ===== */
+.dog-chat-panel {
+  position: absolute;
+  bottom: 105px;
+  left: -10px;
+  width: 260px;
+  background: rgba(20, 10, 30, 0.92);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  z-index: 201;
+}
+
+.dog-chat-panel.hidden { display: none; }
+
+.dog-chat-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: rgba(232,164,184,0.2);
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+.dog-chat-header button {
+  background: none;
+  border: none;
+  color: rgba(255,255,255,0.6);
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 0 4px;
+  line-height: 1;
+}
+
+.dog-chat-header button:hover { color: #fff; }
+
+.dog-chat-messages {
+  flex: 1;
+  max-height: 200px;
+  overflow-y: auto;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,0.15) transparent;
+}
+
+.dog-msg {
+  align-self: flex-start;
+  background: rgba(255,255,255,0.12);
+  border-radius: 12px 12px 12px 3px;
+  padding: 8px 12px;
+  font-size: 0.8rem;
+  line-height: 1.5;
+  color: #fff;
+  max-width: 90%;
+  word-break: break-word;
+}
+
+.user-msg {
+  align-self: flex-end;
+  background: rgba(232,164,184,0.35);
+  border-radius: 12px 12px 3px 12px;
+  padding: 8px 12px;
+  font-size: 0.8rem;
+  line-height: 1.5;
+  color: #fff;
+  max-width: 90%;
+  word-break: break-word;
+}
+
+/* 打字中动画 */
+.dog-msg.typing {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 10px 14px;
+}
+
+.dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.6);
+  animation: dotBounce 1.2s ease-in-out infinite;
+}
+
+.dot:nth-child(2) { animation-delay: 0.2s; }
+.dot:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes dotBounce {
+  0%, 80%, 100% { opacity: 0.3; transform: translateY(0); }
+  40%           { opacity: 1;   transform: translateY(-5px); }
+}
+
+.dog-chat-input-row {
+  display: flex;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  padding: 8px 10px;
+  gap: 6px;
+}
+
+.dog-chat-input-row input {
+  flex: 1;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 20px;
+  color: #fff;
+  font-size: 0.8rem;
+  padding: 7px 12px;
+  outline: none;
+  font-family: inherit;
+}
+
+.dog-chat-input-row input:focus {
+  border-color: var(--primary);
+}
+
+.dog-chat-input-row input::placeholder { color: rgba(255,255,255,0.35); }
+
+.dog-chat-input-row button {
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  border: none;
+  border-radius: 20px;
+  color: #fff;
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 7px 12px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.dog-chat-input-row button:hover { opacity: 0.88; }
+
+/* 手机端聊天面板位置调整 */
+@media (max-width: 480px) {
+  .dog-chat-panel {
+    left: 0;
+    width: 230px;
+  }
 }
