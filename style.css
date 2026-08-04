@@ -1475,3 +1475,221 @@ html, body {
     grid-template-columns: 1fr 1fr !important;
   }
 }
+
+/* ===== 8个互动专属动画关键帧 ===== */
+
+/* 跳起（接飞盘时） */
+#dogSvg.dogJump {
+  -webkit-animation: dogJumpAnim 0.55s cubic-bezier(0.2,0,0.6,1) forwards !important;
+  animation: dogJumpAnim 0.55s cubic-bezier(0.2,0,0.6,1) forwards !important;
+  -webkit-transform-origin: center bottom;
+  transform-origin: center bottom;
+}
+@keyframes dogJumpAnim {
+  0%   { transform: translateY(0)    scaleY(1);    }
+  30%  { transform: translateY(-30px) scaleY(1.08); }
+  60%  { transform: translateY(-42px) scaleY(0.95); }
+  80%  { transform: translateY(-20px) scaleY(1.04); }
+  100% { transform: translateY(0)    scaleY(1);    }
+}
+
+/* 低头啃骨头（节奏点头） */
+#dogSvg.dogNibble {
+  -webkit-animation: dogNibbleAnim 0.28s ease-in-out infinite alternate !important;
+  animation: dogNibbleAnim 0.28s ease-in-out infinite alternate !important;
+  -webkit-transform-origin: center top;
+  transform-origin: center top;
+}
+@keyframes dogNibbleAnim {
+  from { transform: rotate(-14deg) translateY(4px); }
+  to   { transform: rotate(-4deg)  translateY(0px); }
+}
+
+/* 摇尾巴（啃完满意） */
+#dogSvg.dogWag {
+  -webkit-animation: dogWagAnim 0.22s ease-in-out infinite alternate !important;
+  animation: dogWagAnim 0.22s ease-in-out infinite alternate !important;
+}
+@keyframes dogWagAnim {
+  from { transform: rotate(-8deg) scaleX(1.04); }
+  to   { transform: rotate(8deg)  scaleX(0.96); }
+}
+
+/* 低头喝水 */
+#dogSvg.dogDrink {
+  -webkit-animation: dogDrinkAnim 0.6s ease-in-out infinite alternate !important;
+  animation: dogDrinkAnim 0.6s ease-in-out infinite alternate !important;
+  -webkit-transform-origin: center top;
+  transform-origin: center top;
+}
+@keyframes dogDrinkAnim {
+  from { transform: rotate(-20deg) scaleY(0.94) translateY(6px); }
+  to   { transform: rotate(-8deg)  scaleY(0.98) translateY(2px); }
+}
+
+/* 被抚摸享受左右晃 */
+#dogSvg.dogSway {
+  -webkit-animation: dogSwayAnim 0.9s ease-in-out infinite alternate !important;
+  animation: dogSwayAnim 0.9s ease-in-out infinite alternate !important;
+  -webkit-transform-origin: center bottom;
+  transform-origin: center bottom;
+}
+@keyframes dogSwayAnim {
+  0%   { transform: rotate(-6deg) scaleY(1.02); }
+  50%  { transform: rotate(0deg)  scaleY(1.04); }
+  100% { transform: rotate(6deg)  scaleY(1.02); }
+}
+
+/* 唱歌：身体节拍摆动 + 嘴巴开合感 */
+#dogSvg.dogSing {
+  -webkit-animation: dogSingAnim 0.45s ease-in-out infinite alternate !important;
+  animation: dogSingAnim 0.45s ease-in-out infinite alternate !important;
+  -webkit-transform-origin: center bottom;
+  transform-origin: center bottom;
+}
+@keyframes dogSingAnim {
+  0%   { transform: rotate(-5deg) translateY(0)    scaleX(1.03); }
+  25%  { transform: rotate(0deg)  translateY(-6px) scaleX(1);    }
+  50%  { transform: rotate(5deg)  translateY(0)    scaleX(0.97); }
+  75%  { transform: rotate(0deg)  translateY(-4px) scaleX(1);    }
+  100% { transform: rotate(-5deg) translateY(0)    scaleX(1.03); }
+}
+
+/* 跳舞：左右踮步强节奏 */
+#dogSvg.dogDanceStep {
+  -webkit-animation: dogDanceStepAnim 0.38s ease-in-out infinite !important;
+  animation: dogDanceStepAnim 0.38s ease-in-out infinite !important;
+  -webkit-transform-origin: center bottom;
+  transform-origin: center bottom;
+}
+@keyframes dogDanceStepAnim {
+  0%   { transform: translateX(-10px) translateY(0)    rotate(-8deg) scaleY(0.97); }
+  25%  { transform: translateX(-4px)  translateY(-12px) rotate(-3deg) scaleY(1.05); }
+  50%  { transform: translateX(0)     translateY(0)    rotate(0deg)  scaleY(1);    }
+  75%  { transform: translateX(4px)   translateY(-12px) rotate(3deg)  scaleY(1.05); }
+  100% { transform: translateX(10px)  translateY(0)    rotate(8deg)  scaleY(0.97); }
+}
+
+/* 翻跟头360度（杂技） */
+#dogSvg.dogFlip {
+  -webkit-animation: dogFlipAnim 0.75s cubic-bezier(0.4,0,0.6,1) infinite !important;
+  animation: dogFlipAnim 0.75s cubic-bezier(0.4,0,0.6,1) infinite !important;
+  -webkit-transform-origin: center center;
+  transform-origin: center center;
+}
+@keyframes dogFlipAnim {
+  0%   { transform: rotate(0deg)   translateY(0)    scale(1);    }
+  30%  { transform: rotate(120deg) translateY(-28px) scale(1.08); }
+  60%  { transform: rotate(260deg) translateY(-18px) scale(0.94); }
+  80%  { transform: rotate(340deg) translateY(-6px)  scale(1.03); }
+  100% { transform: rotate(360deg) translateY(0)    scale(1);    }
+}
+
+/* 鞠躬（杂技结束谢幕） */
+#dogSvg.dogBow {
+  -webkit-animation: dogBowAnim 0.5s ease-in-out forwards !important;
+  animation: dogBowAnim 0.5s ease-in-out forwards !important;
+  -webkit-transform-origin: center top;
+  transform-origin: center top;
+}
+@keyframes dogBowAnim {
+  0%   { transform: rotate(0deg);  }
+  40%  { transform: rotate(30deg) scaleY(0.88); }
+  70%  { transform: rotate(25deg) scaleY(0.90); }
+  100% { transform: rotate(0deg);  }
+}
+
+/* ===== 互动粒子特效 ===== */
+.fx-particle {
+  position: fixed;
+  z-index: 310;
+  pointer-events: none;
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+/* 音符飘上去 */
+.fx-note {
+  -webkit-animation: fxNoteAnim 2.2s ease-out forwards;
+  animation: fxNoteAnim 2.2s ease-out forwards;
+}
+@keyframes fxNoteAnim {
+  0%   { transform: translate(0, 0) scale(0.5) rotate(-10deg); opacity: 0; }
+  15%  { transform: translate(calc(var(--dx)*0.2), -18px) scale(1.1) rotate(5deg);  opacity: 1; }
+  60%  { transform: translate(var(--dx), -55px)  scale(1)   rotate(-8deg); opacity: 0.9; }
+  100% { transform: translate(calc(var(--dx)*1.2), -90px) scale(0.6) rotate(15deg); opacity: 0; }
+}
+
+/* 星星四散 */
+.fx-star {
+  -webkit-animation: fxStarAnim 1.8s ease-out forwards;
+  animation: fxStarAnim 1.8s ease-out forwards;
+}
+@keyframes fxStarAnim {
+  0%   { transform: translate(0,0) scale(0.3); opacity: 0; }
+  20%  { transform: translate(calc(var(--dx)*0.3), calc(var(--dy)*0.3)) scale(1.2); opacity: 1; }
+  70%  { transform: translate(calc(var(--dx)*0.8), calc(var(--dy)*0.8)) scale(0.9); opacity: 0.8; }
+  100% { transform: translate(var(--dx), var(--dy)) scale(0.4); opacity: 0; }
+}
+
+/* 礼花彩带 */
+.fx-confetti {
+  -webkit-animation: fxConfettiAnim 2.0s cubic-bezier(0.2,0,0.8,1) forwards;
+  animation: fxConfettiAnim 2.0s cubic-bezier(0.2,0,0.8,1) forwards;
+}
+@keyframes fxConfettiAnim {
+  0%   { transform: translate(0,0) scale(0.4) rotate(0deg);   opacity: 0; }
+  18%  { transform: translate(calc(var(--dx)*0.35), calc(var(--dy)*0.35)) scale(1.3) rotate(45deg);  opacity: 1; }
+  65%  { transform: translate(calc(var(--dx)*0.75), calc(var(--dy)*0.75)) scale(1) rotate(150deg); opacity: 0.85; }
+  100% { transform: translate(var(--dx), var(--dy)) scale(0.5) rotate(270deg); opacity: 0; }
+}
+
+/* 闪光（梳毛） */
+.fx-sparkle {
+  -webkit-animation: fxSparkleAnim 2.2s ease-out forwards;
+  animation: fxSparkleAnim 2.2s ease-out forwards;
+}
+@keyframes fxSparkleAnim {
+  0%   { transform: translate(0, 0) scale(0.4); opacity: 0; }
+  20%  { transform: translate(calc(var(--dx)*0.3), -15px) scale(1.2); opacity: 1; }
+  55%  { transform: translate(calc(var(--dx)*0.7), -40px) scale(0.9); opacity: 0.8; }
+  100% { transform: translate(var(--dx), -70px) scale(0.3); opacity: 0; }
+}
+
+/* 水花 */
+.fx-water {
+  -webkit-animation: fxWaterAnim 1.5s ease-out forwards;
+  animation: fxWaterAnim 1.5s ease-out forwards;
+}
+@keyframes fxWaterAnim {
+  0%   { transform: translate(0, 0) scale(0.5); opacity: 0; }
+  20%  { transform: translate(calc(var(--dx)*0.4), -20px) scale(1.2); opacity: 1; }
+  60%  { transform: translate(var(--dx), -35px) scale(0.85); opacity: 0.7; }
+  100% { transform: translate(var(--dx), -10px) scale(0.3); opacity: 0; }
+}
+
+/* 爱心飘起 */
+.fx-heart {
+  -webkit-animation: fxHeartAnim 2.0s ease-out forwards;
+  animation: fxHeartAnim 2.0s ease-out forwards;
+}
+@keyframes fxHeartAnim {
+  0%   { transform: translate(0, 0) scale(0.4); opacity: 0; }
+  15%  { transform: translate(calc(var(--dx)*0.2), -12px) scale(1.3); opacity: 1; }
+  55%  { transform: translate(calc(var(--dx)*0.6), -45px) scale(1); opacity: 0.9; }
+  100% { transform: translate(var(--dx), -80px) scale(0.5); opacity: 0; }
+}
+
+/* 梳子从左划过 */
+.fx-brush {
+  font-size: 2rem;
+  -webkit-animation: fxBrushAnim 1.8s cubic-bezier(0.4,0,0.6,1) forwards;
+  animation: fxBrushAnim 1.8s cubic-bezier(0.4,0,0.6,1) forwards;
+}
+@keyframes fxBrushAnim {
+  0%   { transform: translate(0, 0) rotate(-15deg); opacity: 0; }
+  10%  { opacity: 1; }
+  50%  { transform: translate(calc(var(--dx)*0.5), -8px) rotate(-10deg); opacity: 1; }
+  85%  { transform: translate(calc(var(--dx)*0.9), 4px) rotate(-5deg); opacity: 0.8; }
+  100% { transform: translate(var(--dx), 0) rotate(0deg); opacity: 0; }
+}

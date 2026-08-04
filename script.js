@@ -1064,8 +1064,8 @@ const INTERACT_RESPONSES = {
       '🎶 哆来咪……哆来咪～小熊音乐天赋MAX！',
       '🎵 为最爱的你们唱一首～小熊全力演出！',
     ],
-    dogAnim: 'dogDance',
-    duration: 3000,
+    dogAnim: 'dogSing',
+    duration: 5200,
     emoji: '🎵',
     prop: null,
   },
@@ -1075,8 +1075,8 @@ const INTERACT_RESPONSES = {
       '🕺 转～圈～转～小熊跳舞超好看的吧！',
       '💃 为你们献上小熊的独家舞步！啪啪啪！',
     ],
-    dogAnim: 'dogRoll',
-    duration: 3000,
+    dogAnim: 'dogDanceStep',
+    duration: 3600,
     emoji: '💃',
     prop: null,
   },
@@ -1086,19 +1086,19 @@ const INTERACT_RESPONSES = {
       '✨ 接飞碟、翻跟头、单腿站……小熊全都会！',
       '🎪 变魔术！现在你看到了……消失！哈哈汪！',
     ],
-    dogAnim: 'dogRoll',
-    duration: 2800,
+    dogAnim: 'dogFlip',
+    duration: 3000,
     emoji: '✨',
     prop: null,
   },
   brush: {
     messages: [
-      '✂️ 梳毛毛～小熊的卷毛被梳得好顺滑好好看！',
-      '✂️ 轻轻梳～哦好舒服……小熊要睡着了……',
-      '✂️ 梳梳梳～现在小熊是全世界最帅的卷毛犬！',
+      '🪮 梳毛毛～小熊的卷毛被梳得好顺滑好好看！',
+      '🪮 轻轻梳～哦好舒服……小熊要睡着了……',
+      '🪮 梳梳梳～现在小熊是全世界最帅的卷毛犬！',
     ],
-    dogAnim: 'dogShake',
-    duration: 3000,
+    dogAnim: 'dogSway',
+    duration: 3200,
     emoji: '✨',
     prop: null,
   },
@@ -1140,6 +1140,114 @@ function spawnProp(type, dog) {
   setTimeout(() => el.remove(), 2000);
 }
 
+/* ===== 小熊唱歌旋律（Web Audio API，~5秒）===== */
+function playSingMelody() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    // 《小星星》旋律音符：[频率Hz, 时长s]
+    const notes = [
+      [523,0.32],[523,0.32],[784,0.32],[784,0.32],[880,0.32],[880,0.32],[784,0.64],
+      [698,0.32],[698,0.32],[659,0.32],[659,0.32],[587,0.32],[587,0.32],[523,0.64],
+      [784,0.32],[784,0.32],[698,0.32],[698,0.32],[659,0.32],[659,0.32],[587,0.64],
+    ];
+    let t = ctx.currentTime + 0.05;
+    notes.forEach(([freq, dur]) => {
+      // 主音：正弦波（带颤音模拟狗声音色）
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      const vib = ctx.createOscillator();
+      const vibGain = ctx.createGain();
+
+      vib.frequency.value = 5.5;
+      vibGain.gain.value = freq * 0.025;
+      vib.connect(vibGain);
+      vibGain.connect(osc.frequency);
+
+      osc.type = 'sine';
+      osc.frequency.value = freq;
+      gain.gain.setValueAtTime(0, t);
+      gain.gain.linearRampToValueAtTime(0.22, t + 0.04);
+      gain.gain.setValueAtTime(0.22, t + dur - 0.07);
+      gain.gain.linearRampToValueAtTime(0, t + dur);
+
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      vib.start(t);
+      osc.start(t);
+      vib.stop(t + dur);
+      osc.stop(t + dur);
+      t += dur;
+    });
+    // 5秒后关闭上下文释放资源
+    setTimeout(() => { try { ctx.close(); } catch(e){} }, 5500);
+  } catch(e) {}
+}
+
+/* ===== 各互动专属道具粒子特效 ===== */
+function spawnInteractFX(type, dog) {
+  const rect = dog.getBoundingClientRect();
+  const cx = rect.left + rect.width / 2;
+  const cy = rect.top + rect.height / 2;
+
+  if (type === 'sing') {
+    // 音符粒子从小熊头顶飘出
+    ['🎵','🎶','🎵','🎶','♪'].forEach((note, i) => {
+      const el = document.createElement('div');
+      el.className = 'fx-particle fx-note';
+      el.textContent = note;
+      el.style.left = (cx - 10 + (i - 2) * 22) + 'px';
+      el.style.top  = (rect.top - 20) + 'px';
+      el.style.setProperty('--dx', ((i - 2) * 18) + 'px');
+      el.style.animationDelay = (i * 0.18) + 's';
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), 2800);
+    });
+  } else if (type === 'dance') {
+    // 星星/亮片从小熊身体四散
+    ['⭐','✨','💫','⭐','✨','💫'].forEach((star, i) => {
+      const el = document.createElement('div');
+      el.className = 'fx-particle fx-star';
+      el.textContent = star;
+      const angle = (i / 6) * Math.PI * 2;
+      el.style.left = cx + 'px';
+      el.style.top  = cy + 'px';
+      el.style.setProperty('--dx', (Math.cos(angle) * 70) + 'px');
+      el.style.setProperty('--dy', (Math.sin(angle) * 55) + 'px');
+      el.style.animationDelay = (i * 0.08) + 's';
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), 2200);
+    });
+  } else if (type === 'trick') {
+    // 魔术星光 + 彩带
+    ['🌟','🎊','🌟','🎉','✨'].forEach((p, i) => {
+      const el = document.createElement('div');
+      el.className = 'fx-particle fx-confetti';
+      el.textContent = p;
+      const angle = (i / 5) * Math.PI * 2 - Math.PI / 2;
+      el.style.left = cx + 'px';
+      el.style.top  = cy + 'px';
+      el.style.setProperty('--dx', (Math.cos(angle) * 90) + 'px');
+      el.style.setProperty('--dy', (Math.sin(angle) * 70 - 30) + 'px');
+      el.style.animationDelay = (i * 0.12) + 's';
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), 2400);
+    });
+  } else if (type === 'brush') {
+    // 小毛球/闪光从小熊身上飘起
+    ['✨','🌸','✨','💛','✨'].forEach((p, i) => {
+      const el = document.createElement('div');
+      el.className = 'fx-particle fx-sparkle';
+      el.textContent = p;
+      el.style.left = (rect.left + Math.random() * rect.width) + 'px';
+      el.style.top  = (rect.top  + Math.random() * rect.height * 0.6) + 'px';
+      el.style.setProperty('--dx', ((Math.random() - 0.5) * 50) + 'px');
+      el.style.animationDelay = (i * 0.15) + 's';
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), 2500);
+    });
+  }
+}
+
 function showDogEmoji(emoji) {
   const body = document.getElementById('dogBody');
   if (!body) return;
@@ -1163,27 +1271,161 @@ function dogInteract(type) {
   const panel = document.getElementById('dogInteractPanel');
   if (panel) panel.classList.add('hidden');
 
-  playWoof();
   showBubbleText(msg, false);
 
-  // 1. 先显示道具动画（部分互动无道具）
-  if (config.prop) spawnProp(config.prop, dog);
+  // ===== 各互动专属序列 =====
+  if (type === 'frisbee') {
+    // 飞盘：抛出 → 小熊跑去接 → 跳起咬住 → 跑回来
+    playWoof();
+    spawnProp('frisbee', dog);
+    setTimeout(() => {
+      if (svgEl) svgEl.classList.add('dogRun');
+      runAcrossScreen();
+    }, 300);
+    setTimeout(() => {
+      if (svgEl) { svgEl.classList.remove('dogRun'); svgEl.classList.add('dogJump'); }
+      spawnInteractFX('trick', dog); // 接住特效
+    }, 1800);
+    setTimeout(() => {
+      if (svgEl) svgEl.classList.remove('dogJump');
+    }, 2400);
 
-  // 2. 短延迟后触发小狗身体反应
-  setTimeout(() => {
-    if (svgEl) svgEl.classList.add(config.dogAnim);
-    if (config.dogAnim === 'dogRun') runAcrossScreen();
-  }, 400);
+  } else if (type === 'bone') {
+    // 骨头：骨头掉下来 → 小熊低头啃（dogNibble）→ 摇尾巴
+    playWoof();
+    spawnProp('bone', dog);
+    setTimeout(() => {
+      if (svgEl) svgEl.classList.add('dogNibble');
+    }, 500);
+    setTimeout(() => {
+      if (svgEl) { svgEl.classList.remove('dogNibble'); svgEl.classList.add('dogWag'); }
+    }, 2200);
+    setTimeout(() => {
+      if (svgEl) svgEl.classList.remove('dogWag');
+    }, config.duration);
 
-  // 3. 互动结束后弹出表情包并累积好感度
+  } else if (type === 'water') {
+    // 喝水：碗出现 → 小熊低头饮水（dogDrink）→ 甩头（dogShake）→ 水花
+    playWoof();
+    spawnProp('water', dog);
+    setTimeout(() => {
+      if (svgEl) svgEl.classList.add('dogDrink');
+    }, 400);
+    setTimeout(() => {
+      if (svgEl) { svgEl.classList.remove('dogDrink'); svgEl.classList.add('dogShake'); }
+      // 水花粒子
+      ['💧','💦','💧','💦'].forEach((w, i) => {
+        const el = document.createElement('div');
+        el.className = 'fx-particle fx-water';
+        el.textContent = w;
+        const rect = dog.getBoundingClientRect();
+        el.style.left = (rect.left + rect.width/2 + (i-1.5)*18) + 'px';
+        el.style.top  = (rect.top + 10) + 'px';
+        el.style.setProperty('--dx', ((i-1.5)*28) + 'px');
+        el.style.animationDelay = (i*0.07) + 's';
+        document.body.appendChild(el);
+        setTimeout(() => el.remove(), 1800);
+      });
+    }, 1400);
+    setTimeout(() => {
+      if (svgEl) svgEl.classList.remove('dogShake');
+    }, config.duration);
+
+  } else if (type === 'pet') {
+    // 抚摸：小手从上伸下 → 小熊眼睛眯起享受（dogSway）→ 心形粒子
+    playWoof();
+    spawnProp('pet', dog);
+    setTimeout(() => {
+      if (svgEl) svgEl.classList.add('dogSway');
+      ['❤️','💕','❤️','💗'].forEach((h, i) => {
+        const el = document.createElement('div');
+        el.className = 'fx-particle fx-heart';
+        el.textContent = h;
+        const rect = dog.getBoundingClientRect();
+        el.style.left = (rect.left + rect.width/2 + (i-1.5)*16) + 'px';
+        el.style.top  = (rect.top - 10) + 'px';
+        el.style.setProperty('--dx', ((i-1.5)*20) + 'px');
+        el.style.animationDelay = (i * 0.2) + 's';
+        document.body.appendChild(el);
+        setTimeout(() => el.remove(), 2500);
+      });
+    }, 600);
+    setTimeout(() => {
+      if (svgEl) svgEl.classList.remove('dogSway');
+    }, config.duration);
+
+  } else if (type === 'sing') {
+    // 唱歌：身体随节拍摆动 + 嘴巴开合 + 真实旋律 + 音符飘出
+    playSingMelody();
+    setTimeout(() => {
+      if (svgEl) svgEl.classList.add('dogSing');
+      spawnInteractFX('sing', dog);
+    }, 200);
+    // 节拍时再补一批音符
+    setTimeout(() => spawnInteractFX('sing', dog), 2000);
+    setTimeout(() => spawnInteractFX('sing', dog), 4000);
+    setTimeout(() => {
+      if (svgEl) svgEl.classList.remove('dogSing');
+    }, config.duration);
+
+  } else if (type === 'dance') {
+    // 跳舞：左右踮步强节奏 + 亮片四散
+    playWoof();
+    if (svgEl) svgEl.classList.add('dogDanceStep');
+    spawnInteractFX('dance', dog);
+    setTimeout(() => spawnInteractFX('dance', dog), 1200);
+    setTimeout(() => spawnInteractFX('dance', dog), 2400);
+    setTimeout(() => {
+      if (svgEl) svgEl.classList.remove('dogDanceStep');
+    }, config.duration);
+
+  } else if (type === 'trick') {
+    // 杂技：360度翻跟头 → 落地 → 礼花
+    playWoof();
+    if (svgEl) svgEl.classList.add('dogFlip');
+    setTimeout(() => spawnInteractFX('trick', dog), 600);
+    setTimeout(() => {
+      if (svgEl) { svgEl.classList.remove('dogFlip'); svgEl.classList.add('dogBow'); }
+    }, 1800);
+    setTimeout(() => {
+      if (svgEl) svgEl.classList.remove('dogBow');
+      spawnInteractFX('trick', dog);
+    }, 2400);
+    setTimeout(() => {
+      if (svgEl) svgEl.classList.remove('dogFlip');
+    }, config.duration);
+
+  } else if (type === 'brush') {
+    // 梳毛：梳子从侧面划过 → 小熊享受轻晃 → 毛发闪光
+    playWoof();
+    const rect = dog.getBoundingClientRect();
+    const brushEl = document.createElement('div');
+    brushEl.className = 'fx-particle fx-brush';
+    brushEl.textContent = '🪮';
+    brushEl.style.left = (rect.left - 30) + 'px';
+    brushEl.style.top  = (rect.top + rect.height * 0.3) + 'px';
+    brushEl.style.setProperty('--dx', (rect.width + 60) + 'px');
+    document.body.appendChild(brushEl);
+    setTimeout(() => brushEl.remove(), 2200);
+
+    setTimeout(() => {
+      if (svgEl) svgEl.classList.add('dogSway');
+      spawnInteractFX('brush', dog);
+    }, 400);
+    setTimeout(() => spawnInteractFX('brush', dog), 1500);
+    setTimeout(() => {
+      if (svgEl) svgEl.classList.remove('dogSway');
+    }, config.duration);
+  }
+
+  // ===== 通用结束：弹出表情 + 好感度 =====
   setTimeout(() => {
-    if (svgEl) svgEl.classList.remove(config.dogAnim);
     showDogEmoji(config.emoji);
     gainAffection(type);
     const bubble = document.getElementById('dogBubble');
     if (bubble) bubble.classList.add('hidden');
     interactionLocked = false;
-  }, config.duration);
+  }, config.duration + 200);
 }
 
 function runAcrossScreen() {
