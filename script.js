@@ -780,6 +780,142 @@ async function sendDogMessage() {
   typeReply();
 }
 
+/* ===== 天气系统 ===== */
+const WEATHERS = [
+  { key: 'sunny',  icon: '☀️',  label: '晴天',  phrase: '🌞 今天阳光真好！小熊想出去玩～' },
+  { key: 'cloudy', icon: '⛅',  label: '多云',  phrase: '⛅ 天有点阴，小熊陪着你哦～' },
+  { key: 'rainy',  icon: '🌧️',  label: '下雨',  phrase: '🌧️ 下雨天在一起最温暖！小熊缩成一团～' },
+  { key: 'snowy',  icon: '❄️',  label: '下雪',  phrase: '❄️ 下雪啦！小熊要变成雪球了！' },
+  { key: 'windy',  icon: '🌬️',  label: '刮风',  phrase: '🌬️ 风好大！小熊的毛都乱了～' },
+  { key: 'night',  icon: '🌙',  label: '夜晚',  phrase: '🌙 夜深了，要好好休息哦，晚安～' },
+];
+let currentWeather = WEATHERS[0];
+
+function detectWeather() {
+  const h = new Date().getHours();
+  if (h >= 22 || h < 6) {
+    currentWeather = WEATHERS[5];
+  } else {
+    currentWeather = WEATHERS[Math.floor(Math.random() * 5)];
+  }
+  updateWeatherUI();
+  applyWeatherToDog();
+}
+
+function updateWeatherUI() {
+  const el = document.getElementById('weatherWidget');
+  if (el) el.innerHTML = `<span>${currentWeather.icon}</span><span>${currentWeather.label}</span>`;
+}
+
+function applyWeatherToDog() {
+  const dog = document.getElementById('dogBot');
+  if (!dog) return;
+  dog.classList.remove('weather-sunny','weather-cloudy','weather-rainy','weather-snowy','weather-windy','weather-night');
+  dog.classList.add('weather-' + currentWeather.key);
+}
+
+/* ===== 心情系统 ===== */
+const MOODS = [
+  { key: 'happy',   icon: '😊', label: '开心' },
+  { key: 'excited', icon: '🤩', label: '兴奋' },
+  { key: 'calm',    icon: '😌', label: '放松' },
+  { key: 'sleepy',  icon: '😴', label: '困了' },
+  { key: 'love',    icon: '🥰', label: '恋爱脑' },
+];
+let currentMood = MOODS[0];
+
+function updateMood() {
+  const w = [3, 2, 2, 1, 2];
+  if (currentWeather.key === 'sunny')  w[0] += 2;
+  if (currentWeather.key === 'night')  w[3] += 2;
+  if (affection > 60) w[4] += 2;
+  if (affection > 80) w[1] += 1;
+  const total = w.reduce((a,b)=>a+b, 0);
+  let r = Math.random() * total, idx = 0;
+  for (let i = 0; i < w.length; i++) { r -= w[i]; if (r <= 0) { idx = i; break; } }
+  currentMood = MOODS[idx];
+  updateMoodUI();
+  applyMoodToDog();
+}
+
+function updateMoodUI() {
+  const el = document.getElementById('moodWidget');
+  if (el) el.innerHTML = `<span>${currentMood.icon}</span><span>${currentMood.label}</span>`;
+}
+
+function applyMoodToDog() {
+  const dog = document.getElementById('dogBot');
+  if (!dog) return;
+  dog.classList.remove('mood-happy','mood-excited','mood-calm','mood-sleepy','mood-love');
+  dog.classList.add('mood-' + currentMood.key);
+  if (currentMood.key === 'sleepy') showBubbleText('😴 小熊困了……打个盹……zzzz');
+  else if (currentMood.key === 'love') showBubbleText('🥰 爱爱爱！今天小熊满脑子都是爱！');
+  else if (currentMood.key === 'excited') showBubbleText('🤩 今天小熊超级亢奋！！要爆炸了！');
+}
+
+/* ===== 好感度系统 ===== */
+let affection = parseInt(localStorage.getItem('dogAffection') || '0');
+let affectionMaxReached = localStorage.getItem('dogAffectionMax') === '1';
+
+const AFFECTION_GAINS = {
+  frisbee: 8, bone: 10, water: 7, pet: 12,
+  sing: 9, dance: 11, trick: 13, brush: 15,
+};
+
+function gainAffection(type) {
+  const gain = AFFECTION_GAINS[type] || 5;
+  affection = Math.min(100, affection + gain);
+  localStorage.setItem('dogAffection', affection);
+  updateAffectionUI();
+  if (affection >= 100 && !affectionMaxReached) {
+    affectionMaxReached = true;
+    localStorage.setItem('dogAffectionMax', '1');
+    setTimeout(triggerMaxAffection, 800);
+  }
+}
+
+function updateAffectionUI() {
+  const bar = document.getElementById('affectionBar');
+  const txt = document.getElementById('affectionNum');
+  if (bar) {
+    bar.style.width = affection + '%';
+    if (affection < 30)      bar.style.background = 'linear-gradient(90deg,#f9a8d4,#ec4899)';
+    else if (affection < 60) bar.style.background = 'linear-gradient(90deg,#f9a8d4,#e879f9)';
+    else if (affection < 90) bar.style.background = 'linear-gradient(90deg,#a78bfa,#ec4899)';
+    else                     bar.style.background = 'linear-gradient(90deg,#fbbf24,#f87171,#a78bfa)';
+  }
+  if (txt) txt.textContent = affection + '%';
+}
+
+function triggerMaxAffection() {
+  if (interactionLocked) return;
+  interactionLocked = true;
+  const svgEl = document.getElementById('dogSvg');
+  const dog   = document.getElementById('dogBot');
+  if (dogMoveTimer) { clearTimeout(dogMoveTimer); dogMoveTimer = null; }
+
+  showBubbleText('🥰🥰🥰 好感度满啦！！小熊超级爱你们！！', false);
+
+  dog.style.transition = 'left 1.5s ease, bottom 1.5s ease';
+  dog.style.left   = (window.innerWidth / 2 - 55) + 'px';
+  dog.style.bottom = '120px';
+
+  setTimeout(() => {
+    if (svgEl) svgEl.classList.add('dogBipedal');
+    playWoof();
+    setTimeout(() => playWoof(), 500);
+    setTimeout(() => playWoof(), 1000);
+
+    // 持续 6 秒后恢复漫游
+    setTimeout(() => {
+      if (svgEl) svgEl.classList.remove('dogBipedal');
+      interactionLocked = false;
+      showBubbleText('🐾 小熊永远爱你们！每次互动都让小熊更开心！');
+      scheduleDogMove();
+    }, 6000);
+  }, 1600);
+}
+
 /* ----- 自动移动 ----- */
 function initDog() {
   const dog = document.getElementById('dogBot');
@@ -794,6 +930,12 @@ function initDog() {
     dogPhraseIdx = (dogPhraseIdx + 1) % DOG_AUTO_PHRASES.length;
     showBubbleText(DOG_AUTO_PHRASES[dogPhraseIdx]);
   }, 18000);
+
+  detectWeather();
+  setInterval(detectWeather, 3600000);
+  setTimeout(updateMood, 2000);
+  setInterval(updateMood, 300000);
+  updateAffectionUI();
 }
 
 function moveDogTo(x, y) {
@@ -843,16 +985,32 @@ function openInteractionPanel() {
       <span>🐾 和小熊玩耍！</span>
       <button type="button" onclick="document.getElementById('dogInteractPanel').classList.add('hidden')">✕</button>
     </div>
+    <div class="interact-widgets">
+      <div id="weatherWidget" class="widget-badge">☀️ 晴天</div>
+      <div id="moodWidget" class="widget-badge">😊 开心</div>
+    </div>
+    <div class="affection-row">
+      <span class="affection-label">💕 好感度</span>
+      <div class="affection-track"><div id="affectionBar" class="affection-fill"></div></div>
+      <span id="affectionNum" class="affection-num">0%</span>
+    </div>
     <div class="interact-buttons">
       <button type="button" class="interact-btn" onclick="dogInteract('frisbee')">🥏 扔飞盘</button>
       <button type="button" class="interact-btn" onclick="dogInteract('bone')">🦴 喂骨头</button>
       <button type="button" class="interact-btn" onclick="dogInteract('water')">💧 喂水</button>
-      <button type="button" class="interact-btn" onclick="dogInteract('pet')">🤚 摸摸小熊</button>
+      <button type="button" class="interact-btn" onclick="dogInteract('pet')">🤚 摸摸</button>
+      <button type="button" class="interact-btn" onclick="dogInteract('sing')">🎵 唱歌</button>
+      <button type="button" class="interact-btn" onclick="dogInteract('dance')">💃 跳舞</button>
+      <button type="button" class="interact-btn" onclick="dogInteract('trick')">🎪 杂技</button>
+      <button type="button" class="interact-btn" onclick="dogInteract('brush')">✂️ 梳毛</button>
     </div>
     <div id="interactStatus" class="interact-status"></div>
     <button type="button" class="interact-chat-btn" onclick="document.getElementById('dogInteractPanel').classList.add('hidden'); openDogChat()">💬 和小熊聊天</button>
   `;
   document.getElementById('dogBot').appendChild(panel);
+  updateWeatherUI();
+  updateMoodUI();
+  updateAffectionUI();
 }
 
 const INTERACT_RESPONSES = {
@@ -899,6 +1057,50 @@ const INTERACT_RESPONSES = {
     duration: 3200,
     emoji: '❤️',
     prop: 'pet',
+  },
+  sing: {
+    messages: [
+      '🎵 汪～汪～汪汪～小熊会唱歌！好听吧！',
+      '🎶 哆来咪……哆来咪～小熊音乐天赋MAX！',
+      '🎵 为最爱的你们唱一首～小熊全力演出！',
+    ],
+    dogAnim: 'dogDance',
+    duration: 3000,
+    emoji: '🎵',
+    prop: null,
+  },
+  dance: {
+    messages: [
+      '💃 小熊最拿手的！看好了！踢踢踏踏踢！',
+      '🕺 转～圈～转～小熊跳舞超好看的吧！',
+      '💃 为你们献上小熊的独家舞步！啪啪啪！',
+    ],
+    dogAnim: 'dogRoll',
+    duration: 3000,
+    emoji: '💃',
+    prop: null,
+  },
+  trick: {
+    messages: [
+      '🎪 翻跟头！小熊会杂技！砰！！看到了吗！',
+      '✨ 接飞碟、翻跟头、单腿站……小熊全都会！',
+      '🎪 变魔术！现在你看到了……消失！哈哈汪！',
+    ],
+    dogAnim: 'dogRoll',
+    duration: 2800,
+    emoji: '✨',
+    prop: null,
+  },
+  brush: {
+    messages: [
+      '✂️ 梳毛毛～小熊的卷毛被梳得好顺滑好好看！',
+      '✂️ 轻轻梳～哦好舒服……小熊要睡着了……',
+      '✂️ 梳梳梳～现在小熊是全世界最帅的卷毛犬！',
+    ],
+    dogAnim: 'dogShake',
+    duration: 3000,
+    emoji: '✨',
+    prop: null,
   },
 };
 
@@ -964,8 +1166,8 @@ function dogInteract(type) {
   playWoof();
   showBubbleText(msg, false);
 
-  // 1. 先显示道具动画
-  spawnProp(config.prop, dog);
+  // 1. 先显示道具动画（部分互动无道具）
+  if (config.prop) spawnProp(config.prop, dog);
 
   // 2. 短延迟后触发小狗身体反应
   setTimeout(() => {
@@ -973,10 +1175,11 @@ function dogInteract(type) {
     if (config.dogAnim === 'dogRun') runAcrossScreen();
   }, 400);
 
-  // 3. 互动结束后弹出表情包
+  // 3. 互动结束后弹出表情包并累积好感度
   setTimeout(() => {
     if (svgEl) svgEl.classList.remove(config.dogAnim);
     showDogEmoji(config.emoji);
+    gainAffection(type);
     const bubble = document.getElementById('dogBubble');
     if (bubble) bubble.classList.add('hidden');
     interactionLocked = false;

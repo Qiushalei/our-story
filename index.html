@@ -249,92 +249,212 @@
 <div id="dogBot">
   <div id="dogBubble" class="dog-bubble hidden"></div>
   <div id="dogBody" onclick="dogClick()">
-    <svg id="dogSvg" viewBox="0 0 90 95" xmlns="http://www.w3.org/2000/svg" width="90" height="95">
+    <svg id="dogSvg" viewBox="0 0 120 130" xmlns="http://www.w3.org/2000/svg" width="110" height="120">
+      <defs>
+        <filter id="furFilter" x="-20%" y="-20%" width="140%" height="140%">
+          <feTurbulence type="fractalNoise" baseFrequency="0.9 0.4" numOctaves="4" seed="2" result="noise"/>
+          <feDisplacementMap in="SourceGraphic" in2="noise" scale="2.5" xChannelSelector="R" yChannelSelector="G"/>
+        </filter>
+        <filter id="furFilter2" x="-20%" y="-20%" width="140%" height="140%">
+          <feTurbulence type="fractalNoise" baseFrequency="0.7 0.3" numOctaves="3" seed="5" result="noise"/>
+          <feDisplacementMap in="SourceGraphic" in2="noise" scale="1.8" xChannelSelector="R" yChannelSelector="G"/>
+        </filter>
+        <radialGradient id="eyeGrad" cx="35%" cy="30%" r="60%">
+          <stop offset="0%" stop-color="#4a2800"/>
+          <stop offset="60%" stop-color="#1a0800"/>
+          <stop offset="100%" stop-color="#000"/>
+        </radialGradient>
+        <radialGradient id="noseGrad" cx="40%" cy="35%" r="65%">
+          <stop offset="0%" stop-color="#3d2010"/>
+          <stop offset="100%" stop-color="#1a0800"/>
+        </radialGradient>
+        <radialGradient id="bodyGrad" cx="45%" cy="40%" r="60%">
+          <stop offset="0%" stop-color="#f5c898"/>
+          <stop offset="100%" stop-color="#d4855a"/>
+        </radialGradient>
+        <radialGradient id="headGrad" cx="45%" cy="35%" r="60%">
+          <stop offset="0%" stop-color="#f8d0a8"/>
+          <stop offset="100%" stop-color="#d4855a"/>
+        </radialGradient>
+      </defs>
+
       <!-- 尾巴 -->
-      <path id="dogTail" d="M68 56 Q86 44 80 28" stroke="#d4956a" stroke-width="6" fill="none" stroke-linecap="round"/>
+      <g filter="url(#furFilter2)">
+        <path id="dogTail" d="M88 76 Q110 58 104 36" stroke="#c8804a" stroke-width="8" fill="none" stroke-linecap="round"/>
+        <path d="M88 76 Q110 58 104 36" stroke="#e0a870" stroke-width="5" fill="none" stroke-linecap="round" opacity="0.7"/>
+        <path d="M92 66 Q115 54 108 38" stroke="#f0c088" stroke-width="1.2" fill="none" stroke-linecap="round" opacity="0.8"/>
+        <path d="M90 70 Q112 60 106 42" stroke="#d49060" stroke-width="1" fill="none" stroke-linecap="round" opacity="0.6"/>
+        <path d="M95 62 Q116 50 110 34" stroke="#f5d0a0" stroke-width="0.8" fill="none" stroke-linecap="round" opacity="0.7"/>
+      </g>
 
-      <!-- 身体底色 -->
-      <ellipse cx="42" cy="62" rx="24" ry="18" fill="#e8b48a"/>
-      <!-- 身体卷毛：密集小球堆出蓬松感 -->
-      <circle cx="22" cy="62" r="8" fill="#f0c8a0"/>
-      <circle cx="30" cy="55" r="8" fill="#f0c8a0"/>
-      <circle cx="40" cy="52" r="8" fill="#f0c8a0"/>
-      <circle cx="50" cy="54" r="8" fill="#f0c8a0"/>
-      <circle cx="60" cy="59" r="8" fill="#f0c8a0"/>
-      <circle cx="24" cy="70" r="8" fill="#e8b48a"/>
-      <circle cx="35" cy="68" r="8" fill="#edc090"/>
-      <circle cx="46" cy="66" r="8" fill="#edc090"/>
-      <circle cx="57" cy="67" r="8" fill="#e8b48a"/>
-      <!-- 身体阴影层：让球感更立体 -->
-      <circle cx="22" cy="62" r="8" fill="#d4956a" opacity="0.25"/>
-      <circle cx="60" cy="59" r="8" fill="#d4956a" opacity="0.25"/>
-      <circle cx="30" cy="55" r="7" fill="#fff" opacity="0.12"/>
-      <circle cx="50" cy="54" r="7" fill="#fff" opacity="0.12"/>
-      <circle cx="40" cy="52" r="7" fill="#fff" opacity="0.15"/>
+      <!-- 身体 -->
+      <g filter="url(#furFilter)">
+        <ellipse cx="54" cy="84" rx="30" ry="24" fill="url(#bodyGrad)"/>
+        <circle cx="30" cy="84" r="11" fill="#edb882" opacity="0.9"/>
+        <circle cx="42" cy="74" r="11" fill="#f0c090" opacity="0.9"/>
+        <circle cx="56" cy="71" r="11" fill="#f2c898" opacity="0.9"/>
+        <circle cx="68" cy="74" r="11" fill="#f0c090" opacity="0.9"/>
+        <circle cx="78" cy="81" r="11" fill="#edb882" opacity="0.9"/>
+        <circle cx="32" cy="95" r="10" fill="#e8b070"/>
+        <circle cx="46" cy="92" r="10" fill="#edb880"/>
+        <circle cx="60" cy="91" r="10" fill="#edb880"/>
+        <circle cx="74" cy="93" r="10" fill="#e8b070"/>
+        <circle cx="35" cy="80" r="7.5" fill="#f5cc9a" opacity="0.85"/>
+        <circle cx="48" cy="72" r="7.5" fill="#f8d4a8" opacity="0.85"/>
+        <circle cx="60" cy="70" r="7.5" fill="#fad8ac" opacity="0.85"/>
+        <circle cx="72" cy="73" r="7.5" fill="#f8d4a8" opacity="0.85"/>
+        <circle cx="76" cy="83" r="7" fill="#f5cc9a" opacity="0.85"/>
+        <!-- 身体毛丝 -->
+        <path d="M28 82 Q26 78 29 74" stroke="#c87840" stroke-width="0.7" fill="none" opacity="0.5"/>
+        <path d="M40 73 Q39 68 42 64" stroke="#c87840" stroke-width="0.7" fill="none" opacity="0.4"/>
+        <path d="M52 70 Q51 65 54 61" stroke="#d08848" stroke-width="0.7" fill="none" opacity="0.4"/>
+        <path d="M64 71 Q64 66 67 62" stroke="#c87840" stroke-width="0.7" fill="none" opacity="0.4"/>
+        <path d="M80 83 Q82 78 80 74" stroke="#c07838" stroke-width="0.7" fill="none" opacity="0.5"/>
+        <path d="M44 72 Q46 67 50 65" stroke="#fff" stroke-width="0.6" fill="none" opacity="0.25"/>
+        <path d="M56 70 Q58 65 62 63" stroke="#fff" stroke-width="0.6" fill="none" opacity="0.2"/>
+        <circle cx="30" cy="84" r="11" fill="#b86030" opacity="0.15"/>
+        <circle cx="78" cy="81" r="11" fill="#b86030" opacity="0.15"/>
+      </g>
 
-      <!-- 头底色 -->
-      <circle cx="42" cy="36" r="22" fill="#e8b48a"/>
-      <!-- 头部卷毛：密集小球 -->
-      <circle cx="22" cy="30" r="9" fill="#f5d0a8"/>
-      <circle cx="30" cy="20" r="9" fill="#f5d0a8"/>
-      <circle cx="42" cy="17" r="9" fill="#f5d0a8"/>
-      <circle cx="54" cy="20" r="9" fill="#f5d0a8"/>
-      <circle cx="62" cy="30" r="9" fill="#f5d0a8"/>
-      <circle cx="20" cy="40" r="8" fill="#f0c8a0"/>
-      <circle cx="64" cy="40" r="8" fill="#f0c8a0"/>
-      <circle cx="26" cy="48" r="7" fill="#edc090"/>
-      <circle cx="58" cy="48" r="7" fill="#edc090"/>
-      <!-- 头部高光让卷毛更蓬松 -->
-      <circle cx="30" cy="20" r="5" fill="#fff" opacity="0.18"/>
-      <circle cx="42" cy="17" r="5" fill="#fff" opacity="0.2"/>
-      <circle cx="54" cy="20" r="5" fill="#fff" opacity="0.18"/>
-      <circle cx="22" cy="30" r="4" fill="#fff" opacity="0.14"/>
-      <circle cx="62" cy="30" r="4" fill="#fff" opacity="0.14"/>
-      <!-- 阴影层 -->
-      <circle cx="20" cy="40" r="8" fill="#c8804a" opacity="0.2"/>
-      <circle cx="64" cy="40" r="8" fill="#c8804a" opacity="0.2"/>
+      <!-- 左耳 -->
+      <g filter="url(#furFilter)">
+        <ellipse cx="22" cy="34" rx="13" ry="16" fill="#c8784a" transform="rotate(-15 22 34)"/>
+        <circle cx="18" cy="24" r="9" fill="#d48858"/>
+        <circle cx="14" cy="32" r="8" fill="#d08050"/>
+        <circle cx="22" cy="20" r="8" fill="#dc9060"/>
+        <circle cx="28" cy="28" r="7" fill="#d88858"/>
+        <path d="M14 28 Q12 22 15 17" stroke="#a05828" stroke-width="0.8" fill="none" opacity="0.6"/>
+        <path d="M19 22 Q18 16 21 12" stroke="#a85e30" stroke-width="0.8" fill="none" opacity="0.5"/>
+        <path d="M24 21 Q24 15 27 11" stroke="#a05828" stroke-width="0.8" fill="none" opacity="0.5"/>
+        <circle cx="18" cy="24" r="5" fill="#fff" opacity="0.15"/>
+        <path d="M16 22 Q17 18 20 16" stroke="#fff" stroke-width="0.7" fill="none" opacity="0.3"/>
+      </g>
 
-      <!-- 左耳（卷毛堆叠） -->
-      <circle cx="16" cy="26" r="9" fill="#d4956a"/>
-      <circle cx="13" cy="20" r="7" fill="#e0a87a"/>
-      <circle cx="19" cy="18" r="7" fill="#e0a87a"/>
-      <circle cx="12" cy="28" r="6" fill="#e0a87a"/>
-      <circle cx="13" cy="20" r="4" fill="#fff" opacity="0.15"/>
-      <circle cx="19" cy="18" r="4" fill="#fff" opacity="0.12"/>
+      <!-- 右耳 -->
+      <g filter="url(#furFilter)">
+        <ellipse cx="88" cy="34" rx="13" ry="16" fill="#c8784a" transform="rotate(15 88 34)"/>
+        <circle cx="92" cy="24" r="9" fill="#d48858"/>
+        <circle cx="96" cy="32" r="8" fill="#d08050"/>
+        <circle cx="88" cy="20" r="8" fill="#dc9060"/>
+        <circle cx="82" cy="28" r="7" fill="#d88858"/>
+        <path d="M96 28 Q98 22 95 17" stroke="#a05828" stroke-width="0.8" fill="none" opacity="0.6"/>
+        <path d="M91 22 Q92 16 89 12" stroke="#a85e30" stroke-width="0.8" fill="none" opacity="0.5"/>
+        <path d="M86 21 Q86 15 83 11" stroke="#a05828" stroke-width="0.8" fill="none" opacity="0.5"/>
+        <circle cx="92" cy="24" r="5" fill="#fff" opacity="0.15"/>
+        <path d="M94 22 Q93 18 90 16" stroke="#fff" stroke-width="0.7" fill="none" opacity="0.3"/>
+      </g>
 
-      <!-- 右耳（卷毛堆叠） -->
-      <circle cx="68" cy="26" r="9" fill="#d4956a"/>
-      <circle cx="65" cy="18" r="7" fill="#e0a87a"/>
-      <circle cx="71" cy="20" r="7" fill="#e0a87a"/>
-      <circle cx="72" cy="28" r="6" fill="#e0a87a"/>
-      <circle cx="71" cy="20" r="4" fill="#fff" opacity="0.15"/>
-      <circle cx="65" cy="18" r="4" fill="#fff" opacity="0.12"/>
+      <!-- 头部 -->
+      <g filter="url(#furFilter)">
+        <circle cx="55" cy="48" r="30" fill="url(#headGrad)"/>
+        <!-- 头顶大卷 -->
+        <circle cx="32" cy="38" r="13" fill="#f0c898" opacity="0.9"/>
+        <circle cx="42" cy="26" r="13" fill="#f5d0a8" opacity="0.9"/>
+        <circle cx="55" cy="22" r="13" fill="#f8d8b0" opacity="0.9"/>
+        <circle cx="68" cy="26" r="13" fill="#f5d0a8" opacity="0.9"/>
+        <circle cx="78" cy="38" r="13" fill="#f0c898" opacity="0.9"/>
+        <circle cx="28" cy="52" r="11" fill="#ecc090"/>
+        <circle cx="82" cy="52" r="11" fill="#ecc090"/>
+        <circle cx="35" cy="62" r="10" fill="#e8b880"/>
+        <circle cx="75" cy="62" r="10" fill="#e8b880"/>
+        <!-- 头顶中卷 -->
+        <circle cx="37" cy="33" r="8" fill="#fad8b0" opacity="0.85"/>
+        <circle cx="48" cy="22" r="8" fill="#fce0b8" opacity="0.85"/>
+        <circle cx="60" cy="19" r="8.5" fill="#fde4bc" opacity="0.85"/>
+        <circle cx="72" cy="23" r="8" fill="#fce0b8" opacity="0.85"/>
+        <circle cx="76" cy="34" r="7.5" fill="#fad8b0" opacity="0.85"/>
+        <circle cx="32" cy="46" r="7" fill="#f5cc9a" opacity="0.8"/>
+        <circle cx="78" cy="46" r="7" fill="#f5cc9a" opacity="0.8"/>
+        <!-- 头发丝（放射状细线） -->
+        <path d="M38 30 Q36 23 40 17" stroke="#c07838" stroke-width="0.9" fill="none" opacity="0.55"/>
+        <path d="M43 25 Q42 18 46 12" stroke="#c88040" stroke-width="0.9" fill="none" opacity="0.5"/>
+        <path d="M52 22 Q52 14 55 9" stroke="#c88040" stroke-width="0.9" fill="none" opacity="0.5"/>
+        <path d="M60 22 Q61 14 64 10" stroke="#c07838" stroke-width="0.9" fill="none" opacity="0.5"/>
+        <path d="M68 26 Q70 19 73 14" stroke="#c07838" stroke-width="0.9" fill="none" opacity="0.5"/>
+        <path d="M33 40 Q30 33 32 26" stroke="#b87030" stroke-width="0.8" fill="none" opacity="0.5"/>
+        <path d="M77 40 Q80 33 78 26" stroke="#b87030" stroke-width="0.8" fill="none" opacity="0.5"/>
+        <!-- 额前碎毛 -->
+        <path d="M45 30 Q43 24 47 20" stroke="#d09050" stroke-width="0.7" fill="none" opacity="0.6"/>
+        <path d="M50 27 Q49 20 53 17" stroke="#d09050" stroke-width="0.7" fill="none" opacity="0.6"/>
+        <path d="M57 27 Q57 20 61 17" stroke="#d09050" stroke-width="0.7" fill="none" opacity="0.6"/>
+        <path d="M62 29 Q63 22 67 19" stroke="#c88040" stroke-width="0.7" fill="none" opacity="0.55"/>
+        <!-- 高光毛丝 -->
+        <path d="M47 24 Q48 18 52 14" stroke="#fff" stroke-width="0.7" fill="none" opacity="0.22"/>
+        <path d="M55 21 Q55 14 58 10" stroke="#fff" stroke-width="0.7" fill="none" opacity="0.2"/>
+        <path d="M42 28 Q41 22 44 17" stroke="#fff" stroke-width="0.6" fill="none" opacity="0.18"/>
+        <!-- 脸颊细毛 -->
+        <path d="M29 50 Q25 47 27 43" stroke="#c07838" stroke-width="0.7" fill="none" opacity="0.45"/>
+        <path d="M31 56 Q27 53 28 49" stroke="#c07838" stroke-width="0.7" fill="none" opacity="0.4"/>
+        <path d="M81 50 Q85 47 83 43" stroke="#c07838" stroke-width="0.7" fill="none" opacity="0.45"/>
+        <path d="M79 56 Q83 53 82 49" stroke="#c07838" stroke-width="0.7" fill="none" opacity="0.4"/>
+      </g>
 
-      <!-- 眼睛 -->
-      <circle cx="33" cy="37" r="5" fill="#1a0800"/>
-      <circle cx="51" cy="37" r="5" fill="#1a0800"/>
-      <circle cx="34.5" cy="35" r="2" fill="white"/>
-      <circle cx="52.5" cy="35" r="2" fill="white"/>
-      <!-- 眼睛光泽 -->
-      <circle cx="35.5" cy="38" r="1" fill="white" opacity="0.5"/>
-      <circle cx="53.5" cy="38" r="1" fill="white" opacity="0.5"/>
+      <!-- 左眼 -->
+      <g>
+        <circle cx="43" cy="48" r="7" fill="#fff" opacity="0.9"/>
+        <circle cx="43" cy="48" r="6" fill="url(#eyeGrad)"/>
+        <circle cx="43" cy="48" r="3.5" fill="#0d0500"/>
+        <circle cx="44.8" cy="46.2" r="1.8" fill="white" opacity="0.95"/>
+        <circle cx="41.8" cy="49.5" r="0.8" fill="white" opacity="0.4"/>
+        <path d="M37 44 Q38 41 40 43" stroke="#1a0800" stroke-width="0.9" fill="none" opacity="0.7"/>
+        <path d="M39 42 Q40.5 39 42.5 41" stroke="#1a0800" stroke-width="0.9" fill="none" opacity="0.7"/>
+        <path d="M42 41.5 Q43.5 38.5 45 41" stroke="#1a0800" stroke-width="0.9" fill="none" opacity="0.7"/>
+        <path d="M45 42 Q47 39.5 48 42" stroke="#1a0800" stroke-width="0.8" fill="none" opacity="0.6"/>
+      </g>
+      <!-- 右眼 -->
+      <g>
+        <circle cx="67" cy="48" r="7" fill="#fff" opacity="0.9"/>
+        <circle cx="67" cy="48" r="6" fill="url(#eyeGrad)"/>
+        <circle cx="67" cy="48" r="3.5" fill="#0d0500"/>
+        <circle cx="68.8" cy="46.2" r="1.8" fill="white" opacity="0.95"/>
+        <circle cx="65.8" cy="49.5" r="0.8" fill="white" opacity="0.4"/>
+        <path d="M61 44 Q62 41 64 43" stroke="#1a0800" stroke-width="0.9" fill="none" opacity="0.7"/>
+        <path d="M63 42 Q64.5 39 66.5 41" stroke="#1a0800" stroke-width="0.9" fill="none" opacity="0.7"/>
+        <path d="M66 41.5 Q67.5 38.5 69 41" stroke="#1a0800" stroke-width="0.9" fill="none" opacity="0.7"/>
+        <path d="M69 42 Q71 39.5 72 42" stroke="#1a0800" stroke-width="0.8" fill="none" opacity="0.6"/>
+      </g>
 
       <!-- 鼻子 -->
-      <ellipse cx="42" cy="44" rx="5" ry="4" fill="#2a1000"/>
-      <ellipse cx="41" cy="43" rx="2" ry="1.5" fill="white" opacity="0.3"/>
+      <ellipse cx="55" cy="58" rx="7" ry="5.5" fill="url(#noseGrad)"/>
+      <ellipse cx="53.5" cy="56.5" rx="2.5" ry="1.8" fill="white" opacity="0.28"/>
+      <path d="M55 63 L55 67" stroke="#2a1000" stroke-width="1.2" stroke-linecap="round" opacity="0.5"/>
 
       <!-- 嘴 -->
-      <path d="M37 48 Q42 53 47 48" stroke="#2a1000" stroke-width="2" fill="none" stroke-linecap="round"/>
+      <path id="dogMouth" d="M47 67 Q55 73 63 67" stroke="#2a1000" stroke-width="2" fill="none" stroke-linecap="round"/>
 
-      <!-- 腿 -->
-      <rect x="28" y="76" width="10" height="14" rx="5" fill="#e0a87a"/>
-      <rect x="52" y="76" width="10" height="14" rx="5" fill="#e0a87a"/>
-      <!-- 腿上卷毛感 -->
-      <circle cx="33" cy="77" r="5" fill="#f0c8a0"/>
-      <circle cx="57" cy="77" r="5" fill="#f0c8a0"/>
-      <!-- 爪子 -->
-      <ellipse cx="33" cy="90" rx="7" ry="4" fill="#d4956a"/>
-      <ellipse cx="57" cy="90" rx="7" ry="4" fill="#d4956a"/>
+      <!-- 胡须 -->
+      <line x1="34" y1="61" x2="22" y2="59" stroke="#d4a870" stroke-width="0.8" opacity="0.6" stroke-linecap="round"/>
+      <line x1="34" y1="64" x2="21" y2="65" stroke="#d4a870" stroke-width="0.8" opacity="0.5" stroke-linecap="round"/>
+      <line x1="34" y1="67" x2="23" y2="70" stroke="#d4a870" stroke-width="0.7" opacity="0.45" stroke-linecap="round"/>
+      <line x1="76" y1="61" x2="88" y2="59" stroke="#d4a870" stroke-width="0.8" opacity="0.6" stroke-linecap="round"/>
+      <line x1="76" y1="64" x2="89" y2="65" stroke="#d4a870" stroke-width="0.8" opacity="0.5" stroke-linecap="round"/>
+      <line x1="76" y1="67" x2="87" y2="70" stroke="#d4a870" stroke-width="0.7" opacity="0.45" stroke-linecap="round"/>
+
+      <!-- 腿和爪子 -->
+      <g filter="url(#furFilter2)">
+        <rect x="36" y="102" width="14" height="20" rx="7" fill="#e0a870"/>
+        <circle cx="43" cy="103" r="7" fill="#f0c090"/>
+        <path d="M37 108 Q35 104 38 100" stroke="#c07838" stroke-width="0.8" fill="none" opacity="0.5"/>
+        <path d="M42 106 Q41 101 44 98" stroke="#c07838" stroke-width="0.8" fill="none" opacity="0.45"/>
+        <path d="M47 108 Q49 104 47 100" stroke="#c07838" stroke-width="0.8" fill="none" opacity="0.5"/>
+        <ellipse cx="43" cy="122" rx="9" ry="5" fill="#d4956a"/>
+        <circle cx="37" cy="121" r="3.5" fill="#cc8858"/>
+        <circle cx="43" cy="123" r="3.5" fill="#cc8858"/>
+        <circle cx="49" cy="121" r="3.5" fill="#cc8858"/>
+        <rect x="66" y="102" width="14" height="20" rx="7" fill="#e0a870"/>
+        <circle cx="73" cy="103" r="7" fill="#f0c090"/>
+        <path d="M67 108 Q65 104 68 100" stroke="#c07838" stroke-width="0.8" fill="none" opacity="0.5"/>
+        <path d="M72 106 Q71 101 74 98" stroke="#c07838" stroke-width="0.8" fill="none" opacity="0.45"/>
+        <path d="M77 108 Q79 104 77 100" stroke="#c07838" stroke-width="0.8" fill="none" opacity="0.5"/>
+        <ellipse cx="73" cy="122" rx="9" ry="5" fill="#d4956a"/>
+        <circle cx="67" cy="121" r="3.5" fill="#cc8858"/>
+        <circle cx="73" cy="123" r="3.5" fill="#cc8858"/>
+        <circle cx="79" cy="121" r="3.5" fill="#cc8858"/>
+      </g>
+
+      <!-- 腮红 -->
+      <ellipse cx="36" cy="60" rx="7" ry="4" fill="#ff9090" opacity="0.18"/>
+      <ellipse cx="74" cy="60" rx="7" ry="4" fill="#ff9090" opacity="0.18"/>
     </svg>
   </div>
 </div>
