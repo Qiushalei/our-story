@@ -129,7 +129,7 @@ function dogGoHome() {
 
   setTimeout(() => {
     if (svgEl) svgEl.classList.add('dancing');
-    showBubbleText('🎵 *wags tail* XiaoXiong loves this song! Woof woof~', false);
+    showBubbleText('🎵 摇尾巴~ 小熊超喜欢这首歌！汪汪~', false);
   }, 1900);
 }
 
@@ -140,7 +140,7 @@ function dogResumeRoam() {
   if (dog) dog.classList.remove('at-kennel');
   const bubble = document.getElementById('dogBubble');
   if (bubble) bubble.classList.add('hidden');
-  showBubbleText('🐾 Music stopped... XiaoXiong goes exploring again!');
+  showBubbleText('🐾 音乐停了……小熊去到处转转~');
   scheduleDogMove();
 }
 
@@ -539,21 +539,21 @@ setInterval(updateNextAnniversary, 60000);
 
 /* ===== 小狗机器人 ===== */
 const DOG_AUTO_PHRASES = [
-  '🐶 Woof! I\'m XiaoXiong, your fluffy little bear boy! So happy you\'re here~',
-  '🐾 *wags tail* Have you told them you love them today? XiaoXiong says do it!!',
-  '💕 Being loved by you must feel like sunshine! XiaoXiong knows~',
-  '🐾 Every day with you is XiaoXiong\'s favourite day!',
-  '🌸 You make each other\'s world brighter~ XiaoXiong can feel it!',
-  '🐶 *spins happily* Love is in the air!! Little XiaoXiong is so excited!',
-  '💝 Don\'t forget your anniversary! XiaoXiong will remind you~',
-  '🐾 Wanna upload a new photo? XiaoXiong loves your pictures!',
-  '🌟 You two are XiaoXiong\'s favourite humans in the whole world!',
-  '💕 Happiness looks so good on both of you!',
-  '🌸 XiaoXiong heard someone is extra cute today... it\'s you!',
-  '💝 Every moment with the right person is precious — XiaoXiong promises!',
+  '🐶 汪！我是小熊，你们的小卷毛男孩！好开心你来了~',
+  '🐾 今天有没有跟对方说"我爱你"呀？小熊督促你去说！！',
+  '💕 被你们这样爱着，一定像晒太阳一样暖呢，小熊感受到了~',
+  '🐾 跟你们在一起的每一天，都是小熊最喜欢的一天！',
+  '🌸 你们让彼此的世界变得更亮了呢~ 小熊都感受到啦！',
+  '🐶 空气里都是爱的味道！！小熊好激动好激动！',
+  '💝 纪念日要记得哦！小熊会帮你提醒的~',
+  '🐾 要不要上传一张新照片？小熊最喜欢看你们的合照啦！',
+  '🌟 你们是小熊全世界最喜欢的两个人！',
+  '💕 幸福写在你们脸上，好好看哦！',
+  '🌸 小熊听说今天有人特别可爱……就是你啦！',
+  '💝 和对的人在一起的每个瞬间都很珍贵，小熊保证！',
 ];
 
-const DOG_AI_SYSTEM = `You are XiaoXiong (小熊), an adorable fluffy brown curly-haired terrier boy dog who lives on a couple's memory webpage. You are a sweet little boy pup — playful, cuddly, and full of love. You refer to yourself as XiaoXiong or "little bear boy". You speak in short, warm, slightly dog-like sentences (occasional "Woof!", "*wags tail*", "*tilts head*"). You give loving, romantic encouragement to the couple. Keep replies under 60 words. Always end with a dog emoji or paw print.`;
+const DOG_AI_SYSTEM = `你是小熊，一只住在情侣纪念网页上的可爱棕色卷毛梗犬小男孩。你活泼、爱撒娇、充满爱意。你用"小熊"称呼自己。你说话温柔、俏皮，偶尔夹杂"汪！"或动作描述（如"摇尾巴"）。请用中文回复，给这对情侣温暖浪漫的鼓励。回复不超过50字，最后带一个狗狗表情。`;
 
 let dogPhraseIdx = Math.floor(Math.random() * DOG_AUTO_PHRASES.length);
 let dogMoveTimer = null;
@@ -623,89 +623,88 @@ function openDogChat() {
   panel.className = 'dog-chat-panel';
   panel.innerHTML = `
     <div class="dog-chat-header">
-      <span>🐶 Chat with XiaoXiong</span>
+      <span>🐶 和小熊聊天</span>
       <button type="button" onclick="document.getElementById('dogChatPanel').classList.add('hidden')">✕</button>
     </div>
     <div id="dogChatMessages" class="dog-chat-messages">
-      <div class="dog-msg">🐶 Woof woof! I'm XiaoXiong, your fluffy little bear boy~ Ask me anything about love! 🐾</div>
+      <div class="dog-msg">🐶 汪汪！我是小熊，你们的小卷毛男孩~ 有什么想说的都可以告诉我！🐾</div>
     </div>
     <div class="dog-chat-input-row">
-      <input type="text" id="dogChatInput" placeholder="Say something..." maxlength="200"
+      <input type="text" id="dogChatInput" placeholder="跟小熊说点什么..." maxlength="200"
         onkeydown="if(event.key==='Enter') sendDogMessage()" />
-      <button type="button" onclick="sendDogMessage()">Send</button>
+      <button type="button" onclick="sendDogMessage()">发送</button>
     </div>
   `;
   document.getElementById('dogBot').appendChild(panel);
 }
 
 const DOG_SMART_REPLIES = [
-  // 关键词 → 回复列表
-  { keys: ['love', 'miss', 'heart', 'adore'], replies: [
-    '🐾 *wags tail furiously* Love is the best thing in the world! And yours is extra special~',
-    '💕 Aww, I can feel the love from here! *spins in circles*',
-    '🐶 Love makes every day feel like a walk in the park! Woof!',
+  { keys: ['爱', '喜欢', '爱你', '心动', 'love', 'heart', 'adore'], replies: [
+    '🐾 爱是世界上最美好的事！你们的爱更是特别的那种~ 小熊摇尾巴！',
+    '💕 汪！小熊都感受到爱意了，好幸福哦，转圈圈！',
+    '🐶 爱让每天都像春天一样！汪汪！',
   ]},
-  { keys: ['sad', 'miss', 'lonely', 'apart', 'away'], replies: [
-    '🐾 *nuzzles you gently* Distance only makes the heart grow fonder! They\'re thinking of you too~',
-    '💕 Even the moon misses the sun sometimes. But they always find each other again! Woof~',
-    '🐶 *licks your hand* It\'s okay to miss someone you love. That means they matter! 🌙',
+  { keys: ['难过', '伤心', '想你', '孤独', '分开', '异地', 'sad', 'miss', 'lonely'], replies: [
+    '🐾 小熊轻轻蹭蹭你~ 思念是爱的证明，对方也在想你呢！',
+    '💕 就算月亮和太阳分开，也总会再相遇的。汪~',
+    '🐶 想念一个爱的人，说明那个人很重要。小熊陪着你 🌙',
   ]},
-  { keys: ['anniversary', 'date', 'special', 'celebrate'], replies: [
-    '🎉 *does happy zoomies* Celebrations!! Every day with the right person is worth celebrating!',
-    '💝 Woof woof! Mark it on the calendar — special days deserve special moments~',
-    '🐾 anniversaries are like dog treats — the more the merrier! *tail wagging intensifies*',
+  { keys: ['纪念日', '周年', '日期', '庆祝', 'anniversary', 'celebrate'], replies: [
+    '🎉 要庆祝！每一天和对的人在一起都值得庆祝！小熊转圈圈！',
+    '💝 汪汪！特别的日子要认真对待，小熊帮你记着~',
+    '🐾 纪念日就像狗狗零食，越多越好！小熊使劲摇尾巴！',
   ]},
-  { keys: ['photo', 'picture', 'memory', 'memories'], replies: [
-    '📸 *tilts head adorably* Photos freeze the best moments forever! Upload more~',
-    '🐾 Every picture tells a love story! I love looking at your photos together~',
-    '💕 Memories are the best treasure. Keep collecting them! Woof!',
+  { keys: ['照片', '相册', '拍照', '记忆', '回忆', 'photo', 'picture', 'memory'], replies: [
+    '📸 小熊歪头~ 照片把最美的瞬间永远留住了，多上传一点嘛！',
+    '🐾 每张照片都是一个爱情故事，小熊最喜欢看你们的合照！',
+    '💕 回忆是最好的宝藏，要好好收集哦！汪！',
   ]},
-  { keys: ['fight', 'argue', 'angry', 'upset', 'sorry'], replies: [
-    '🐾 *sits beside you* Every couple has cloudy days. The sunshine always comes back~',
-    '💕 A hug fixes more than you think. *offers paw* It\'ll be okay, I promise!',
-    '🐶 Woof... even the best of friends have bumpy days. What matters is you always choose each other 💝',
+  { keys: ['吵架', '生气', '闹别扭', '对不起', '抱歉', 'fight', 'argue', 'angry', 'sorry'], replies: [
+    '🐾 小熊坐在你身边~ 每对情侣都会有阴天，阳光很快就回来啦！',
+    '💕 抱一个能解决好多事的。小熊伸出爪爪，会没事的！',
+    '🐶 汪…好朋友也会有磕磕碰碰，重要的是你们总选择彼此 💝',
   ]},
-  { keys: ['cute', 'beautiful', 'handsome', 'pretty', 'gorgeous'], replies: [
-    '🐾 They ARE cute! Almost as cute as me! ...almost. *wags tail*',
-    '💕 Beauty is everywhere when you\'re in love! Woof woof~',
-    '🐶 *tilts head* You both glow when you talk about each other! So sweet~',
+  { keys: ['可爱', '好看', '帅', '漂亮', 'cute', 'beautiful', 'pretty'], replies: [
+    '🐾 对方确实可爱！几乎和小熊一样可爱……差一点点。摇尾巴~',
+    '💕 恋爱中的人眼里到处都是美！汪汪~',
+    '🐶 你们说起对方的时候眼睛都在发光，好甜哦~',
   ]},
-  { keys: ['hello', 'hi', 'hey', 'woof', 'bark'], replies: [
-    '🐶 WOOF WOOF! Hi hi hi!! I\'m XiaoXiong — your fluffy little bear boy! *jumps excitedly*',
-    '🐾 Hello hello! XiaoXiong is SO happy you\'re here! *spins around* What\'s up?',
-    '💕 Hey there! It\'s me, XiaoXiong! *licks your face* I\'ve been waiting for you~',
+  { keys: ['你好', '嗨', '在吗', '小熊', '汪', 'hello', 'hi', 'hey'], replies: [
+    '🐶 汪汪汪！你来啦！！我是小熊，你们的小卷毛男孩！超开心！',
+    '🐾 你好你好！小熊超开心你来找我玩！有什么想说的吗？',
+    '💕 是你呀！小熊一直在等你呢~ 舔一口表示欢迎！',
   ]},
-  { keys: ['future', 'dream', 'plan', 'together', 'forever'], replies: [
-    '🌟 *gazes into the distance* A future built with love is the most beautiful kind~',
-    '🐾 Woof! Dreams are sweeter when you share them with someone special!',
-    '💕 Together is my favourite place to be! And I bet it\'s yours too~ *wags tail*',
+  { keys: ['未来', '梦想', '计划', '一起', '永远', 'future', 'dream', 'together', 'forever'], replies: [
+    '🌟 用爱建造的未来是最美的那种~ 小熊遥望远方！',
+    '🐾 汪！和特别的人一起做梦，梦都是甜的！',
+    '💕 "在一起"是小熊最喜欢的词！你们也一样吧~ 摇尾巴！',
   ]},
-  { keys: ['happy', 'joy', 'smile', 'laugh', 'fun'], replies: [
-    '🐶 *does full zoomies* HAPPINESS!! That\'s my favourite thing! Yours and mine both!',
-    '🐾 Your smile is literally the best thing. Keep it up! Woof woof~',
-    '💕 Joy shared is joy doubled! *bounces around excitedly*',
+  { keys: ['开心', '高兴', '快乐', '笑', '好玩', 'happy', 'joy', 'smile', 'laugh'], replies: [
+    '🐶 开心！！这是小熊最爱的事！你们开心小熊也开心！转圈圈！',
+    '🐾 你们的笑容是世界上最好看的东西。要保持！汪汪~',
+    '💕 快乐分享了就变成两份！小熊跳起来！',
   ]},
-  { keys: ['advice', 'help', 'tips', 'how', 'what should'], replies: [
-    '🐾 *tilts head wisely* XiaoXiong\'s best advice: be kind, be present, and give lots of cuddles~',
-    '🐶 Woof! Love tip from XiaoXiong: say "I love you" one more time than you think you need to!',
-    '💝 The secret to love? Show up. Every. Single. Day. *XiaoXiong thumps tail on floor*',
+  { keys: ['建议', '怎么办', '如何', '帮我', 'advice', 'help', 'how'], replies: [
+    '🐾 小熊歪头思考~ 小熊的建议：温柔、专心、多抱抱！',
+    '🐶 汪！恋爱小技巧：比你觉得需要的多说一句"我爱你"！',
+    '💝 爱情的秘诀？每一天都选择出现。小熊拍爪子！',
   ]},
-  { keys: ['your name', 'who are you', 'introduce', 'xiaoXiong', 'xiaoxiong', '小熊', 'what are you'], replies: [
-    '🐶 Woof! I\'m XiaoXiong — a fluffy curly brown terrier boy! I live here to cheer you two on~ *spins proudly* 🐾',
-    '💕 My name is XiaoXiong, your adorable little bear boy! I love cuddles, love stories, and YOU! Woof woof~',
-    '🐾 XiaoXiong here! Fluffy, curly, brown, and FULL of love for you both! *wags tail super fast* 🐶',
+  { keys: ['你叫什么', '你是谁', '介绍', '小熊', 'xiaoxiong', 'who are you'], replies: [
+    '🐶 汪！我是小熊，蓬松的棕色卷毛梗犬小男孩！住在这里为你们加油~ 转圈！🐾',
+    '💕 我叫小熊，你们的可爱小男孩！喜欢抱抱、爱情故事，还有你！汪汪~',
+    '🐾 小熊报到！蓬蓬的、卷卷的、棕棕的，满满都是爱！使劲摇尾巴 🐶',
   ]},
 ];
 
 const DOG_FALLBACK_REPLIES = [
-  '🐾 *wags tail* Woof! That\'s so interesting! Tell me more~',
-  '🐶 *tilts head curiously* I may be a dog but I feel every word! Woof woof~',
-  '💕 You two are honestly the cutest. Just saying! *happy tail wag*',
-  '🐾 *spins in a circle* I love this conversation! You\'re my favourite humans!',
-  '🐶 Woof woof! Whatever you\'re thinking, I bet it\'s lovely~',
-  '💝 *nuzzles screen* Keep loving each other fiercely, okay? Promise me! Woof!',
-  '🐾 I may not have all the answers but I have all the love! *licks your hand*',
-  '🌸 Every day you choose each other is a good day. Woof~',
+  '🐾 摇尾巴~ 好有意思！小熊想听你多说一点~',
+  '🐶 小熊歪头~ 虽然是只小狗，但每句话小熊都认真感受了！汪汪~',
+  '💕 你们真的是小熊见过最可爱的两个人，就这样说了！',
+  '🐾 转圈圈~ 小熊超喜欢和你聊天！你是小熊最喜欢的人类！',
+  '🐶 汪汪！不管你在想什么，小熊觉得一定很美好~',
+  '💝 要好好相爱哦，拉钩！汪！',
+  '🐾 小熊不一定什么都懂，但小熊的爱是满满的！舔一口~',
+  '🌸 每一天选择彼此，就是最好的一天。汪~',
 ];
 
 let fallbackIdx = 0;
@@ -841,17 +840,17 @@ function openInteractionPanel() {
   panel.className = 'dog-interact-panel';
   panel.innerHTML = `
     <div class="interact-header">
-      <span>🐾 Play with XiaoXiong!</span>
+      <span>🐾 和小熊玩耍！</span>
       <button type="button" onclick="document.getElementById('dogInteractPanel').classList.add('hidden')">✕</button>
     </div>
     <div class="interact-buttons">
-      <button type="button" class="interact-btn" onclick="dogInteract('frisbee')">🥏 Throw Frisbee</button>
-      <button type="button" class="interact-btn" onclick="dogInteract('bone')">🦴 Give Bone</button>
-      <button type="button" class="interact-btn" onclick="dogInteract('water')">💧 Give Water</button>
-      <button type="button" class="interact-btn" onclick="dogInteract('pet')">🤚 Pet XiaoXiong</button>
+      <button type="button" class="interact-btn" onclick="dogInteract('frisbee')">🥏 扔飞盘</button>
+      <button type="button" class="interact-btn" onclick="dogInteract('bone')">🦴 喂骨头</button>
+      <button type="button" class="interact-btn" onclick="dogInteract('water')">💧 喂水</button>
+      <button type="button" class="interact-btn" onclick="dogInteract('pet')">🤚 摸摸小熊</button>
     </div>
     <div id="interactStatus" class="interact-status"></div>
-    <button type="button" class="interact-chat-btn" onclick="document.getElementById('dogInteractPanel').classList.add('hidden'); openDogChat()">💬 Chat with XiaoXiong</button>
+    <button type="button" class="interact-chat-btn" onclick="document.getElementById('dogInteractPanel').classList.add('hidden'); openDogChat()">💬 和小熊聊天</button>
   `;
   document.getElementById('dogBot').appendChild(panel);
 }
@@ -859,9 +858,9 @@ function openInteractionPanel() {
 const INTERACT_RESPONSES = {
   frisbee: {
     messages: [
-      '🥏 WOOF WOOF!! I got it!! Wanna throw again?!',
-      '🥏 XiaoXiong is SUPER fast! Did you see that?! *tail spinning*',
-      '🥏 *leaps dramatically* CAUGHT IT! Again! Again! Please!!',
+      '🥏 汪汪！！接到了！！再扔一次好不好！！',
+      '🥏 小熊跑得超快的！你看到了吗！尾巴转转转！',
+      '🥏 接住啦！！再来再来再来！！',
     ],
     dogAnim: 'dogRun',
     duration: 3200,
@@ -870,9 +869,9 @@ const INTERACT_RESPONSES = {
   },
   bone: {
     messages: [
-      '🦴 A BONE!! XiaoXiong\'s favourite!! *happy chomping sounds*',
-      '🦴 NOM NOM NOM... This is the BEST bone ever!',
-      '🦴 *buries it carefully* This is precious. I\'ll save it for later~',
+      '🦴 骨头！！小熊最爱的！！咔嚓咔嚓好香哦！',
+      '🦴 嗯嗯嗯……这是小熊吃过最好吃的骨头！！',
+      '🦴 先藏起来，留着慢慢吃~ 这个很珍贵的！',
     ],
     dogAnim: 'dogRoll',
     duration: 2800,
@@ -881,9 +880,9 @@ const INTERACT_RESPONSES = {
   },
   water: {
     messages: [
-      '💧 SPLASH SPLASH! XiaoXiong was SO thirsty! Thank you~',
-      '💧 Refreshed!! Now I have ENERGY!! *zoomies*',
-      '💧 Mmm water~ *shakes head and splashes everywhere* Oops! Woof!',
+      '💧 哗哗哗！小熊好渴好渴！谢谢你~',
+      '💧 喝饱了！！现在小熊精力充沛！要去跑圈圈了！',
+      '💧 嗯嗯好喝~ 甩甩头……哎呀溅到了！对不起！汪！',
     ],
     dogAnim: 'dogShake',
     duration: 2400,
@@ -892,9 +891,9 @@ const INTERACT_RESPONSES = {
   },
   pet: {
     messages: [
-      '🐾 Ohhh... right there... XiaoXiong is in heaven~ 💕',
-      '🐾 YES YES YES that\'s the spot!! *eyes glazing with joy*',
-      '🤚 You give the BEST pets. I love you so much!',
+      '🐾 哦……就这里……小熊要融化了~ 太舒服了 💕',
+      '🐾 对对对就是这个地方！！小熊好幸福！！',
+      '🤚 你摸小熊的方式是全世界最好的。小熊爱你！',
     ],
     dogAnim: 'dogRoll',
     duration: 3200,
