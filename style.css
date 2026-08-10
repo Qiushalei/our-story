@@ -882,8 +882,8 @@ html, body {
 
 #dogBody {
   position: relative;
-  width: 110px;
-  height: 128px;
+  width: 90px;
+  height: 95px;
   filter: drop-shadow(0 4px 16px rgba(0,0,0,0.35));
   transition: transform 0.15s;
 }

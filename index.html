@@ -249,261 +249,92 @@
 <div id="dogBot">
   <div id="dogBubble" class="dog-bubble hidden"></div>
   <div id="dogBody" onclick="dogClick()">
-    <svg id="dogSvg" viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg" width="110" height="128">
-      <defs>
-        <!-- 卷毛质感滤镜（头/耳/身体） -->
-        <filter id="furFilter" x="-18%" y="-18%" width="136%" height="136%">
-          <feTurbulence type="fractalNoise" baseFrequency="0.85 0.38" numOctaves="4" seed="3" result="noise"/>
-          <feDisplacementMap in="SourceGraphic" in2="noise" scale="2.2" xChannelSelector="R" yChannelSelector="G"/>
-        </filter>
-        <!-- 尾巴/腿用更柔和的滤镜 -->
-        <filter id="furFilter2" x="-18%" y="-18%" width="136%" height="136%">
-          <feTurbulence type="fractalNoise" baseFrequency="0.65 0.28" numOctaves="3" seed="7" result="noise"/>
-          <feDisplacementMap in="SourceGraphic" in2="noise" scale="1.6" xChannelSelector="R" yChannelSelector="G"/>
-        </filter>
-        <!-- 眼睛渐变：深棕到黑，有层次感 -->
-        <radialGradient id="eyeGrad" cx="35%" cy="28%" r="62%">
-          <stop offset="0%" stop-color="#5a3010"/>
-          <stop offset="55%" stop-color="#1e0a00"/>
-          <stop offset="100%" stop-color="#000"/>
-        </radialGradient>
-        <!-- 鼻子渐变 -->
-        <radialGradient id="noseGrad" cx="38%" cy="32%" r="68%">
-          <stop offset="0%" stop-color="#442010"/>
-          <stop offset="100%" stop-color="#1a0800"/>
-        </radialGradient>
-        <!-- 身体渐变：暖棕色，中心亮 -->
-        <radialGradient id="bodyGrad" cx="42%" cy="38%" r="58%">
-          <stop offset="0%" stop-color="#f8d0a0"/>
-          <stop offset="60%" stop-color="#e8a870"/>
-          <stop offset="100%" stop-color="#c87848"/>
-        </radialGradient>
-        <!-- 头部渐变：比身体略亮 -->
-        <radialGradient id="headGrad" cx="44%" cy="33%" r="58%">
-          <stop offset="0%" stop-color="#fde0b4"/>
-          <stop offset="55%" stop-color="#f0b878"/>
-          <stop offset="100%" stop-color="#cc7848"/>
-        </radialGradient>
-        <!-- 耳内渐变：粉橙 -->
-        <radialGradient id="earInner" cx="50%" cy="50%" r="55%">
-          <stop offset="0%" stop-color="#f8c090"/>
-          <stop offset="100%" stop-color="#e08858"/>
-        </radialGradient>
-      </defs>
+    <svg id="dogSvg" viewBox="0 0 90 95" xmlns="http://www.w3.org/2000/svg" width="90" height="95">
+      <!-- 尾巴 -->
+      <path id="dogTail" d="M68 56 Q86 44 80 28" stroke="#d4956a" stroke-width="6" fill="none" stroke-linecap="round"/>
 
-      <!-- ===== 尾巴（右侧卷翘） ===== -->
-      <g filter="url(#furFilter2)">
-        <path id="dogTail" d="M86 82 Q108 66 102 44 Q98 32 88 36" stroke="#c87848" stroke-width="9" fill="none" stroke-linecap="round"/>
-        <path d="M86 82 Q108 66 102 44 Q98 32 88 36" stroke="#e8a870" stroke-width="6" fill="none" stroke-linecap="round" opacity="0.7"/>
-        <!-- 尾巴毛丝 -->
-        <path d="M90 74 Q112 62 106 46" stroke="#f0c080" stroke-width="1.1" fill="none" stroke-linecap="round" opacity="0.75"/>
-        <path d="M88 78 Q110 68 104 50" stroke="#d49060" stroke-width="0.9" fill="none" stroke-linecap="round" opacity="0.6"/>
-        <path d="M93 68 Q114 58 108 42" stroke="#f5d0a0" stroke-width="0.8" fill="none" stroke-linecap="round" opacity="0.65"/>
-        <path d="M95 62 Q114 54 110 40 Q107 32 98 36" stroke="#c88040" stroke-width="0.7" fill="none" stroke-linecap="round" opacity="0.5"/>
-      </g>
+      <!-- 身体底色 -->
+      <ellipse cx="42" cy="62" rx="24" ry="18" fill="#e8b48a"/>
+      <!-- 身体卷毛：密集小球堆出蓬松感 -->
+      <circle cx="22" cy="62" r="8" fill="#f0c8a0"/>
+      <circle cx="30" cy="55" r="8" fill="#f0c8a0"/>
+      <circle cx="40" cy="52" r="8" fill="#f0c8a0"/>
+      <circle cx="50" cy="54" r="8" fill="#f0c8a0"/>
+      <circle cx="60" cy="59" r="8" fill="#f0c8a0"/>
+      <circle cx="24" cy="70" r="8" fill="#e8b48a"/>
+      <circle cx="35" cy="68" r="8" fill="#edc090"/>
+      <circle cx="46" cy="66" r="8" fill="#edc090"/>
+      <circle cx="57" cy="67" r="8" fill="#e8b48a"/>
+      <!-- 身体阴影层：让球感更立体 -->
+      <circle cx="22" cy="62" r="8" fill="#d4956a" opacity="0.25"/>
+      <circle cx="60" cy="59" r="8" fill="#d4956a" opacity="0.25"/>
+      <circle cx="30" cy="55" r="7" fill="#fff" opacity="0.12"/>
+      <circle cx="50" cy="54" r="7" fill="#fff" opacity="0.12"/>
+      <circle cx="40" cy="52" r="7" fill="#fff" opacity="0.15"/>
 
-      <!-- ===== 身体（胖圆桶型） ===== -->
-      <g filter="url(#furFilter)">
-        <!-- 主体椭圆：比头更宽，坐姿感 -->
-        <ellipse cx="55" cy="96" rx="32" ry="26" fill="url(#bodyGrad)"/>
-        <!-- 身体卷毛云团 -->
-        <circle cx="28" cy="96" r="13" fill="#edb880" opacity="0.88"/>
-        <circle cx="40" cy="84" r="13" fill="#f2c490" opacity="0.88"/>
-        <circle cx="55" cy="80" r="13" fill="#f5ca98" opacity="0.88"/>
-        <circle cx="70" cy="84" r="13" fill="#f2c490" opacity="0.88"/>
-        <circle cx="82" cy="96" r="13" fill="#edb880" opacity="0.88"/>
-        <circle cx="30" cy="108" r="11" fill="#e8aa70"/>
-        <circle cx="46" cy="106" r="11" fill="#edb87a"/>
-        <circle cx="62" cy="105" r="11" fill="#edb87a"/>
-        <circle cx="78" cy="107" r="11" fill="#e8aa70"/>
-        <!-- 身体高光卷 -->
-        <circle cx="36" cy="90" r="8" fill="#fad8a8" opacity="0.82"/>
-        <circle cx="50" cy="82" r="8" fill="#fce0b0" opacity="0.82"/>
-        <circle cx="64" cy="82" r="8.5" fill="#fde4b8" opacity="0.82"/>
-        <circle cx="76" cy="90" r="7.5" fill="#fad8a8" opacity="0.82"/>
-        <!-- 身体毛丝（从下往上，密集细线） -->
-        <path d="M28 94 Q26 88 29 82" stroke="#c07838" stroke-width="0.75" fill="none" opacity="0.48"/>
-        <path d="M35 85 Q34 79 37 74" stroke="#c87840" stroke-width="0.75" fill="none" opacity="0.42"/>
-        <path d="M45 80 Q44 73 47 68" stroke="#d08848" stroke-width="0.7" fill="none" opacity="0.4"/>
-        <path d="M55 78 Q54 71 57 66" stroke="#c87840" stroke-width="0.7" fill="none" opacity="0.38"/>
-        <path d="M65 80 Q65 73 68 68" stroke="#c07838" stroke-width="0.7" fill="none" opacity="0.4"/>
-        <path d="M75 85 Q77 79 75 73" stroke="#b87030" stroke-width="0.75" fill="none" opacity="0.42"/>
-        <path d="M82 94 Q85 88 83 82" stroke="#c07838" stroke-width="0.75" fill="none" opacity="0.48"/>
-        <!-- 高光毛丝 -->
-        <path d="M44 82 Q46 76 50 73" stroke="#fff" stroke-width="0.65" fill="none" opacity="0.22"/>
-        <path d="M56 79 Q58 73 62 70" stroke="#fff" stroke-width="0.65" fill="none" opacity="0.18"/>
-        <!-- 身体两侧阴影 -->
-        <circle cx="28" cy="96" r="13" fill="#b05828" opacity="0.13"/>
-        <circle cx="82" cy="96" r="13" fill="#b05828" opacity="0.13"/>
-      </g>
+      <!-- 头底色 -->
+      <circle cx="42" cy="36" r="22" fill="#e8b48a"/>
+      <!-- 头部卷毛：密集小球 -->
+      <circle cx="22" cy="30" r="9" fill="#f5d0a8"/>
+      <circle cx="30" cy="20" r="9" fill="#f5d0a8"/>
+      <circle cx="42" cy="17" r="9" fill="#f5d0a8"/>
+      <circle cx="54" cy="20" r="9" fill="#f5d0a8"/>
+      <circle cx="62" cy="30" r="9" fill="#f5d0a8"/>
+      <circle cx="20" cy="40" r="8" fill="#f0c8a0"/>
+      <circle cx="64" cy="40" r="8" fill="#f0c8a0"/>
+      <circle cx="26" cy="48" r="7" fill="#edc090"/>
+      <circle cx="58" cy="48" r="7" fill="#edc090"/>
+      <!-- 头部高光让卷毛更蓬松 -->
+      <circle cx="30" cy="20" r="5" fill="#fff" opacity="0.18"/>
+      <circle cx="42" cy="17" r="5" fill="#fff" opacity="0.2"/>
+      <circle cx="54" cy="20" r="5" fill="#fff" opacity="0.18"/>
+      <circle cx="22" cy="30" r="4" fill="#fff" opacity="0.14"/>
+      <circle cx="62" cy="30" r="4" fill="#fff" opacity="0.14"/>
+      <!-- 阴影层 -->
+      <circle cx="20" cy="40" r="8" fill="#c8804a" opacity="0.2"/>
+      <circle cx="64" cy="40" r="8" fill="#c8804a" opacity="0.2"/>
 
-      <!-- ===== 左耳（大下垂卷耳） ===== -->
-      <g filter="url(#furFilter)">
-        <ellipse cx="24" cy="38" rx="15" ry="19" fill="#c8784a" transform="rotate(-12 24 38)"/>
-        <circle cx="19" cy="27" r="10" fill="#d48858"/>
-        <circle cx="14" cy="37" r="9" fill="#d08050"/>
-        <circle cx="24" cy="22" r="9" fill="#dc9060"/>
-        <circle cx="31" cy="32" r="8" fill="#d88858"/>
-        <ellipse cx="21" cy="30" rx="7" ry="8" fill="url(#earInner)" opacity="0.55"/>
-        <!-- 耳毛丝 -->
-        <path d="M14 32 Q11 25 14 18" stroke="#a05828" stroke-width="0.85" fill="none" opacity="0.58"/>
-        <path d="M19 26 Q18 18 22 13" stroke="#a85e30" stroke-width="0.85" fill="none" opacity="0.52"/>
-        <path d="M25 24 Q25 16 29 11" stroke="#a05828" stroke-width="0.8" fill="none" opacity="0.48"/>
-        <path d="M30 30 Q33 23 30 17" stroke="#b06030" stroke-width="0.75" fill="none" opacity="0.45"/>
-        <!-- 耳高光 -->
-        <circle cx="18" cy="26" r="6" fill="#fff" opacity="0.12"/>
-        <path d="M16 24 Q17 19 21 17" stroke="#fff" stroke-width="0.8" fill="none" opacity="0.28"/>
-      </g>
+      <!-- 左耳（卷毛堆叠） -->
+      <circle cx="16" cy="26" r="9" fill="#d4956a"/>
+      <circle cx="13" cy="20" r="7" fill="#e0a87a"/>
+      <circle cx="19" cy="18" r="7" fill="#e0a87a"/>
+      <circle cx="12" cy="28" r="6" fill="#e0a87a"/>
+      <circle cx="13" cy="20" r="4" fill="#fff" opacity="0.15"/>
+      <circle cx="19" cy="18" r="4" fill="#fff" opacity="0.12"/>
 
-      <!-- ===== 右耳（大下垂卷耳） ===== -->
-      <g filter="url(#furFilter)">
-        <ellipse cx="86" cy="38" rx="15" ry="19" fill="#c8784a" transform="rotate(12 86 38)"/>
-        <circle cx="91" cy="27" r="10" fill="#d48858"/>
-        <circle cx="96" cy="37" r="9" fill="#d08050"/>
-        <circle cx="86" cy="22" r="9" fill="#dc9060"/>
-        <circle cx="79" cy="32" r="8" fill="#d88858"/>
-        <ellipse cx="89" cy="30" rx="7" ry="8" fill="url(#earInner)" opacity="0.55"/>
-        <!-- 耳毛丝 -->
-        <path d="M96 32 Q99 25 96 18" stroke="#a05828" stroke-width="0.85" fill="none" opacity="0.58"/>
-        <path d="M91 26 Q92 18 88 13" stroke="#a85e30" stroke-width="0.85" fill="none" opacity="0.52"/>
-        <path d="M85 24 Q85 16 81 11" stroke="#a05828" stroke-width="0.8" fill="none" opacity="0.48"/>
-        <path d="M80 30 Q77 23 80 17" stroke="#b06030" stroke-width="0.75" fill="none" opacity="0.45"/>
-        <!-- 耳高光 -->
-        <circle cx="92" cy="26" r="6" fill="#fff" opacity="0.12"/>
-        <path d="M94 24 Q93 19 89 17" stroke="#fff" stroke-width="0.8" fill="none" opacity="0.28"/>
-      </g>
+      <!-- 右耳（卷毛堆叠） -->
+      <circle cx="68" cy="26" r="9" fill="#d4956a"/>
+      <circle cx="65" cy="18" r="7" fill="#e0a87a"/>
+      <circle cx="71" cy="20" r="7" fill="#e0a87a"/>
+      <circle cx="72" cy="28" r="6" fill="#e0a87a"/>
+      <circle cx="71" cy="20" r="4" fill="#fff" opacity="0.15"/>
+      <circle cx="65" cy="18" r="4" fill="#fff" opacity="0.12"/>
 
-      <!-- ===== 头部（大圆头，占画面主体） ===== -->
-      <g filter="url(#furFilter)">
-        <!-- 主圆头：更大更圆 -->
-        <circle cx="55" cy="54" r="34" fill="url(#headGrad)"/>
-        <!-- 头顶大卷毛云 -->
-        <circle cx="30" cy="42" r="15" fill="#f2cc98" opacity="0.88"/>
-        <circle cx="42" cy="28" r="15" fill="#f8d8a8" opacity="0.88"/>
-        <circle cx="55" cy="23" r="15.5" fill="#fce0b2" opacity="0.88"/>
-        <circle cx="68" cy="28" r="15" fill="#f8d8a8" opacity="0.88"/>
-        <circle cx="80" cy="42" r="15" fill="#f2cc98" opacity="0.88"/>
-        <!-- 头顶中卷 -->
-        <circle cx="36" cy="36" r="9.5" fill="#fddcb0" opacity="0.84"/>
-        <circle cx="48" cy="24" r="9" fill="#fee4b8" opacity="0.84"/>
-        <circle cx="60" cy="20" r="9.5" fill="#ffe8be" opacity="0.84"/>
-        <circle cx="72" cy="25" r="9" fill="#fee4b8" opacity="0.84"/>
-        <circle cx="78" cy="37" r="8.5" fill="#fddcb0" opacity="0.84"/>
-        <!-- 两侧脸颊圆润 -->
-        <circle cx="26" cy="56" r="12" fill="#eec890"/>
-        <circle cx="84" cy="56" r="12" fill="#eec890"/>
-        <circle cx="32" cy="68" r="11" fill="#eabc80"/>
-        <circle cx="78" cy="68" r="11" fill="#eabc80"/>
-        <!-- 头发丝（放射状，从头顶向外散出） -->
-        <path d="M36 33 Q33 25 37 17" stroke="#c07838" stroke-width="0.95" fill="none" opacity="0.52"/>
-        <path d="M42 27 Q41 19 45 12" stroke="#c88040" stroke-width="0.95" fill="none" opacity="0.5"/>
-        <path d="M51 24 Q50 15 54 9" stroke="#ca8242" stroke-width="0.95" fill="none" opacity="0.5"/>
-        <path d="M59 24 Q60 15 64 10" stroke="#c88040" stroke-width="0.95" fill="none" opacity="0.5"/>
-        <path d="M67 27 Q69 19 73 13" stroke="#c07838" stroke-width="0.9" fill="none" opacity="0.5"/>
-        <path d="M74 34 Q77 26 74 19" stroke="#b87030" stroke-width="0.85" fill="none" opacity="0.48"/>
-        <path d="M30 44 Q27 36 30 28" stroke="#b87030" stroke-width="0.85" fill="none" opacity="0.48"/>
-        <!-- 额前碎毛（更密） -->
-        <path d="M44 32 Q42 25 46 20" stroke="#d09050" stroke-width="0.72" fill="none" opacity="0.58"/>
-        <path d="M49 28 Q48 21 52 17" stroke="#d09050" stroke-width="0.72" fill="none" opacity="0.55"/>
-        <path d="M55 26 Q55 18 59 14" stroke="#cc8848" stroke-width="0.72" fill="none" opacity="0.55"/>
-        <path d="M61 28 Q62 21 66 18" stroke="#c88040" stroke-width="0.72" fill="none" opacity="0.52"/>
-        <path d="M67 32 Q69 25 72 22" stroke="#c07838" stroke-width="0.7" fill="none" opacity="0.5"/>
-        <!-- 额前更细碎毛（发丝级） -->
-        <path d="M46 30 Q45 24 48 21" stroke="#e09858" stroke-width="0.5" fill="none" opacity="0.45"/>
-        <path d="M52 27 Q51 21 54 18" stroke="#d89050" stroke-width="0.5" fill="none" opacity="0.4"/>
-        <path d="M58 27 Q58 21 61 18" stroke="#e09858" stroke-width="0.5" fill="none" opacity="0.4"/>
-        <path d="M64 30 Q65 24 68 22" stroke="#d88848" stroke-width="0.5" fill="none" opacity="0.42"/>
-        <!-- 高光毛丝 -->
-        <path d="M46 26 Q47 19 51 15" stroke="#fff" stroke-width="0.75" fill="none" opacity="0.2"/>
-        <path d="M54 23 Q54 15 57 11" stroke="#fff" stroke-width="0.75" fill="none" opacity="0.18"/>
-        <path d="M61 25 Q62 18 65 14" stroke="#fff" stroke-width="0.65" fill="none" opacity="0.16"/>
-        <path d="M40 30 Q39 23 42 18" stroke="#fff" stroke-width="0.6" fill="none" opacity="0.15"/>
-        <!-- 脸颊细毛 -->
-        <path d="M27 54 Q23 50 25 45" stroke="#c07838" stroke-width="0.72" fill="none" opacity="0.42"/>
-        <path d="M28 61 Q24 57 26 52" stroke="#c07838" stroke-width="0.7" fill="none" opacity="0.38"/>
-        <path d="M29 67 Q25 64 27 59" stroke="#b87030" stroke-width="0.68" fill="none" opacity="0.35"/>
-        <path d="M83 54 Q87 50 85 45" stroke="#c07838" stroke-width="0.72" fill="none" opacity="0.42"/>
-        <path d="M82 61 Q86 57 84 52" stroke="#c07838" stroke-width="0.7" fill="none" opacity="0.38"/>
-        <path d="M81 67 Q85 64 83 59" stroke="#b87030" stroke-width="0.68" fill="none" opacity="0.35"/>
-      </g>
+      <!-- 眼睛 -->
+      <circle cx="33" cy="37" r="5" fill="#1a0800"/>
+      <circle cx="51" cy="37" r="5" fill="#1a0800"/>
+      <circle cx="34.5" cy="35" r="2" fill="white"/>
+      <circle cx="52.5" cy="35" r="2" fill="white"/>
+      <!-- 眼睛光泽 -->
+      <circle cx="35.5" cy="38" r="1" fill="white" opacity="0.5"/>
+      <circle cx="53.5" cy="38" r="1" fill="white" opacity="0.5"/>
 
-      <!-- ===== 左眼（大圆眼，更萌） ===== -->
-      <g>
-        <circle cx="42" cy="52" r="8.5" fill="#fff" opacity="0.92"/>
-        <circle cx="42" cy="52" r="7.5" fill="url(#eyeGrad)"/>
-        <circle cx="42" cy="52" r="4.5" fill="#0d0500"/>
-        <circle cx="44" cy="49.5" r="2.2" fill="white" opacity="0.96"/>
-        <circle cx="40.5" cy="54" r="1" fill="white" opacity="0.38"/>
-        <!-- 睫毛（更长更密） -->
-        <path d="M34 47 Q35.5 43.5 38 46" stroke="#1a0800" stroke-width="1" fill="none" opacity="0.68"/>
-        <path d="M37 45 Q38.5 41 41 44" stroke="#1a0800" stroke-width="1" fill="none" opacity="0.68"/>
-        <path d="M40.5 44.5 Q42 40.5 44.5 43.5" stroke="#1a0800" stroke-width="1" fill="none" opacity="0.68"/>
-        <path d="M44 45 Q46 41.5 48 44" stroke="#1a0800" stroke-width="0.9" fill="none" opacity="0.58"/>
-        <path d="M47 47 Q49 44 50 46.5" stroke="#1a0800" stroke-width="0.85" fill="none" opacity="0.5"/>
-      </g>
+      <!-- 鼻子 -->
+      <ellipse cx="42" cy="44" rx="5" ry="4" fill="#2a1000"/>
+      <ellipse cx="41" cy="43" rx="2" ry="1.5" fill="white" opacity="0.3"/>
 
-      <!-- ===== 右眼（大圆眼，更萌） ===== -->
-      <g>
-        <circle cx="68" cy="52" r="8.5" fill="#fff" opacity="0.92"/>
-        <circle cx="68" cy="52" r="7.5" fill="url(#eyeGrad)"/>
-        <circle cx="68" cy="52" r="4.5" fill="#0d0500"/>
-        <circle cx="70" cy="49.5" r="2.2" fill="white" opacity="0.96"/>
-        <circle cx="66.5" cy="54" r="1" fill="white" opacity="0.38"/>
-        <!-- 睫毛 -->
-        <path d="M60 47 Q61.5 43.5 64 46" stroke="#1a0800" stroke-width="1" fill="none" opacity="0.68"/>
-        <path d="M63 45 Q64.5 41 67 44" stroke="#1a0800" stroke-width="1" fill="none" opacity="0.68"/>
-        <path d="M66.5 44.5 Q68 40.5 70.5 43.5" stroke="#1a0800" stroke-width="1" fill="none" opacity="0.68"/>
-        <path d="M70 45 Q72 41.5 74 44" stroke="#1a0800" stroke-width="0.9" fill="none" opacity="0.58"/>
-        <path d="M73 47 Q75 44 76 46.5" stroke="#1a0800" stroke-width="0.85" fill="none" opacity="0.5"/>
-      </g>
+      <!-- 嘴 -->
+      <path id="dogMouth" d="M37 48 Q42 53 47 48" stroke="#2a1000" stroke-width="2" fill="none" stroke-linecap="round"/>
 
-      <!-- ===== 鼻子（圆润爱心型） ===== -->
-      <ellipse cx="55" cy="64" rx="8" ry="6" fill="url(#noseGrad)"/>
-      <ellipse cx="52.8" cy="62.2" rx="3" ry="2" fill="white" opacity="0.26"/>
-      <path d="M55 70 L55 74" stroke="#2a1000" stroke-width="1.3" stroke-linecap="round" opacity="0.48"/>
-
-      <!-- ===== 嘴（微笑） ===== -->
-      <path id="dogMouth" d="M46 74 Q55 82 64 74" stroke="#2a1000" stroke-width="2.2" fill="none" stroke-linecap="round"/>
-
-      <!-- ===== 胡须 ===== -->
-      <line x1="36" y1="68" x2="22" y2="65" stroke="#d4a870" stroke-width="0.85" opacity="0.55" stroke-linecap="round"/>
-      <line x1="36" y1="71" x2="21" y2="72" stroke="#d4a870" stroke-width="0.85" opacity="0.48" stroke-linecap="round"/>
-      <line x1="36" y1="74" x2="23" y2="77" stroke="#d4a870" stroke-width="0.75" opacity="0.42" stroke-linecap="round"/>
-      <line x1="74" y1="68" x2="88" y2="65" stroke="#d4a870" stroke-width="0.85" opacity="0.55" stroke-linecap="round"/>
-      <line x1="74" y1="71" x2="89" y2="72" stroke="#d4a870" stroke-width="0.85" opacity="0.48" stroke-linecap="round"/>
-      <line x1="74" y1="74" x2="87" y2="77" stroke="#d4a870" stroke-width="0.75" opacity="0.42" stroke-linecap="round"/>
-
-      <!-- ===== 前腿和爪子（短胖可爱） ===== -->
-      <g filter="url(#furFilter2)">
-        <!-- 左腿 -->
-        <rect x="32" y="116" width="18" height="18" rx="9" fill="#e8a870"/>
-        <circle cx="41" cy="118" r="9" fill="#f2c090"/>
-        <!-- 左腿毛丝 -->
-        <path d="M33 122 Q31 117 34 113" stroke="#c07838" stroke-width="0.8" fill="none" opacity="0.48"/>
-        <path d="M40 119 Q39 113 42 110" stroke="#c07838" stroke-width="0.8" fill="none" opacity="0.44"/>
-        <path d="M48 122 Q50 117 48 113" stroke="#c07838" stroke-width="0.8" fill="none" opacity="0.48"/>
-        <!-- 左爪 -->
-        <ellipse cx="41" cy="133" rx="10" ry="5.5" fill="#d4906a"/>
-        <circle cx="34" cy="132" r="3.8" fill="#cc8858"/>
-        <circle cx="41" cy="134.5" r="3.8" fill="#cc8858"/>
-        <circle cx="48" cy="132" r="3.8" fill="#cc8858"/>
-        <!-- 右腿 -->
-        <rect x="70" y="116" width="18" height="18" rx="9" fill="#e8a870"/>
-        <circle cx="79" cy="118" r="9" fill="#f2c090"/>
-        <!-- 右腿毛丝 -->
-        <path d="M71 122 Q69 117 72 113" stroke="#c07838" stroke-width="0.8" fill="none" opacity="0.48"/>
-        <path d="M78 119 Q77 113 80 110" stroke="#c07838" stroke-width="0.8" fill="none" opacity="0.44"/>
-        <path d="M86 122 Q88 117 86 113" stroke="#c07838" stroke-width="0.8" fill="none" opacity="0.48"/>
-        <!-- 右爪 -->
-        <ellipse cx="79" cy="133" rx="10" ry="5.5" fill="#d4906a"/>
-        <circle cx="72" cy="132" r="3.8" fill="#cc8858"/>
-        <circle cx="79" cy="134.5" r="3.8" fill="#cc8858"/>
-        <circle cx="86" cy="132" r="3.8" fill="#cc8858"/>
-      </g>
-
-      <!-- ===== 腮红（更圆更甜） ===== -->
-      <ellipse cx="31" cy="66" rx="8" ry="5" fill="#ff9898" opacity="0.2"/>
-      <ellipse cx="79" cy="66" rx="8" ry="5" fill="#ff9898" opacity="0.2"/>
+      <!-- 腿 -->
+      <rect x="28" y="76" width="10" height="14" rx="5" fill="#e0a87a"/>
+      <rect x="52" y="76" width="10" height="14" rx="5" fill="#e0a87a"/>
+      <!-- 腿上卷毛感 -->
+      <circle cx="33" cy="77" r="5" fill="#f0c8a0"/>
+      <circle cx="57" cy="77" r="5" fill="#f0c8a0"/>
+      <!-- 爪子 -->
+      <ellipse cx="33" cy="90" rx="7" ry="4" fill="#d4956a"/>
+      <ellipse cx="57" cy="90" rx="7" ry="4" fill="#d4956a"/>
     </svg>
   </div>
 </div>
