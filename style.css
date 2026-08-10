@@ -883,7 +883,7 @@ html, body {
 #dogBody {
   position: relative;
   width: 110px;
-  height: 120px;
+  height: 128px;
   filter: drop-shadow(0 4px 16px rgba(0,0,0,0.35));
   transition: transform 0.15s;
 }
@@ -1359,17 +1359,38 @@ html, body {
   100% { transform: scale(0.6) translateY(-24px);opacity: 0; }
 }
 
-/* ===== 天气效果 ===== */
-#dogBot.weather-rainy  { filter: hue-rotate(180deg) brightness(0.85); }
-#dogBot.weather-snowy  { filter: brightness(1.12) saturate(0.6); }
-#dogBot.weather-night  { filter: brightness(0.72) hue-rotate(220deg); }
-#dogBot.weather-sunny  #dogSvg { filter: drop-shadow(0 0 10px rgba(255,220,100,0.45)); }
-#dogBot.weather-windy  #dogSvg {
+/* ===== 天气效果（用伪元素叠色，不污染SVG本体） ===== */
+/* 小熊周围环境光叠加层 */
+#dogBot::after {
+  content: '';
+  position: absolute;
+  top: -8px; left: -8px; right: -8px; bottom: -8px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0;
+  -webkit-transition: opacity 0.8s ease, background 0.8s ease;
+  transition: opacity 0.8s ease, background 0.8s ease;
+}
+#dogBody { position: relative; z-index: 1; }
+#dogBubble { position: relative; z-index: 2; }
+
+/* 雨天：蓝紫色光晕 */
+#dogBot.weather-rainy::after  { background: radial-gradient(ellipse, rgba(80,100,200,0.22) 0%, transparent 70%); opacity: 1; }
+/* 雪天：冷白光晕 */
+#dogBot.weather-snowy::after  { background: radial-gradient(ellipse, rgba(200,230,255,0.25) 0%, transparent 70%); opacity: 1; }
+/* 夜晚：深蓝光晕 */
+#dogBot.weather-night::after  { background: radial-gradient(ellipse, rgba(20,30,100,0.35) 0%, transparent 70%); opacity: 1; }
+/* 晴天：暖黄光晕 + 阳光投影（只加在SVG上不变色） */
+#dogBot.weather-sunny::after  { background: radial-gradient(ellipse, rgba(255,220,80,0.18) 0%, transparent 70%); opacity: 1; }
+#dogBot.weather-sunny #dogSvg { filter: drop-shadow(0 0 10px rgba(255,220,100,0.45)); }
+/* 刮风：快速抖动 */
+#dogBot.weather-windy #dogSvg {
   -webkit-animation: dogBob 0.75s ease-in-out infinite !important;
   animation: dogBob 0.75s ease-in-out infinite !important;
 }
 
-/* ===== 心情效果 ===== */
+/* ===== 心情效果（动画只，不改色） ===== */
 #dogBot.mood-excited #dogSvg {
   -webkit-animation: dogBob 0.55s ease-in-out infinite !important;
   animation: dogBob 0.55s ease-in-out infinite !important;
@@ -1378,8 +1399,10 @@ html, body {
   -webkit-animation: dogBob 4s ease-in-out infinite !important;
   animation: dogBob 4s ease-in-out infinite !important;
 }
-#dogBot.mood-love #dogBody {
-  filter: drop-shadow(0 0 12px rgba(255,100,160,0.55)) drop-shadow(0 4px 16px rgba(0,0,0,0.35));
+/* 恋爱脑：粉色光晕（伪元素，不改SVG颜色） */
+#dogBot.mood-love::after {
+  background: radial-gradient(ellipse, rgba(255,100,160,0.22) 0%, transparent 70%);
+  opacity: 1;
 }
 
 /* ===== 直立行走+挥手（好感度100%触发） ===== */
