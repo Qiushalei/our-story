@@ -285,8 +285,8 @@ async function renderAnniversaries() {
     return `
     <div class="anni-item" id="anni-${a.id}">
       <div class="anni-actions">
-        <button type="button" class="anni-edit-btn" onclick="openEditAnniModal(${a.id}, '${escHtml(a.name).replace(/'/g, "\\'")}', '${a.date}', '${a.type}')">✏</button>
-        <button type="button" class="delete-btn" onclick="deleteAnniversary(${a.id})">✕</button>
+        <button type="button" class="anni-edit-btn" onclick="openEditAnniModal(${a.id}, '${escHtml(a.name).replace(/'/g, "\\'")}', '${a.date}', '${a.type}')">编辑</button>
+        <button type="button" class="anni-delete-btn" onclick="deleteAnniversary(${a.id})">删除</button>
       </div>
       <div class="anni-name">💝 ${escHtml(a.name)}</div>
       <div class="anni-date">${formatDate(new Date(y, m - 1, d))} · ${a.type === 'yearly' ? 'Every Year' : 'Once Only'}</div>
