@@ -245,7 +245,7 @@ async function renderEvents() {
           data-date="${escHtml(e.date)}"
           data-desc="${escHtml(e.description)}"
           data-tag="${escHtml(e.tag)}">编辑</button>
-        <button type="button" class="delete-btn" onclick="deleteEvent(${e.id})">✕</button>
+        <button type="button" class="event-delete-btn" data-id="${e.id}">删除</button>
       </div>
     </div>`;
   }).join('');
@@ -254,6 +254,7 @@ async function renderEvents() {
     list._eventBound = true;
     list.addEventListener('click', function(e) {
       const editBtn = e.target.closest('.event-edit-btn');
+      const delBtn  = e.target.closest('.event-delete-btn');
       if (editBtn) {
         openEditEventModal(
           Number(editBtn.dataset.id),
@@ -261,6 +262,8 @@ async function renderEvents() {
           editBtn.dataset.desc,
           editBtn.dataset.tag
         );
+      } else if (delBtn) {
+        deleteEvent(Number(delBtn.dataset.id));
       }
     });
   }

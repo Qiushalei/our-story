@@ -526,11 +526,7 @@ html, body {
   color: #fff;
 }
 
-/* event-item 内的 delete-btn 不用绝对定位，随 flex 排列 */
-.event-actions .delete-btn {
-  position: static;
-  top: auto;
-  right: auto;
+.event-delete-btn {
   font-size: 0.72rem;
   font-weight: 600;
   padding: 3px 9px;
@@ -538,9 +534,12 @@ html, body {
   border: 1px solid rgba(255,255,255,0.22);
   background: rgba(255,255,255,0.08);
   color: rgba(255,255,255,0.6);
+  cursor: pointer;
   line-height: 1.4;
+  -webkit-transition: background 0.18s, color 0.18s;
+  transition: background 0.18s, color 0.18s;
 }
-.event-actions .delete-btn:hover {
+.event-delete-btn:hover {
   background: rgba(255,80,80,0.22);
   color: #ff8888;
 }
