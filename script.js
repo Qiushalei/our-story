@@ -239,14 +239,50 @@ async function renderEvents() {
         <div class="event-date">${formatDate(new Date(y, m - 1, d))}</div>
         <div class="event-desc">${escHtml(e.description)}</div>
       </div>
-      <button type="button" class="delete-btn" onclick="deleteEvent(${e.id})">✕</button>
+      <div class="event-actions">
+        <button type="button" class="event-edit-btn"
+          data-id="${e.id}"
+          data-date="${escHtml(e.date)}"
+          data-desc="${escHtml(e.description)}"
+          data-tag="${escHtml(e.tag)}">编辑</button>
+        <button type="button" class="delete-btn" onclick="deleteEvent(${e.id})">✕</button>
+      </div>
     </div>`;
   }).join('');
+
+  if (!list._eventBound) {
+    list._eventBound = true;
+    list.addEventListener('click', function(e) {
+      const editBtn = e.target.closest('.event-edit-btn');
+      if (editBtn) {
+        openEditEventModal(
+          Number(editBtn.dataset.id),
+          editBtn.dataset.date,
+          editBtn.dataset.desc,
+          editBtn.dataset.tag
+        );
+      }
+    });
+  }
 }
 
+let _editEventId = null;
+
 function openEventModal() {
+  _editEventId = null;
+  document.getElementById('eventModalTitle').textContent = 'Add a Memory';
   document.getElementById('eventDate').value = '';
   document.getElementById('eventDesc').value = '';
+  document.getElementById('eventTag').value = '💕';
+  openModal('eventModal');
+}
+
+function openEditEventModal(id, date, desc, tag) {
+  _editEventId = id;
+  document.getElementById('eventModalTitle').textContent = 'Edit Memory';
+  document.getElementById('eventDate').value = date;
+  document.getElementById('eventDesc').value = desc;
+  document.getElementById('eventTag').value = tag;
   openModal('eventModal');
 }
 
@@ -255,8 +291,13 @@ async function saveEvent() {
   const description = document.getElementById('eventDesc').value.trim();
   const tag = document.getElementById('eventTag').value;
   if (!date || !description) return;
-  const { error } = await getDb().from('events').insert({ id: Date.now(), date, description, tag });
-  if (error) { alert('Failed to save. Please try again.'); return; }
+  if (_editEventId !== null) {
+    const { error } = await getDb().from('events').update({ date, description, tag }).eq('id', _editEventId);
+    if (error) { alert('Failed to save. Please try again.'); return; }
+  } else {
+    const { error } = await getDb().from('events').insert({ id: Date.now(), date, description, tag });
+    if (error) { alert('Failed to save. Please try again.'); return; }
+  }
   await renderEvents();
   closeModal('eventModal');
 }
