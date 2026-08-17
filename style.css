@@ -498,20 +498,39 @@ html, body {
 
 .anni-actions {
   position: absolute;
-  top: 10px;
-  right: 10px;
+  top: 8px;
+  right: 8px;
   display: -webkit-flex;
   display: flex;
-  gap: 6px;
+  gap: 4px;
   -webkit-align-items: center;
   align-items: center;
+  z-index: 2;
 }
 
-/* anni-actions 内的删除按钮覆盖为 static，由 flex 布局定位 */
-.anni-actions .delete-btn {
+.anni-actions .delete-btn,
+.anni-actions .anni-edit-btn {
   position: static;
   top: auto;
   right: auto;
+  font-size: 0.9rem;
+  padding: 3px 6px;
+  border-radius: 6px;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.14);
+  color: rgba(255,255,255,0.55);
+  cursor: pointer;
+  line-height: 1;
+  -webkit-transition: background 0.2s, color 0.2s;
+  transition: background 0.2s, color 0.2s;
+}
+.anni-actions .anni-edit-btn:hover {
+  background: rgba(232,164,184,0.25);
+  color: var(--primary);
+}
+.anni-actions .delete-btn:hover {
+  background: rgba(255,80,80,0.18);
+  color: #ff6b6b;
 }
 
 .anni-edit-btn {
