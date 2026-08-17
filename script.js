@@ -230,6 +230,10 @@ async function renderEvents() {
     list.innerHTML = '<p class="empty-hint">No memories yet — add your first one ✨</p>';
     return;
   }
+  // 全局缓存本次渲染的事件数据，供编辑按钮 onclick 使用
+  window._evtCache = {};
+  evts.forEach(e => { window._evtCache[e.id] = e; });
+
   list.innerHTML = evts.map(e => {
     const [y, m, d] = e.date.split('-').map(Number);
     return `
@@ -240,33 +244,11 @@ async function renderEvents() {
         <div class="event-desc">${escHtml(e.description)}</div>
       </div>
       <div class="event-actions">
-        <button type="button" class="event-edit-btn"
-          data-id="${e.id}"
-          data-date="${escHtml(e.date)}"
-          data-desc="${escHtml(e.description)}"
-          data-tag="${escHtml(e.tag)}">编辑</button>
-        <button type="button" class="event-delete-btn" data-id="${e.id}">删除</button>
+        <button type="button" class="event-edit-btn" onclick="openEditEventModal(${e.id})">编辑</button>
+        <button type="button" class="event-delete-btn" onclick="deleteEvent(${e.id})">删除</button>
       </div>
     </div>`;
   }).join('');
-
-  if (!list._eventBound) {
-    list._eventBound = true;
-    list.addEventListener('click', function(e) {
-      const editBtn = e.target.closest('.event-edit-btn');
-      const delBtn  = e.target.closest('.event-delete-btn');
-      if (editBtn) {
-        openEditEventModal(
-          Number(editBtn.dataset.id),
-          editBtn.dataset.date,
-          editBtn.dataset.desc,
-          editBtn.dataset.tag
-        );
-      } else if (delBtn) {
-        deleteEvent(Number(delBtn.dataset.id));
-      }
-    });
-  }
 }
 
 let _editEventId = null;
@@ -280,12 +262,14 @@ function openEventModal() {
   openModal('eventModal');
 }
 
-function openEditEventModal(id, date, desc, tag) {
+function openEditEventModal(id) {
+  const e = window._evtCache && window._evtCache[id];
+  if (!e) return;
   _editEventId = id;
   document.getElementById('eventModalTitle').textContent = 'Edit Memory';
-  document.getElementById('eventDate').value = date;
-  document.getElementById('eventDesc').value = desc;
-  document.getElementById('eventTag').value = tag;
+  document.getElementById('eventDate').value = e.date;
+  document.getElementById('eventDesc').value = e.description;
+  document.getElementById('eventTag').value = e.tag;
   openModal('eventModal');
 }
 
@@ -324,41 +308,22 @@ async function renderAnniversaries() {
     return;
   }
 
+  window._anniCache = {};
+  list.forEach(a => { window._anniCache[a.id] = a; });
+
   container.innerHTML = list.map(a => {
     const [y, m, d] = a.date.split('-').map(Number);
     return `
     <div class="anni-item" id="anni-${a.id}">
       <div class="anni-actions">
-        <button type="button" class="anni-edit-btn"
-          data-id="${a.id}"
-          data-name="${escHtml(a.name)}"
-          data-date="${escHtml(a.date)}"
-          data-type="${escHtml(a.type)}">编辑</button>
-        <button type="button" class="anni-delete-btn" data-id="${a.id}">删除</button>
+        <button type="button" class="anni-edit-btn" onclick="openEditAnniModal(${a.id})">编辑</button>
+        <button type="button" class="anni-delete-btn" onclick="deleteAnniversary(${a.id})">删除</button>
       </div>
       <div class="anni-name">💝 ${escHtml(a.name)}</div>
       <div class="anni-date">${formatDate(new Date(y, m - 1, d))} · ${a.type === 'yearly' ? 'Every Year' : 'Once Only'}</div>
       <div class="countdown-display" id="cd-${a.id}"></div>
     </div>`;
   }).join('');
-
-  if (!container._anniBound) {
-    container._anniBound = true;
-    container.addEventListener('click', function(e) {
-      const editBtn = e.target.closest('.anni-edit-btn');
-      const delBtn  = e.target.closest('.anni-delete-btn');
-      if (editBtn) {
-        openEditAnniModal(
-          Number(editBtn.dataset.id),
-          editBtn.dataset.name,
-          editBtn.dataset.date,
-          editBtn.dataset.type
-        );
-      } else if (delBtn) {
-        deleteAnniversary(Number(delBtn.dataset.id));
-      }
-    });
-  }
 
   list.forEach(a => {
     updateCountdown(a);
@@ -380,12 +345,14 @@ function openAnniModal() {
   openModal('anniModal');
 }
 
-function openEditAnniModal(id, name, date, type) {
+function openEditAnniModal(id) {
+  const a = window._anniCache && window._anniCache[id];
+  if (!a) return;
   _editAnniId = id;
   document.getElementById('anniModalTitle').textContent = 'Edit Anniversary';
-  document.getElementById('anniName').value = name;
-  document.getElementById('anniDate').value = date;
-  document.getElementById('anniType').value = type;
+  document.getElementById('anniName').value = a.name;
+  document.getElementById('anniDate').value = a.date;
+  document.getElementById('anniType').value = a.type;
   openModal('anniModal');
 }
 
