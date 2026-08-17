@@ -238,14 +238,16 @@ async function renderEvents() {
     const [y, m, d] = e.date.split('-').map(Number);
     return `
     <div class="event-item">
-      <div class="event-tag">${e.tag}</div>
-      <div class="event-info">
-        <div class="event-date">${formatDate(new Date(y, m - 1, d))}</div>
-        <div class="event-desc">${escHtml(e.description)}</div>
+      <div class="anni-actions">
+        <button type="button" class="anni-edit-btn" onclick="openEditEventModal(${e.id})">编辑</button>
+        <button type="button" class="anni-delete-btn" onclick="deleteEvent(${e.id})">删除</button>
       </div>
-      <div class="event-actions">
-        <button type="button" class="event-edit-btn" onclick="openEditEventModal(${e.id})">编辑</button>
-        <button type="button" class="event-delete-btn" onclick="deleteEvent(${e.id})">删除</button>
+      <div class="event-body">
+        <div class="event-tag">${e.tag}</div>
+        <div class="event-info">
+          <div class="event-date">${formatDate(new Date(y, m - 1, d))}</div>
+          <div class="event-desc">${escHtml(e.description)}</div>
+        </div>
       </div>
     </div>`;
   }).join('');
