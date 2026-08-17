@@ -284,7 +284,10 @@ async function renderAnniversaries() {
     const [y, m, d] = a.date.split('-').map(Number);
     return `
     <div class="anni-item" id="anni-${a.id}">
-      <button type="button" class="delete-btn" onclick="deleteAnniversary(${a.id})">✕</button>
+      <div class="anni-actions">
+        <button type="button" class="anni-edit-btn" onclick="openEditAnniModal(${a.id}, '${escHtml(a.name).replace(/'/g, "\\'")}', '${a.date}', '${a.type}')">✏</button>
+        <button type="button" class="delete-btn" onclick="deleteAnniversary(${a.id})">✕</button>
+      </div>
       <div class="anni-name">💝 ${escHtml(a.name)}</div>
       <div class="anni-date">${formatDate(new Date(y, m - 1, d))} · ${a.type === 'yearly' ? 'Every Year' : 'Once Only'}</div>
       <div class="countdown-display" id="cd-${a.id}"></div>
@@ -300,9 +303,23 @@ async function renderAnniversaries() {
   updateNextAnniversaryFromList(list);
 }
 
+let _editAnniId = null;
+
 function openAnniModal() {
+  _editAnniId = null;
+  document.getElementById('anniModalTitle').textContent = 'Set an Anniversary';
   document.getElementById('anniName').value = '';
   document.getElementById('anniDate').value = '';
+  document.getElementById('anniType').value = 'yearly';
+  openModal('anniModal');
+}
+
+function openEditAnniModal(id, name, date, type) {
+  _editAnniId = id;
+  document.getElementById('anniModalTitle').textContent = 'Edit Anniversary';
+  document.getElementById('anniName').value = name;
+  document.getElementById('anniDate').value = date;
+  document.getElementById('anniType').value = type;
   openModal('anniModal');
 }
 
@@ -311,8 +328,13 @@ async function saveAnniversary() {
   const date = document.getElementById('anniDate').value;
   const type = document.getElementById('anniType').value;
   if (!name || !date) return;
-  const { error } = await getDb().from('anniversaries').insert({ id: Date.now(), name, date, type });
-  if (error) { alert('Failed to save. Please try again.'); return; }
+  if (_editAnniId !== null) {
+    const { error } = await getDb().from('anniversaries').update({ name, date, type }).eq('id', _editAnniId);
+    if (error) { alert('Failed to save. Please try again.'); return; }
+  } else {
+    const { error } = await getDb().from('anniversaries').insert({ id: Date.now(), name, date, type });
+    if (error) { alert('Failed to save. Please try again.'); return; }
+  }
   await renderAnniversaries();
   closeModal('anniModal');
 }
