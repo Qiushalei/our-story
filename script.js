@@ -285,14 +285,36 @@ async function renderAnniversaries() {
     return `
     <div class="anni-item" id="anni-${a.id}">
       <div class="anni-actions">
-        <button type="button" class="anni-edit-btn" onclick="openEditAnniModal(${a.id}, '${escHtml(a.name).replace(/'/g, "\\'")}', '${a.date}', '${a.type}')">编辑</button>
-        <button type="button" class="anni-delete-btn" onclick="deleteAnniversary(${a.id})">删除</button>
+        <button type="button" class="anni-edit-btn"
+          data-id="${a.id}"
+          data-name="${escHtml(a.name)}"
+          data-date="${escHtml(a.date)}"
+          data-type="${escHtml(a.type)}">编辑</button>
+        <button type="button" class="anni-delete-btn" data-id="${a.id}">删除</button>
       </div>
       <div class="anni-name">💝 ${escHtml(a.name)}</div>
       <div class="anni-date">${formatDate(new Date(y, m - 1, d))} · ${a.type === 'yearly' ? 'Every Year' : 'Once Only'}</div>
       <div class="countdown-display" id="cd-${a.id}"></div>
     </div>`;
   }).join('');
+
+  if (!container._anniBound) {
+    container._anniBound = true;
+    container.addEventListener('click', function(e) {
+      const editBtn = e.target.closest('.anni-edit-btn');
+      const delBtn  = e.target.closest('.anni-delete-btn');
+      if (editBtn) {
+        openEditAnniModal(
+          Number(editBtn.dataset.id),
+          editBtn.dataset.name,
+          editBtn.dataset.date,
+          editBtn.dataset.type
+        );
+      } else if (delBtn) {
+        deleteAnniversary(Number(delBtn.dataset.id));
+      }
+    });
+  }
 
   list.forEach(a => {
     updateCountdown(a);
